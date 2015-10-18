@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +31,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         registrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
+        informationTextView = (TextView) findViewById(R.id.informationTextView);
+
         registrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -47,13 +49,8 @@ public class MainActivity extends Activity {
                 }
             }
         };
-        informationTextView = (TextView) findViewById(R.id.informationTextView);
 
-        if (checkPlayServices()) {
-            // Start IntentService to register this application with GCM.
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
+        createUserAccount();
     }
 
     @Override
@@ -86,5 +83,13 @@ public class MainActivity extends Activity {
             return false;
         }
         return true;
+    }
+
+    private void createUserAccount() {
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
     }
 }
