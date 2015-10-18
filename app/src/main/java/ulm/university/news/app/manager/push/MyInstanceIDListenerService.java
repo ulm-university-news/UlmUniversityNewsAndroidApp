@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ulm.university.news.app;
+package ulm.university.news.app.manager.push;
 
 import android.content.Intent;
 
