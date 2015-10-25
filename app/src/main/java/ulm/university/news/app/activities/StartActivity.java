@@ -3,9 +3,9 @@ package ulm.university.news.app.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.os.Bundle;
 import android.util.Log;
 
 import ulm.university.news.app.Constants;
@@ -14,6 +14,7 @@ import ulm.university.news.app.R;
 
 public class StartActivity extends Activity {
 
+    /** This classes tag for logging. */
     private static final String LOG_TAG = "StartActivity";
 
     @Override
@@ -41,7 +42,8 @@ public class StartActivity extends Activity {
 
         if (sentToken) {
             // Push token was already created and sent to the server.
-            intent = new Intent(this, MainActivity.class);
+            // intent = new Intent(this, MainActivity.class);
+            intent = new Intent(this, CreateAccountActivity.class);
         } else {
             // Create a new user account with push token.
             intent = new Intent(this, CreateAccountActivity.class);

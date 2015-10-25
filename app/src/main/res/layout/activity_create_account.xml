@@ -9,22 +9,26 @@
                 tools:context="ulm.university.news.app.activities.CreateAccountActivity">
 
     <TextView
-        android:id="@+id/activity_create_account_tv_information"
-        android:layout_width="wrap_content"
+        android:id="@+id/activity_create_account_tv_welcome"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/activity_create_account_s_information"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:maxLines = "10000"
+        android:scrollbars = "vertical"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border_info"
+        android:padding="10dp"/>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/activity_create_account_s_checkbox"
         android:id="@+id/activity_create_account_chk_terms_of_use"
-        android:layout_below="@+id/activity_create_account_tv_information"
+        android:layout_below="@+id/activity_create_account_tv_welcome"
         android:layout_marginBottom="10dp"/>
 
     <EditText
@@ -44,10 +48,11 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_create_account_s_button"
+        android:text="@string/activity_create_account_s_button_create"
         android:id="@+id/activity_create_account_btn_create_account"
         android:layout_below="@+id/activity_create_account_et_user_name"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/>
 
     <ProgressBar
         android:id="@+id/activity_create_account_pgr_create_account"
@@ -55,6 +60,43 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_create_account_et_user_name"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
+        android:indeterminateTint="#7d9aaa"
+        android:indeterminateTintMode="src_in"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_create_account_tv_error"
+        android:layout_below="@+id/activity_create_account_btn_create_account"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border_error"
+        android:padding="10dp"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_create_account_tv_info"
+        android:layout_below="@+id/activity_create_account_pgr_create_account"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border_info"
+        android:padding="10dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_create_account_s_button_start"
+        android:id="@+id/activity_create_account_btn_start"
+        android:layout_below="@+id/activity_create_account_tv_info"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

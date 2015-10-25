@@ -11,13 +11,13 @@ import ulm.university.news.app.data.enums.Platform;
  */
 public class User {
     /** The id of the user. */
-    private int id;
+    private Integer id;
     /** The username of the user. The username is used to make users identifiable in a Group. */
     private String name;
     /** The old username of the user after name change. */
     private String oldName;
     /** Identifies weather the users name has changed or not. */
-    private boolean nameChanged;
+    private Boolean nameChanged;
     /**
      * The access token for the user. The token of a user is unique in the whole system and unambiguously identifies
      * the user.
@@ -62,7 +62,7 @@ public class User {
      * @param pushAccessToken   The push access token which identifies the user in the push notification service.
      * @param platform          The platform of the user's device.
      */
-    public User(int id, String name, String serverAccessToken, String pushAccessToken, Platform platform) {
+    public User(Integer id, String name, String serverAccessToken, String pushAccessToken, Platform platform) {
         this.id = id;
         this.name = name;
         this.serverAccessToken = serverAccessToken;
@@ -91,19 +91,19 @@ public class User {
         this.oldName = oldName;
     }
 
-    public boolean isNameChanged() {
+    public Boolean isNameChanged() {
         return nameChanged;
     }
 
-    public void setNameChanged(boolean nameChanged) {
+    public void setNameChanged(Boolean nameChanged) {
         this.nameChanged = nameChanged;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
