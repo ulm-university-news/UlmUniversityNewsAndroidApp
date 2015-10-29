@@ -29,7 +29,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.activities.MainActivity;
+import ulm.university.news.app.controller.MainActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
 

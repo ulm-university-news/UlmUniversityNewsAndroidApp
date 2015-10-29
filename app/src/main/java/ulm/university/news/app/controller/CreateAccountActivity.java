@@ -1,6 +1,5 @@
-package ulm.university.news.app.activities;
+package ulm.university.news.app.controller;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,15 +20,15 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import ulm.university.news.app.Constants;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.Platform;
 import ulm.university.news.app.manager.push.RegistrationIntentService;
+import ulm.university.news.app.util.Constants;
 
-public class CreateAccountActivity extends Activity {
+public class CreateAccountActivity extends AppCompatActivity {
 
     /** This classes tag for logging. */
     private static final String LOG_TAG = "CreateAccountActivity";

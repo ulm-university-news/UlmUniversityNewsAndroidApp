@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package ulm.university.news.app;
+package ulm.university.news.app.util;
 
 import android.util.Log;
+
+import org.joda.time.DateTimeZone;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +45,9 @@ public class Constants {
 
     /** The REST servers internet root address. */
     private String serverAddress = null;
+
+    /** The time zone where the server is located. */
+    public static final DateTimeZone TIME_ZONE = DateTimeZone.forID("Europe/Berlin");
 
     /**
      * Get an instance of the Constants class.

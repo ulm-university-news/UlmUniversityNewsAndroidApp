@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Ulm University News</string>
+    <string name="app_name_launcher">University News</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -22,4 +23,7 @@
     <string name="activity_create_account_s_error_checkbox">You need to accept the terms of use.</string>
     <string name="activity_create_account_s_error_name_empty">You need to enter a user name.</string>
     <string name="activity_create_account_s_name_hint">User name</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello channel fragment</string>
 </resources>

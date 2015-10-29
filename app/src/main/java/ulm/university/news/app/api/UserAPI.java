@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import ulm.university.news.app.Constants;
-import ulm.university.news.app.activities.CreateAccountActivity;
+import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.controller.CreateAccountActivity;
 import ulm.university.news.app.data.User;
 
 /**
@@ -22,7 +22,7 @@ public class UserAPI extends MainAPI {
     /** This classes tag for logging. */
     private static final String LOG_TAG = "UserAPI";
 
-    /** The REST servers internet address pointing to user resource. */
+    /** The REST servers internet address pointing to the user resource. */
     private String serverAddressUser;
 
     /** The Gson object used to parse from an to JSON. */

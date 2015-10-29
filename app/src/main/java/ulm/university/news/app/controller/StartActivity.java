@@ -1,4 +1,4 @@
-package ulm.university.news.app.activities;
+package ulm.university.news.app.controller;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,8 +8,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import ulm.university.news.app.Constants;
 import ulm.university.news.app.R;
+import ulm.university.news.app.util.Constants;
 
 
 public class StartActivity extends Activity {
@@ -42,11 +42,11 @@ public class StartActivity extends Activity {
 
         if (sentToken) {
             // Push token was already created and sent to the server.
-            // intent = new Intent(this, MainActivity.class);
-            intent = new Intent(this, CreateAccountActivity.class);
+            intent = new Intent(this, MainActivity.class);
         } else {
             // Create a new user account with push token.
             intent = new Intent(this, CreateAccountActivity.class);
+            // intent = new Intent(this, MainActivity.class);
         }
 
         startActivity(intent);

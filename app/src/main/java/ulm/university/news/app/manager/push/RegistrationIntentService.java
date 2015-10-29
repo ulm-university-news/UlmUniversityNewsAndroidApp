@@ -29,7 +29,7 @@ import com.google.android.gms.iid.InstanceID;
 
 import java.io.IOException;
 
-import ulm.university.news.app.Constants;
+import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.R;
 
 public class RegistrationIntentService extends IntentService {

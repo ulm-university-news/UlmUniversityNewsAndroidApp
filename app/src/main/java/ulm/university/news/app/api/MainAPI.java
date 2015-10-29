@@ -2,7 +2,7 @@ package ulm.university.news.app.api;
 
 import android.content.Context;
 
-import ulm.university.news.app.Constants;
+import ulm.university.news.app.util.Constants;
 
 /**
  * TODO
