@@ -1,15 +1,21 @@
 <resources>
+    <!-- App ####################################################################################################### -->
     <string name="app_name">Ulm University News</string>
     <string name="app_name_launcher">University News</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- General ################################################################################################### -->
+    <string name="general_s_error_something">Something went wrong. Please try again.</string>
+    <string name="general_s_error_connection">Connecting to server failed. Please try again.</string>
 
-    <string name="token_error_message">An error occurred while either fetching the InstanceID token,
-        sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
+    <!-- User -->
+    <string name="user_s_error_name_empty">You need to enter a user name.</string>
+    <string name="user_s_error_name_invalid">Your user name is invalid.</string>
+
+    <!-- StartActivity ############################################################################################# -->
     <string name="title_activity_start">StartActivity</string>
+
+    <!-- CreateAccountActivity ##################################################################################### -->
     <string name="title_activity_create_account">CreateAccountActivity</string>
-    
     <string name="activity_create_account_s_information">Welcome to the Ulm University News App.\n\nTo use this
         app you need to create a user account. To do that you just have to enter a user name below and accept
         the terms of use.These are:\nTODO</string>
@@ -21,9 +27,10 @@
     now ready to use this app.</string>
     <string name="activity_create_account_s_error_offline">You need an internet connection.</string>
     <string name="activity_create_account_s_error_checkbox">You need to accept the terms of use.</string>
-    <string name="activity_create_account_s_error_name_empty">You need to enter a user name.</string>
+    <string name="activity_create_account_s_error_token">An error occurred while either fetching the InstanceID token,
+        sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
     <string name="activity_create_account_s_name_hint">User name</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- ChannelFragment ########################################################################################### -->
     <string name="hello_blank_fragment">Hello channel fragment</string>
 </resources>

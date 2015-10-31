@@ -25,8 +25,13 @@ import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.Platform;
-import ulm.university.news.app.manager.push.RegistrationIntentService;
+import ulm.university.news.app.manager.push.PushTokenGenerationService;
 import ulm.university.news.app.util.Constants;
+
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.USER_DATA_INCOMPLETE;
+import static ulm.university.news.app.util.Constants.USER_NAME_INVALID;
+import static ulm.university.news.app.util.Constants.USER_PUSH_TOKEN_INVALID;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     /** An instance of the UserAPI class. */
     private UserAPI userAPI = new UserAPI(this);
 
+    /** The code for the play service request. */
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     /** This BroadcastReceiver listens for push token creation events. */
@@ -59,6 +65,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Initialise GUI elements.
         initGUI();
 
+        // Listens to broadcast messages by PushTokenGenerationService.
         pushTokenBR = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -74,7 +81,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         // Couldn't create push token. User should try again.
                         tvInfo.setVisibility(View.GONE);
                         tvError.setVisibility(View.VISIBLE);
-                        tvError.setText(getString(R.string.token_error_message));
+                        tvError.setText(getString(R.string.activity_create_account_s_error_token));
                         btnCreateAccount.setVisibility(View.VISIBLE);
                         pgrCreateAccount.setVisibility(View.GONE);
                     }
@@ -83,6 +90,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Initialises all view elements of this activity.
+     */
     private void initGUI() {
         pgrCreateAccount = (ProgressBar) findViewById(R.id.activity_create_account_pgr_create_account);
         tvWelcome = (TextView) findViewById(R.id.activity_create_account_tv_welcome);
@@ -126,6 +136,109 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     /**
+     * Creates a new user object and attempts to send it to the server.
+     *
+     * @param pushToken The generated push access token of the new user.
+     */
+    private void createUserAccount(String pushToken) {
+        String name = etUserName.getText().toString();
+        Platform platform = Platform.ANDROID;
+
+        User user = new User(name, pushToken, platform);
+
+        // Sends POST /user
+        userAPI.createUser(user);
+    }
+
+    /**
+     * This method is called by UserAPI after a server response.
+     *
+     * @param user The created user object retrieved from server.
+     */
+    public void createUserAccount(User user) {
+        // Update view.
+        tvWelcome.setVisibility(View.GONE);
+        chkTermsOfUse.setVisibility(View.GONE);
+        etUserName.setVisibility(View.GONE);
+        pgrCreateAccount.setVisibility(View.GONE);
+        // Account successfully created. Show button to start main application.
+        btnStart.setVisibility(View.VISIBLE);
+        tvInfo.setText(getString(R.string.activity_create_account_s_account_created));
+
+        // TODO Store user in database.
+        Log.d(LOG_TAG, "User created: " + user.toString());
+    }
+
+    /**
+     * Validates user input, performs further checks and finally starts generation of a new push token for the new user.
+     */
+    private void createPushToken() {
+        // Check if device is connected to the internet.
+        if (!isOnline()) {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText(getString(R.string.activity_create_account_s_error_offline));
+            // Check if terms of use are accepted.
+        } else if (!chkTermsOfUse.isChecked()) {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText(getString(R.string.activity_create_account_s_error_checkbox));
+            // Check if user name is empty.
+        } else if (etUserName.getText().toString().trim().length() == 0) {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText(getString(R.string.user_s_error_name_empty));
+        } else {
+            // Checks passed. Attempt to create user account.
+            btnCreateAccount.setVisibility(View.GONE);
+            pgrCreateAccount.setVisibility(View.VISIBLE);
+            if (checkPlayServices()) {
+                tvInfo.setVisibility(View.VISIBLE);
+                tvInfo.setText(getString(R.string.activity_create_account_s_creating_account));
+                // Start IntentService to register this application with GCM.
+                Intent intent = new Intent(this, PushTokenGenerationService.class);
+                startService(intent);
+            }
+        }
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param se The error which occurred on the server.
+     */
+    public void handleServerError(ServerError se) {
+        // Update view.
+        pgrCreateAccount.setVisibility(View.GONE);
+        btnCreateAccount.setVisibility(View.VISIBLE);
+        tvInfo.setVisibility(View.GONE);
+        // Show appropriate error message.
+        switch (se.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                tvError.setText(getString(R.string.general_s_error_connection));
+                break;
+            case USER_DATA_INCOMPLETE:
+                tvError.setText(getString(R.string.user_s_error_name_empty));
+                break;
+            case USER_NAME_INVALID:
+                tvError.setText(getString(R.string.user_s_error_name_invalid));
+                break;
+            case USER_PUSH_TOKEN_INVALID:
+                tvError.setText(getString(R.string.general_s_error_something));
+                break;
+        }
+        tvError.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Checks if the device has a connection to the internet.
+     *
+     * @return true if devices is connected to the internet.
+     */
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    /**
      * Checks the device to make sure it has the Google Play Services APK. If it doesn't, display a dialog that
      * allows users to download the APK from the Google Play Store or enable it in the device's system settings.
      *
@@ -143,79 +256,5 @@ public class CreateAccountActivity extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    private void createUserAccount(String pushToken) {
-        String name = etUserName.getText().toString();
-        Platform platform = Platform.ANDROID;
-
-        User user = new User(name, pushToken, platform);
-
-        // Sends POST /user
-        userAPI.createUser(user);
-    }
-
-    /**
-     * This method is called by UserAPI after after server response.
-     *
-     * @param user The created user object retrieved from server.
-     */
-    public void createUserAccount(User user) {
-        // Update view.
-        chkTermsOfUse.setVisibility(View.GONE);
-        etUserName.setVisibility(View.GONE);
-        pgrCreateAccount.setVisibility(View.GONE);
-        // Account successfully created. Show button to start main application.
-        btnStart.setVisibility(View.VISIBLE);
-        tvInfo.setText(getString(R.string.activity_create_account_s_account_created));
-
-        Log.d(LOG_TAG, "User created: " + user.toString());
-    }
-
-    private void createPushToken() {
-        // Check if device is connected to the internet.
-        if (!isOnline()) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_s_error_offline));
-            // Check if terms of use are accepted.
-        } else if (!chkTermsOfUse.isChecked()) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_s_error_checkbox));
-            // Check if user name is empty.
-        } else if (etUserName.getText().toString().trim().length() == 0) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_s_error_name_empty));
-        } else {
-            // Checks passed. Attempt to create user account.
-            btnCreateAccount.setVisibility(View.GONE);
-            pgrCreateAccount.setVisibility(View.VISIBLE);
-            if (checkPlayServices()) {
-                tvInfo.setVisibility(View.VISIBLE);
-                tvInfo.setText(getString(R.string.activity_create_account_s_creating_account));
-                // Start IntentService to register this application with GCM.
-                Intent intent = new Intent(this, RegistrationIntentService.class);
-                startService(intent);
-            }
-        }
-    }
-
-    public void handleServerError(ServerError se) {
-        // Update view.
-        pgrCreateAccount.setVisibility(View.GONE);
-        btnCreateAccount.setVisibility(View.VISIBLE);
-        tvInfo.setVisibility(View.GONE);
-        tvError.setVisibility(View.VISIBLE);
-        tvError.setText(se.toString());
-    }
-
-    /**
-     * Checks if the device has a connection to the internet.
-     *
-     * @return true if devices is connected to the internet.
-     */
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

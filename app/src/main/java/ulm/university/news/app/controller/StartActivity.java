@@ -46,7 +46,6 @@ public class StartActivity extends Activity {
         } else {
             // Create a new user account with push token.
             intent = new Intent(this, CreateAccountActivity.class);
-            // intent = new Intent(this, MainActivity.class);
         }
 
         startActivity(intent);

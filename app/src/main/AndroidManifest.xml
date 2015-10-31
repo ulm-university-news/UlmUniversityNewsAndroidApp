@@ -33,21 +33,21 @@
         </receiver>
 
         <service
-            android:name=".manager.push.MyGcmListenerService"
+            android:name=".manager.push.PushGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
         <service
-            android:name=".manager.push.MyInstanceIDListenerService"
+            android:name=".manager.push.PushInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID"/>
             </intent-filter>
         </service>
         <service
-            android:name=".manager.push.RegistrationIntentService"
+            android:name=".manager.push.PushTokenGenerationService"
             android:exported="false"/>
 
         <activity

@@ -13,6 +13,9 @@ import ulm.university.news.app.R;
 public class ChannelFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
 
+    /** This classes tag for logging. */
+    private static final String LOG_TAG = "ChannelFragment";
+
     private int mPage;
 
     public static ChannelFragment newInstance(int page) {

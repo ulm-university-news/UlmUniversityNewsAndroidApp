@@ -32,12 +32,12 @@ import java.io.IOException;
 import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.R;
 
-public class RegistrationIntentService extends IntentService {
+public class PushTokenGenerationService extends IntentService {
 
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
 
-    public RegistrationIntentService() {
+    public PushTokenGenerationService() {
         super(TAG);
     }
 

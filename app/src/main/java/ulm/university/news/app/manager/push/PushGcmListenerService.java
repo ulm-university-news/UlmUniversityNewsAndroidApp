@@ -31,9 +31,9 @@ import com.google.android.gms.gcm.GcmListenerService;
 import ulm.university.news.app.R;
 import ulm.university.news.app.controller.MainActivity;
 
-public class MyGcmListenerService extends GcmListenerService {
+public class PushGcmListenerService extends GcmListenerService {
 
-    private static final String TAG = "MyGcmListenerService";
+    private static final String TAG = "PushGcmListenerService";
 
     /**
      * Called when message is received.

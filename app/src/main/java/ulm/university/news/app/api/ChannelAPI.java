@@ -11,7 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import ulm.university.news.app.controller.CreateAccountActivity;
+import ulm.university.news.app.controller.MainActivity;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.util.Constants;
@@ -62,8 +62,7 @@ public class ChannelAPI extends MainAPI {
                 if (!hasServerErrorOccurred(jsonResult)) {
                     // No error occurred. Parse JSON String to user object.
                     Channel channel = gson.fromJson(jsonResult, Lecture.class);
-                    Log.d(LOG_TAG, channel.toString());
-                    // ((CreateAccountActivity) context).createUserAccount(userS);
+                    ((MainActivity) context).getChannel(channel);
                 }
             }
         };
@@ -91,10 +90,9 @@ public class ChannelAPI extends MainAPI {
                 if (!hasServerErrorOccurred(jsonResult)) {
                     // No error occurred. Parse JSON String to user object.
                     Type listType = new TypeToken<List<Channel>>() {}.getType();
-                    // In this test code i just shove the JSON here as string.
+                    // Use a list of channels as deserialization type.
                     List<Channel> channels = gson.fromJson(jsonResult, listType);
-                    Log.d(LOG_TAG, channels.toString());
-                    // ((CreateAccountActivity) context).createUserAccount(userS);
+                    ((MainActivity) context).getChannels(channels);
                 }
             }
         };
@@ -116,12 +114,12 @@ public class ChannelAPI extends MainAPI {
             // Failed to connect to server.
             hasErrorOccurred = true;
             ServerError se = new ServerError(503, Constants.CONNECTION_FAILURE);
-            ((CreateAccountActivity) context).handleServerError(se);
+            ((MainActivity) context).handleServerError(se);
         } else if (jsonResult.contains("errorCode")) {
             // Parse JSON String to ServerError object.
             hasErrorOccurred = true;
             ServerError se = gson.fromJson(jsonResult, ServerError.class);
-            ((CreateAccountActivity) context).handleServerError(se);
+            ((MainActivity) context).handleServerError(se);
         }
         return hasErrorOccurred;
     }

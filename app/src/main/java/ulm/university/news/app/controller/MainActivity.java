@@ -4,9 +4,14 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+
+import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ChannelAPI;
+import ulm.university.news.app.api.ServerError;
+import ulm.university.news.app.data.Channel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,4 +40,20 @@ public class MainActivity extends AppCompatActivity {
         channelAPI.getChannels(accessToken, null, null);
     }
 
+    public void getChannel(Channel channel){
+        Log.d(LOG_TAG, channel.toString());
+    }
+
+    public void getChannels(List<Channel> channels){
+        Log.d(LOG_TAG, channels.toString());
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param se The error which occurred on the server.
+     */
+    public void handleServerError(ServerError se) {
+
+    }
 }
