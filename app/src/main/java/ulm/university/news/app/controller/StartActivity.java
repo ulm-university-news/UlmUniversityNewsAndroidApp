@@ -2,14 +2,11 @@ package ulm.university.news.app.controller;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 
 public class StartActivity extends Activity {
@@ -27,20 +24,17 @@ public class StartActivity extends Activity {
             public void run() {
                 startAppropriateActivity();
             }
-        }, 2000);
+        }, 1500);
     }
 
     private void startAppropriateActivity() {
-        // TODO Replace shared preferences with SQLite database.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean sentToken = sharedPreferences.getBoolean(Constants.SENT_TOKEN_TO_SERVER, false);
-
+        // Show no activity change animation.
         overridePendingTransition(0, 0);
         Intent intent;
 
-        Log.d(LOG_TAG, "sentToken: " + sentToken);
-
-        if (sentToken) {
+        // Check if a local user account already exists.
+        UserDatabaseManager userDBM = new UserDatabaseManager(this);
+        if (userDBM.getLocalUser() != null) {
             // Push token was already created and sent to the server.
             intent = new Intent(this, MainActivity.class);
         } else {

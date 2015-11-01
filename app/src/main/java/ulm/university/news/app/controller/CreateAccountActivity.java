@@ -23,10 +23,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
-import ulm.university.news.app.data.User;
+import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.enums.Platform;
+import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.manager.push.PushTokenGenerationService;
 import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.util.exceptions.DatabaseException;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.USER_DATA_INCOMPLETE;
@@ -76,9 +78,9 @@ public class CreateAccountActivity extends AppCompatActivity {
                     if (pushToken != null) {
                         // Push token successfully created. Proceed with account creation.
                         Log.d(LOG_TAG, "Push token retrieved. Proceed with account creation.");
-                        createUserAccount(pushToken);
+                        createLocalUser(pushToken);
                     } else {
-                        // Couldn't create push token. User should try again.
+                        // Couldn't create push token. LocalUser should try again.
                         tvInfo.setVisibility(View.GONE);
                         tvError.setVisibility(View.VISIBLE);
                         tvError.setText(getString(R.string.activity_create_account_s_error_token));
@@ -140,22 +142,33 @@ public class CreateAccountActivity extends AppCompatActivity {
      *
      * @param pushToken The generated push access token of the new user.
      */
-    private void createUserAccount(String pushToken) {
+    private void createLocalUser(String pushToken) {
         String name = etUserName.getText().toString();
         Platform platform = Platform.ANDROID;
 
-        User user = new User(name, pushToken, platform);
+        LocalUser localUser = new LocalUser(name, pushToken, platform);
 
-        // Sends POST /user
-        userAPI.createUser(user);
+        // Sends POST /localUser
+        userAPI.createLocalUser(localUser);
     }
 
     /**
      * This method is called by UserAPI after a server response.
      *
-     * @param user The created user object retrieved from server.
+     * @param localUser The created localUser object retrieved from server.
      */
-    public void createUserAccount(User user) {
+    public void createLocalUser(LocalUser localUser) {
+        // Store localUser in database.
+        UserDatabaseManager userDBM = new UserDatabaseManager(this);
+        try {
+            userDBM.storeLocalUser(localUser);
+        } catch (DatabaseException e) {
+            pgrCreateAccount.setVisibility(View.GONE);
+            btnCreateAccount.setVisibility(View.VISIBLE);
+            tvError.setText(getString(R.string.general_s_error_database));
+            tvError.setVisibility(View.VISIBLE);
+            return;
+        }
         // Update view.
         tvWelcome.setVisibility(View.GONE);
         chkTermsOfUse.setVisibility(View.GONE);
@@ -164,9 +177,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Account successfully created. Show button to start main application.
         btnStart.setVisibility(View.VISIBLE);
         tvInfo.setText(getString(R.string.activity_create_account_s_account_created));
-
-        // TODO Store user in database.
-        Log.d(LOG_TAG, "User created: " + user.toString());
     }
 
     /**

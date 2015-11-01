@@ -5,9 +5,9 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.controller.CreateAccountActivity;
-import ulm.university.news.app.data.User;
 
 /**
  * The UserAPI is responsible for sending requests regarding the user resource. Required data ist handed over from
@@ -45,14 +45,14 @@ public class UserAPI extends MainAPI {
     }
 
     /**
-     * Creates a new user account on the server. The data of the new user is provided within the user object. The
-     * generated user resource will be converted to a user object and will be passed to the controller.
+     * Creates a new localUser account on the server. The data of the new localUser is provided within the localUser object. The
+     * generated localUser resource will be converted to a localUser object and will be passed to the controller.
      *
-     * @param user The user object including the data of the new user.
+     * @param localUser The localUser object including the data of the new localUser.
      */
-    public void createUser(final User user) {
-        // Parse user object to JSON String.
-        String jsonUser = gson.toJson(user, User.class);
+    public void createLocalUser(final LocalUser localUser) {
+        // Parse localUser object to JSON String.
+        String jsonUser = gson.toJson(localUser, LocalUser.class);
         Log.d(LOG_TAG, "jsonUser: " + jsonUser);
 
         RequestTask getUserTask = new RequestTask() {
@@ -60,9 +60,9 @@ public class UserAPI extends MainAPI {
             protected void onPostExecute(String jsonResult) {
                 // Check if a server error has occurred.
                 if (!hasServerErrorOccurred(jsonResult)) {
-                    // No error occurred. Parse JSON String to user object.
-                    User userS = gson.fromJson(jsonResult, User.class);
-                    ((CreateAccountActivity) context).createUserAccount(userS);
+                    // No error occurred. Parse JSON String to localUser object.
+                    LocalUser localUserS = gson.fromJson(jsonResult, LocalUser.class);
+                    ((CreateAccountActivity) context).createLocalUser(localUserS);
                 }
             }
         };
