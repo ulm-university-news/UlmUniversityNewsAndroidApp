@@ -216,7 +216,7 @@ public class Constants {
     public static final int CONNECTION_FAILURE = 9999;
 
     /**
-     * Get an instance of the Constants class.
+     * Get the instance of the Constants class.
      *
      * @return Instance of Constants.
      */

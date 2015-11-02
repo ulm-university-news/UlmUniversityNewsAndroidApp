@@ -9,7 +9,7 @@
     <string name="general_s_error_connection">Connecting to server failed. Please try again.</string>
 
     <!-- LocalUser -->
-    <string name="user_s_error_name_empty">You need to enter a localUser name.</string>
+    <string name="user_s_error_name_empty">You need to enter a user name.</string>
     <string name="user_s_error_name_invalid">Your localUser name is invalid.</string>
 
     <!-- StartActivity ############################################################################################# -->
@@ -18,9 +18,9 @@
     <!-- CreateAccountActivity ##################################################################################### -->
     <string name="title_activity_create_account">CreateAccountActivity</string>
     <string name="activity_create_account_s_information">Welcome to the Ulm University News App.\n\nTo use this
-        app you need to create a localUser account. To do that you just have to enter a localUser name below and accept
+        app you need to create a user account. To do that you just have to enter a user name below and accept
         the terms of use.These are:\nTODO</string>
-    <string name="activity_create_account_s_creating_account">Creating localUser account...</string>
+    <string name="activity_create_account_s_creating_account">Creating user account...</string>
     <string name="activity_create_account_s_checkbox">I accept the terms of use.</string>
     <string name="activity_create_account_s_button_create">Create account</string>
     <string name="activity_create_account_s_button_start">Start</string>

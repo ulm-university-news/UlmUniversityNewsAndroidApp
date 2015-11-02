@@ -10,17 +10,27 @@ import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.enums.Platform;
 import ulm.university.news.app.util.exceptions.DatabaseException;
 
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_PLATFORM;
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_PUSH_ACCESS_TOKEN;
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_SERVER_ACCESS_TOKEN;
+import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
+
 /**
  * TODO
  *
  * @author Matthias Mak
  */
-public class UserDatabaseManager extends DatabaseManager {
+public class UserDatabaseManager {
     /** This classes tag for logging. */
     private static final String LOG_TAG = "UserDatabaseManager";
+    /** The instance of DatabaseManager. */
+    private DatabaseManager dbm;
 
+    /** Creates a new instance of UserDatabaseManager. */
     public UserDatabaseManager(Context context) {
-        super(context);
+        dbm = DatabaseManager.getInstance(context);
     }
 
     /**
@@ -32,7 +42,7 @@ public class UserDatabaseManager extends DatabaseManager {
     public void storeLocalUser(LocalUser localUser) throws DatabaseException {
         Log.d(LOG_TAG, "Start with localUser: " + localUser);
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
+            SQLiteDatabase db = dbm.getWritableDatabase();
 
             ContentValues values = new ContentValues();
             values.put(LOCAL_USER_ID, localUser.getId());
@@ -50,7 +60,7 @@ public class UserDatabaseManager extends DatabaseManager {
 
     public LocalUser getLocalUser() {
         LocalUser localUser = null;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = dbm.getReadableDatabase();
 
         String selectQuery = "SELECT  * FROM " + LOCAL_USER_TABLE + ";";
         Log.d(LOG_TAG, "selectQuery: " + selectQuery);
