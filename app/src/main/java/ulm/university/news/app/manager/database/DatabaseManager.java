@@ -22,6 +22,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /** The version of the database. */
     private static final int DATABASE_VERSION = 1;
 
+    /** SQL statement to enable foreign key support. */
+    private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";
+
     // Columns of the LocalUser table.
     public static final String LOCAL_USER_TABLE = "LocalUser";
     public static final String LOCAL_USER_ID = "_id";
@@ -32,15 +35,29 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     /** SQL statement to create the LocalUser table. */
     private static final String CREATE_TABLE_LOCAL_USER = "CREATE TABLE " + LOCAL_USER_TABLE + "("
-            + LOCAL_USER_ID + " INTEGER PRIMARY KEY, "
+            + LOCAL_USER_ID + " INTEGER PRIMARY KEY NOT NULL, "
             + LOCAL_USER_NAME + " TEXT NOT NULL, "
             + LOCAL_USER_SERVER_ACCESS_TOKEN + " TEXT NOT NULL, "
             + LOCAL_USER_PUSH_ACCESS_TOKEN + " TEXT NOT NULL, "
             + LOCAL_USER_PLATFORM + " INTEGER NOT NULL);";
 
+    // Columns of the User table.
+    public static final String USER_TABLE = "User";
+    public static final String USER_ID = "_id";
+    public static final String USER_ID_FOREIGN = "User_Id";
+    public static final String USER_NAME = "Name";
+    public static final String USER_OLD_NAME = "OldName";
+
+    /** SQL statement to create the User table. */
+    private static final String CREATE_TABLE_USER = "CREATE TABLE " + USER_TABLE + "("
+            + USER_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + USER_NAME + " TEXT NOT NULL, "
+            + USER_OLD_NAME + " TEXT);";
+
     // Columns of the Channel table.
     public static final String CHANNEL_TABLE = "Channel";
     public static final String CHANNEL_ID = "_id";
+    public static final String CHANNEL_ID_FOREIGN = "Channel_Id";
     public static final String CHANNEL_NAME = "Name";
     public static final String CHANNEL_DESCRIPTION = "Description";
     public static final String CHANNEL_TYPE = "Type";
@@ -52,9 +69,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String CHANNEL_DATES = "Dates";
     public static final String CHANNEL_WEBSITE = "Website";
 
-    /** SQL statement to create the LocalUser table. */
+    /** SQL statement to create the Channel table. */
     private static final String CREATE_TABLE_CHANNEL = "CREATE TABLE " + CHANNEL_TABLE + "("
-            + CHANNEL_ID + " INTEGER PRIMARY KEY, "
+            + CHANNEL_ID + " INTEGER PRIMARY KEY NOT NULL, "
             + CHANNEL_NAME + " TEXT NOT NULL, "
             + CHANNEL_DESCRIPTION + " TEXT, "
             + CHANNEL_TYPE + " INTEGER NOT NULL, "
@@ -71,11 +88,89 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     /** SQL statement to create the SubscribedChannels table. */
     private static final String CREATE_TABLE_SUBSCRIBED_CHANNELS = "CREATE TABLE " + SUBSCRIBED_CHANNELS_TABLE + "("
-            + CHANNEL_ID + " INTEGER PRIMARY KEY, "
-            + "FOREIGN KEY(" + CHANNEL_ID + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
 
-    /** SQL statement to enable foreign key support. */
-    private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";
+    // Columns of the Lecture table.
+    public static final String LECTURE_TABLE = "Lecture";
+    public static final String LECTURE_FACULTY = "Faculty";
+    public static final String LECTURE_START_DATE = "StartDate";
+    public static final String LECTURE_END_DATE = "EndDate";
+    public static final String LECTURE_LECTURER = "Lecturer";
+    public static final String LECTURE_ASSISTANT = "Assistant";
+
+    /** SQL statement to create the Lecture table. */
+    private static final String CREATE_TABLE_LECTURE = "CREATE TABLE " + LECTURE_TABLE + "("
+            + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
+            + LECTURE_FACULTY + " INTEGER NOT NULL, "
+            + LECTURE_START_DATE + " TEXT, "
+            + LECTURE_END_DATE + " TEXT, "
+            + LECTURE_LECTURER + " TEXT NOT NULL, "
+            + LECTURE_ASSISTANT + " TEXT, "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+
+    // Columns of the Event table.
+    public static final String EVENT_TABLE = "Event";
+    public static final String EVENT_COST = "Cost";
+    public static final String EVENT_ORGANIZER = "Organizer";
+
+    /** SQL statement to create the Event table. */
+    private static final String CREATE_TABLE_EVENT = "CREATE TABLE " + EVENT_TABLE + "("
+            + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
+            + EVENT_COST + " TEXT, "
+            + EVENT_ORGANIZER + " TEXT, "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+
+    // Columns of the Sports table.
+    public static final String SPORTS_TABLE = "Sports";
+    public static final String SPORTS_COST = "Cost";
+    public static final String SPORTS_PARTICIPANTS = "NumberOfParticipants";
+
+    /** SQL statement to create the Sports table. */
+    private static final String CREATE_TABLE_SPORTS = "CREATE TABLE " + SPORTS_TABLE + "("
+            + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
+            + SPORTS_COST + " TEXT, "
+            + SPORTS_PARTICIPANTS + " TEXT, "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+
+    // Columns of the Group table.
+    public static final String GROUP_TABLE = "\"Group\"";
+    public static final String GROUP_ID = "_id";
+    public static final String GROUP_ID_FOREIGN = "Group_Id";
+    public static final String GROUP_NAME = "Name";
+    public static final String GROUP_DESCRIPTION = "Description";
+    public static final String GROUP_TYPE = "Type";
+    public static final String GROUP_CREATION_DATE = "CreationDate";
+    public static final String GROUP_MODIFICATION_DATE = "ModificationDate";
+    public static final String GROUP_TERM = "Term";
+    public static final String GROUP_DELETED = "Deleted";
+    public static final String GROUP_ADMIN = "GroupAdmin_User_Id";
+
+    /** SQL statement to create the Group table. */
+    private static final String CREATE_TABLE_GROUP = "CREATE TABLE " + GROUP_TABLE + "("
+            + GROUP_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + GROUP_NAME + " TEXT NOT NULL, "
+            + GROUP_DESCRIPTION + " TEXT, "
+            + GROUP_TYPE + " INTEGER NOT NULL, "
+            + GROUP_CREATION_DATE + " TEXT NOT NULL, "
+            + GROUP_MODIFICATION_DATE + " TEXT NOT NULL, "
+            + GROUP_TERM + " TEXT, "
+            + GROUP_DELETED + " INTEGER NOT NULL, "
+            + GROUP_ADMIN + " INTEGER NOT NULL, "
+            + "FOREIGN KEY(" + GROUP_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+
+    // Column of the UserGroup table.
+    public static final String USER_GROUP_TABLE = "UserGroup";
+    public static final String USER_GROUP_ACTIVE = "Active";
+
+    /** SQL statement to create the UserGroup table. */
+    private static final String CREATE_TABLE_USER_GROUP = "CREATE TABLE " + USER_GROUP_TABLE + "("
+            + USER_ID_FOREIGN + " INTEGER NOT NULL, "
+            + GROUP_ID_FOREIGN + " INTEGER NOT NULL, "
+            + USER_GROUP_ACTIVE + " INTEGER NOT NULL, "
+            + "PRIMARY KEY(" + USER_ID_FOREIGN + ", " + GROUP_ID_FOREIGN + "), "
+            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "), "
+            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "));";
 
     /**
      * Get the instance of the DatabaseManager class.
@@ -109,10 +204,22 @@ public class DatabaseManager extends SQLiteOpenHelper {
         // Create tables.
         Log.i(LOG_TAG, CREATE_TABLE_LOCAL_USER);
         database.execSQL(CREATE_TABLE_LOCAL_USER);
+        Log.i(LOG_TAG, CREATE_TABLE_USER);
+        database.execSQL(CREATE_TABLE_USER);
         Log.i(LOG_TAG, CREATE_TABLE_CHANNEL);
         database.execSQL(CREATE_TABLE_CHANNEL);
+        Log.i(LOG_TAG, CREATE_TABLE_LECTURE);
+        database.execSQL(CREATE_TABLE_LECTURE);
+        Log.i(LOG_TAG, CREATE_TABLE_EVENT);
+        database.execSQL(CREATE_TABLE_EVENT);
+        Log.i(LOG_TAG, CREATE_TABLE_SPORTS);
+        database.execSQL(CREATE_TABLE_SPORTS);
+        Log.i(LOG_TAG, CREATE_TABLE_GROUP);
+        database.execSQL(CREATE_TABLE_GROUP);
         Log.i(LOG_TAG, CREATE_TABLE_SUBSCRIBED_CHANNELS);
         database.execSQL(CREATE_TABLE_SUBSCRIBED_CHANNELS);
+        Log.i(LOG_TAG, CREATE_TABLE_USER_GROUP);
+        database.execSQL(CREATE_TABLE_USER_GROUP);
     }
 
     @Override
@@ -120,6 +227,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         Log.w(DatabaseManager.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data.");
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CHANNEL_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + LECTURE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + EVENT_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SPORTS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIBED_CHANNELS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_GROUP_TABLE);
         onCreate(db);
     }
 }
