@@ -336,6 +336,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + OPTION_ID_FOREIGN + ") REFERENCES " + OPTION_TABLE + "(" + OPTION_ID + "), "
             + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
 
+    // Columns of the ModeratorChannel table.
+    public static final String MODERATOR_CHANNEL_TABLE = "ModeratorChannel";
+    public static final String MODERATOR_CHANNEL_ACTIVE = "Active";
+
+    /** SQL statement to create the ModeratorChannel table. */
+    private static final String CREATE_TABLE_MODERATOR_CHANNEL = "CREATE TABLE " + MODERATOR_CHANNEL_TABLE + "("
+            + MODERATOR_ID_FOREIGN + " INTEGER NOT NULL, "
+            + CHANNEL_ID_FOREIGN + " INTEGER NOT NULL, "
+            + MODERATOR_CHANNEL_ACTIVE + " INTEGER NOT NULL, "
+            + "PRIMARY KEY(" + MODERATOR_ID_FOREIGN + ", " + CHANNEL_ID_FOREIGN + "), "
+            + "FOREIGN KEY(" + MODERATOR_ID_FOREIGN + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+
     /**
      * Get the instance of the DatabaseManager class.
      *
@@ -402,6 +415,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         database.execSQL(CREATE_TABLE_SUBSCRIBED_CHANNELS);
         Log.i(LOG_TAG, CREATE_TABLE_USER_GROUP);
         database.execSQL(CREATE_TABLE_USER_GROUP);
+        Log.i(LOG_TAG, CREATE_TABLE_MODERATOR_CHANNEL);
+        database.execSQL(CREATE_TABLE_MODERATOR_CHANNEL);
     }
 
     @Override
@@ -426,6 +441,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + USER_OPTION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIBED_CHANNELS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_GROUP_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + MODERATOR_CHANNEL_TABLE);
         onCreate(db);
     }
 }
