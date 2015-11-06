@@ -54,6 +54,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + USER_NAME + " TEXT NOT NULL, "
             + USER_OLD_NAME + " TEXT);";
 
+    // Columns of the Moderator table.
+    public static final String MODERATOR_TABLE = "Moderator";
+    public static final String MODERATOR_ID = "_id";
+    public static final String MODERATOR_ID_FOREIGN = "Moderator_Id";
+    public static final String MODERATOR_FIRST_NAME = "FirstName";
+    public static final String MODERATOR_LAST_NAME = "LastName";
+    public static final String MODERATOR_EMAIL = "Email";
+
+    /** SQL statement to create the Moderator table. */
+    private static final String CREATE_TABLE_MODERATOR = "CREATE TABLE " + MODERATOR_TABLE + "("
+            + MODERATOR_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + MODERATOR_FIRST_NAME + " TEXT NOT NULL, "
+            + MODERATOR_LAST_NAME + " TEXT NOT NULL, "
+            + MODERATOR_EMAIL + " TEXT NOT NULL);";
+
     // Columns of the Channel table.
     public static final String CHANNEL_TABLE = "Channel";
     public static final String CHANNEL_ID = "_id";
@@ -78,8 +93,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_TERM + " TEXT, "
             + CHANNEL_LOCATIONS + " TEXT, "
             + CHANNEL_CONTACTS + " TEXT NOT NULL, "
-            + CHANNEL_CREATION_DATE + " TEXT NOT NULL, "
-            + CHANNEL_MODIFICATION_DATE + " TEXT NOT NULL, "
+            + CHANNEL_CREATION_DATE + " INTEGER NOT NULL, "
+            + CHANNEL_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + CHANNEL_DATES + " TEXT, "
             + CHANNEL_WEBSITE + " TEXT);";
 
@@ -133,6 +148,72 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + SPORTS_PARTICIPANTS + " TEXT, "
             + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
 
+    // Columns of the Message table.
+    public static final String MESSAGE_TABLE = "Message";
+    public static final String MESSAGE_ID = "_id";
+    public static final String MESSAGE_ID_FOREIGN = "Message_Id";
+    public static final String MESSAGE_TEXT = "Text";
+    public static final String MESSAGE_PRIORITY = "Priority";
+    public static final String MESSAGE_CREATION_DATE = "CreationDate";
+    public static final String MESSAGE_READ = "Read";
+
+    /** SQL statement to create the Message table. */
+    private static final String CREATE_TABLE_MESSAGE = "CREATE TABLE " + MESSAGE_TABLE + "("
+            + MESSAGE_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + MESSAGE_TEXT + " TEXT NOT NULL, "
+            + MESSAGE_PRIORITY + " INTEGER NOT NULL, "
+            + MESSAGE_CREATION_DATE + " INTEGER NOT NULL, "
+            + MESSAGE_READ + " INTEGER NOT NULL);";
+
+    // Columns of the Announcement table.
+    public static final String ANNOUNCEMENT_TABLE = "Announcement";
+    public static final String ANNOUNCEMENT_MESSAGE_NUMBER = "MessageNumber";
+    public static final String ANNOUNCEMENT_TITLE = "Text";
+    public static final String ANNOUNCEMENT_AUTHOR = "Author_Moderator_Id";
+
+    /** SQL statement to create the Announcement table. */
+    private static final String CREATE_TABLE_ANNOUNCEMENT = "CREATE TABLE " + ANNOUNCEMENT_TABLE + "("
+            + ANNOUNCEMENT_MESSAGE_NUMBER + " INTEGER NOT NULL, "
+            + CHANNEL_ID_FOREIGN + " INTEGER NOT NULL, "
+            + ANNOUNCEMENT_TITLE + " TEXT NOT NULL, "
+            + ANNOUNCEMENT_AUTHOR + " INTEGER NOT NULL, "
+            + MESSAGE_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "PRIMARY KEY(" + ANNOUNCEMENT_MESSAGE_NUMBER + ", " + CHANNEL_ID_FOREIGN + "), "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "), "
+            + "FOREIGN KEY(" + ANNOUNCEMENT_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
+            + "FOREIGN KEY(" + MESSAGE_ID_FOREIGN + ") REFERENCES " + MESSAGE_TABLE + "(" + MESSAGE_ID + "));";
+
+    // Columns of the Reminder table.
+    public static final String REMINDER_TABLE = "Reminder";
+    public static final String REMINDER_ID = "_id";
+    public static final String REMINDER_AUTHOR = "Author_Moderator_Id";
+    public static final String REMINDER_START_DATE = "StartDate";
+    public static final String REMINDER_END_DATE = "EndDate";
+    public static final String REMINDER_CREATION_DATE = "CreationDate";
+    public static final String REMINDER_MODIFICATION_DATE = "ModificationDate";
+    public static final String REMINDER_INTERVAL = "Interval";
+    public static final String REMINDER_IGNORE = "Ignore";
+    public static final String REMINDER_TITLE = "Title";
+    public static final String REMINDER_TEXT = "Text";
+    public static final String REMINDER_PRIORITY = "Priority";
+
+    /** SQL statement to create the Reminder table. */
+    private static final String CREATE_TABLE_REMINDER = "CREATE TABLE " + REMINDER_TABLE + "("
+            + REMINDER_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + REMINDER_START_DATE + " INTEGER NOT NULL, "
+            + REMINDER_END_DATE + " INTEGER NOT NULL, "
+            + REMINDER_CREATION_DATE + " INTEGER NOT NULL, "
+            + REMINDER_MODIFICATION_DATE + " INTEGER NOT NULL, "
+            + REMINDER_INTERVAL + " INTEGER, "
+            + REMINDER_IGNORE + " INTEGER NOT NULL, "
+            + REMINDER_TITLE + " TEXT NOT NULL, "
+            + REMINDER_TEXT + " TEXT NOT NULL, "
+            + REMINDER_PRIORITY + " INTEGER NOT NULL, "
+            + REMINDER_AUTHOR + " INTEGER NOT NULL, "
+            + CHANNEL_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "), "
+            + "FOREIGN KEY(" + REMINDER_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "));";
+
     // Columns of the Group table.
     public static final String GROUP_TABLE = "\"Group\"";
     public static final String GROUP_ID = "_id";
@@ -152,8 +233,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + GROUP_NAME + " TEXT NOT NULL, "
             + GROUP_DESCRIPTION + " TEXT, "
             + GROUP_TYPE + " INTEGER NOT NULL, "
-            + GROUP_CREATION_DATE + " TEXT NOT NULL, "
-            + GROUP_MODIFICATION_DATE + " TEXT NOT NULL, "
+            + GROUP_CREATION_DATE + " INTEGER NOT NULL, "
+            + GROUP_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + GROUP_TERM + " TEXT, "
             + GROUP_DELETED + " INTEGER NOT NULL, "
             + GROUP_ADMIN + " INTEGER NOT NULL, "
@@ -171,6 +252,89 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + "PRIMARY KEY(" + USER_ID_FOREIGN + ", " + GROUP_ID_FOREIGN + "), "
             + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "), "
             + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "));";
+
+    // Columns of the Conversation table.
+    public static final String CONVERSATION_TABLE = "Conversation";
+    public static final String CONVERSATION_ID = "_id";
+    public static final String CONVERSATION_ID_FOREIGN = "Conversation_Id";
+    public static final String CONVERSATION_TITLE = "Title";
+    public static final String CONVERSATION_CLOSED = "Closed";
+    public static final String CONVERSATION_ADMIN = "ConversationAdmin_User_Id";
+
+    /** SQL statement to create the Conversation table. */
+    private static final String CREATE_TABLE_CONVERSATION = "CREATE TABLE " + CONVERSATION_TABLE + "("
+            + CONVERSATION_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + CONVERSATION_TITLE + " TEXT NOT NULL, "
+            + CONVERSATION_CLOSED + " INTEGER NOT NULL, "
+            + CONVERSATION_ADMIN + " INTEGER NOT NULL, "
+            + GROUP_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "), "
+            + "FOREIGN KEY(" + CONVERSATION_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+
+    // Columns of the ConversationMessage table.
+    public static final String CONVERSATION_MESSAGE_TABLE = "ConversationMessage";
+    public static final String CONVERSATION_MESSAGE_MESSAGE_NUMBER = "MessageNumber";
+    public static final String CONVERSATION_MESSAGE_AUTHOR = "Author_User_Id";
+
+    /** SQL statement to create the ConversationMessage table. */
+    private static final String CREATE_TABLE_CONVERSATION_MESSAGE = "CREATE TABLE " + CONVERSATION_MESSAGE_TABLE + "("
+            + CONVERSATION_MESSAGE_MESSAGE_NUMBER + " INTEGER NOT NULL, "
+            + CONVERSATION_ID_FOREIGN + " INTEGER NOT NULL, "
+            + CONVERSATION_MESSAGE_AUTHOR + " INTEGER NOT NULL, "
+            + MESSAGE_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "PRIMARY KEY(" + CONVERSATION_MESSAGE_MESSAGE_NUMBER + ", " + CONVERSATION_ID_FOREIGN + "), "
+            + "FOREIGN KEY(" + CONVERSATION_ID_FOREIGN + ") REFERENCES "
+            + CONVERSATION_TABLE + "(" + CONVERSATION_ID + "), "
+            + "FOREIGN KEY(" + CONVERSATION_MESSAGE_AUTHOR + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "), "
+            + "FOREIGN KEY(" + MESSAGE_ID_FOREIGN + ") REFERENCES " + MESSAGE_TABLE + "(" + MESSAGE_ID + "));";
+
+    // Columns of the Ballot table.
+    public static final String BALLOT_TABLE = "Ballot";
+    public static final String BALLOT_ID = "_id";
+    public static final String BALLOT_ID_FOREIGN = "Ballot_Id";
+    public static final String BALLOT_TITLE = "Title";
+    public static final String BALLOT_DESCRIPTION = "Description";
+    public static final String BALLOT_MULTIPLE_CHOICE = "MultipleChoice";
+    public static final String BALLOT_PUBLIC = "Public";
+    public static final String BALLOT_CLOSED = "Closed";
+    public static final String BALLOT_ADMIN = "BallotAdmin_User_Id";
+
+    /** SQL statement to create the Ballot table. */
+    private static final String CREATE_TABLE_BALLOT = "CREATE TABLE " + BALLOT_TABLE + "("
+            + BALLOT_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + BALLOT_TITLE + " TEXT NOT NULL, "
+            + BALLOT_DESCRIPTION + " TEXT, "
+            + BALLOT_MULTIPLE_CHOICE + " INTEGER NOT NULL, "
+            + BALLOT_PUBLIC + " INTEGER NOT NULL, "
+            + BALLOT_CLOSED + " INTEGER NOT NULL, "
+            + BALLOT_ADMIN + " INTEGER NOT NULL, "
+            + GROUP_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "), "
+            + "FOREIGN KEY(" + BALLOT_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+
+    // Columns of the Option table.
+    public static final String OPTION_TABLE = "Option";
+    public static final String OPTION_ID = "_id";
+    public static final String OPTION_ID_FOREIGN = "Option_Id";
+    public static final String OPTION_TEXT = "Text";
+
+    /** SQL statement to create the Option table. */
+    private static final String CREATE_TABLE_OPTION = "CREATE TABLE " + OPTION_TABLE + "("
+            + OPTION_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + OPTION_TEXT + " TEXT NOT NULL, "
+            + BALLOT_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "FOREIGN KEY(" + BALLOT_ID_FOREIGN + ") REFERENCES " + BALLOT_TABLE + "(" + BALLOT_ID + "));";
+
+    // Columns of the UserOption table.
+    public static final String USER_OPTION_TABLE = "UserOption";
+
+    /** SQL statement to create the UserOption table. */
+    private static final String CREATE_TABLE_USER_OPTION = "CREATE TABLE " + USER_OPTION_TABLE + "("
+            + OPTION_ID_FOREIGN + " INTEGER NOT NULL, "
+            + USER_ID_FOREIGN + " INTEGER NOT NULL, "
+            + "PRIMARY KEY(" + OPTION_ID_FOREIGN + ", " + USER_ID_FOREIGN + "), "
+            + "FOREIGN KEY(" + OPTION_ID_FOREIGN + ") REFERENCES " + OPTION_TABLE + "(" + OPTION_ID + "), "
+            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
 
     /**
      * Get the instance of the DatabaseManager class.
@@ -206,6 +370,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         database.execSQL(CREATE_TABLE_LOCAL_USER);
         Log.i(LOG_TAG, CREATE_TABLE_USER);
         database.execSQL(CREATE_TABLE_USER);
+        Log.i(LOG_TAG, CREATE_TABLE_MODERATOR);
+        database.execSQL(CREATE_TABLE_MODERATOR);
         Log.i(LOG_TAG, CREATE_TABLE_CHANNEL);
         database.execSQL(CREATE_TABLE_CHANNEL);
         Log.i(LOG_TAG, CREATE_TABLE_LECTURE);
@@ -214,8 +380,24 @@ public class DatabaseManager extends SQLiteOpenHelper {
         database.execSQL(CREATE_TABLE_EVENT);
         Log.i(LOG_TAG, CREATE_TABLE_SPORTS);
         database.execSQL(CREATE_TABLE_SPORTS);
+        Log.i(LOG_TAG, CREATE_TABLE_MESSAGE);
+        database.execSQL(CREATE_TABLE_MESSAGE);
+        Log.i(LOG_TAG, CREATE_TABLE_ANNOUNCEMENT);
+        database.execSQL(CREATE_TABLE_ANNOUNCEMENT);
+        Log.i(LOG_TAG, CREATE_TABLE_REMINDER);
+        database.execSQL(CREATE_TABLE_REMINDER);
         Log.i(LOG_TAG, CREATE_TABLE_GROUP);
         database.execSQL(CREATE_TABLE_GROUP);
+        Log.i(LOG_TAG, CREATE_TABLE_CONVERSATION);
+        database.execSQL(CREATE_TABLE_CONVERSATION);
+        Log.i(LOG_TAG, CREATE_TABLE_CONVERSATION_MESSAGE);
+        database.execSQL(CREATE_TABLE_CONVERSATION_MESSAGE);
+        Log.i(LOG_TAG, CREATE_TABLE_BALLOT);
+        database.execSQL(CREATE_TABLE_BALLOT);
+        Log.i(LOG_TAG, CREATE_TABLE_OPTION);
+        database.execSQL(CREATE_TABLE_OPTION);
+        Log.i(LOG_TAG, CREATE_TABLE_USER_OPTION);
+        database.execSQL(CREATE_TABLE_USER_OPTION);
         Log.i(LOG_TAG, CREATE_TABLE_SUBSCRIBED_CHANNELS);
         database.execSQL(CREATE_TABLE_SUBSCRIBED_CHANNELS);
         Log.i(LOG_TAG, CREATE_TABLE_USER_GROUP);
@@ -228,11 +410,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + ", which will destroy all old data.");
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + MODERATOR_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CHANNEL_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + LECTURE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + EVENT_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SPORTS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + ANNOUNCEMENT_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + REMINDER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + GROUP_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + CONVERSATION_MESSAGE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + BALLOT_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + OPTION_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_OPTION_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIBED_CHANNELS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_GROUP_TABLE);
         onCreate(db);
