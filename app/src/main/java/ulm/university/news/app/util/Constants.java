@@ -28,7 +28,6 @@ import java.util.Properties;
  * The Constants class provides a variety of application information.
  */
 public class Constants {
-
     /** The reference for the Constants Singleton class. */
     private static Constants _instance;
 
@@ -38,6 +37,12 @@ public class Constants {
     // PushManager:
     public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String PUSH_TOKEN_CREATED = "pushTokenCreated";
+
+    /** The local users server access token. */
+    private String userAccessToken = null;
+
+    /** The local moderators server access token. */
+    private String moderatorAccessToken = null;
 
     /** The REST servers internet root address. */
     private String serverAddress = null;
@@ -268,4 +273,19 @@ public class Constants {
         return serverInfo;
     }
 
+    public String getUserAccessToken() {
+        return userAccessToken;
+    }
+
+    public void setUserAccessToken(String userAccessToken) {
+        this.userAccessToken = userAccessToken;
+    }
+
+    public String getModeratorAccessToken() {
+        return moderatorAccessToken;
+    }
+
+    public void setModeratorAccessToken(String moderatorAccessToken) {
+        this.moderatorAccessToken = moderatorAccessToken;
+    }
 }

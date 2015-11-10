@@ -50,12 +50,12 @@ public class UserDatabaseManager {
             values.put(LOCAL_USER_SERVER_ACCESS_TOKEN, localUser.getServerAccessToken());
             values.put(LOCAL_USER_PUSH_ACCESS_TOKEN, localUser.getPushAccessToken());
             values.put(LOCAL_USER_PLATFORM, localUser.getPlatform().ordinal());
-            // TODO No exception?
-            db.insert(LOCAL_USER_TABLE, null, values);
+            db.insertOrThrow(LOCAL_USER_TABLE, null, values);
         } catch (Exception e) {
-            throw new DatabaseException("Database failure while storeLocalUser.");
+            Log.e(LOG_TAG, "Database failure during storeLocalUser.");
+            throw new DatabaseException("Database failure during storeLocalUser.");
         }
-        Log.d(LOG_TAG, "End. LocalUser created successfully.");
+        Log.d(LOG_TAG, "End. LocalUser stored successfully.");
     }
 
     public LocalUser getLocalUser() {
