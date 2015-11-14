@@ -3,124 +3,118 @@ package ulm.university.news.app.api;
 import android.content.Context;
 import android.util.Log;
 
-import com.fatboyindustrial.gsonjodatime.Converters;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 
-import ulm.university.news.app.controller.MainActivity;
+import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.Lecture;
-import ulm.university.news.app.util.Constants;
 
 /**
- * The ChannelAPI is responsible for sending requests regarding the channel resource. Required data ist handed over from
- * calling controller (Activity). After the request has been executed successfully, the ChannelAPI calls the
- * corresponding controller method and delivers the response data. If the execution of the request has failed for
- * whatever reasons, the ServerError is passed to the controller where it will be handled.
+ * The ChannelAPI is responsible for sending requests regarding the channel resource. Required data is handed over from
+ * calling controller (e.g. Activity). After the request was executed, the API parses the response data. On  success
+ * a corresponding data object, on failure a ServerError will be created. Then the API uses the EventBus to  send the
+ * response object and to notify the controller which called the API method. The controller accesses the object from
+ * the EventBus which was delivered by the API. The controller will handle the response according to the type of the
+ * response object.
  *
  * @author Matthias Mak
  */
 public class ChannelAPI extends MainAPI {
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "ChannelAPI";
-
+    private static final String TAG = "ChannelAPI";
+    /** The reference for the ChannelAPI Singleton class. */
+    private static ChannelAPI _instance;
     /** The REST servers internet address pointing to the channel resource. */
     private String serverAddressChannel;
 
-    /** The Gson object used to parse from an to JSON. */
-    private Gson gson;
+    // Constants.
+    public static final String GET_CHANNEL = "getChannel";
+    public static final String UPDATE_CHANNEL = "updateChannel";
+    public static final String GET_CHANNELS = "getChannels";
+    public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
+
+    /**
+     * Get the instance of the ChannelAPI class.
+     *
+     * @return Instance of ChannelAPI.
+     */
+    public static synchronized ChannelAPI getInstance(Context context) {
+        if (_instance == null) {
+            _instance = new ChannelAPI(context);
+        }
+        return _instance;
+    }
 
     /**
      * Creates an instance of ChannelAPI and initialises values.
      *
-     * @param context The context (Activity) within the ChannelAPI is used.
+     * @param context The context within the ChannelAPI is used.
      */
-    public ChannelAPI(Context context) {
+    private ChannelAPI(Context context) {
         super(context);
-        // Make sure, channel class or appropriate channel subclass is deserialized properly.
-        ChannelDeserializer cd = new ChannelDeserializer();
-        // Make sure, dates are deserialized properly.
-        gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd).create();
         serverAddressChannel = serverAddress + "/channel";
     }
 
-    public void getChannel(String accessToken, int channelId) {
+    public void getChannel(int channelId) {
         // Add channel id to url.
-        String url = serverAddressChannel;
-        url += "/" + channelId;
-        Log.d(LOG_TAG, "url: " + url);
-        gson = Converters.registerDateTime(new GsonBuilder()).create();
-
-        RequestTask getUserTask = new RequestTask() {
+        String url = serverAddressChannel + "/" + channelId;
+        RequestCallback rCallback = new RequestCallback() {
             @Override
-            protected void onPostExecute(String jsonResult) {
-                // Check if a server error has occurred.
-                if (!hasServerErrorOccurred(jsonResult)) {
-                    // No error occurred. Parse JSON String to user object.
-                    Channel channel = gson.fromJson(jsonResult, Lecture.class);
-                    ((MainActivity) context).getChannel(channel);
-                }
+            public void onResponse(String json) {
+                Channel channel = gson.fromJson(json, Channel.class);
+                // Use BusEvent to add an action which identifies this method.
+                EventBus.getDefault().post(new BusEvent(GET_CHANNEL, channel));
             }
         };
-        // Send request to server.
-        getUserTask.execute(METHOD_GET, url, accessToken);
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
     }
 
-
-    public void getChannels(String accessToken, Integer moderatorId, String lastUpdated) {
-        // Add parameters to url.
-        String url = serverAddressChannel;
+    public void getChannels(Integer moderatorId, String lastUpdated) {
+        HashMap<String, String> params = new HashMap<>();
         if (moderatorId != null) {
-            url += "moderatorId=" + moderatorId;
+            params.put("moderatorId", moderatorId.toString());
         }
         if (lastUpdated != null) {
-            url += "lastUpdated=" + lastUpdated;
+            params.put("lastUpdated", lastUpdated);
         }
-        Log.d(LOG_TAG, "url: " + url);
+        // Add parameters to url.
+        String url = serverAddressChannel + getUrlParams(params);
 
-
-        RequestTask getUserTask = new RequestTask() {
+        RequestCallback rCallback = new RequestCallback() {
             @Override
-            protected void onPostExecute(String jsonResult) {
-                // Check if a server error has occurred.
-                if (!hasServerErrorOccurred(jsonResult)) {
-                    // No error occurred. Parse JSON String to user object.
-                    Type listType = new TypeToken<List<Channel>>() {}.getType();
-                    // Use a list of channels as deserialization type.
-                    List<Channel> channels = gson.fromJson(jsonResult, listType);
-                    ((MainActivity) context).getChannels(channels);
-                }
+            public void onResponse(String json) {
+                // Use a list of channels as deserialization type.
+                Type listType = new TypeToken<List<Channel>>() {
+                }.getType();
+                List<Channel> channels = gson.fromJson(json, listType);
+                EventBus.getDefault().post(channels);
             }
         };
-        // Send request to server.
-        getUserTask.execute(METHOD_GET, url, accessToken);
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
     }
 
-    /**
-     * Checks if response includes a server error. If an error has occurred it will be passed to and handled by the
-     * corresponding controller method.
-     *
-     * @param jsonResult The result of the request as a String.
-     * @return true if a ServerError has occurred.
-     */
-    private boolean hasServerErrorOccurred(String jsonResult) {
-        Log.d(LOG_TAG, "jsonResult: " + jsonResult);
-        boolean hasErrorOccurred = false;
-        if (jsonResult == null) {
-            // Failed to connect to server.
-            hasErrorOccurred = true;
-            ServerError se = new ServerError(503, Constants.CONNECTION_FAILURE);
-            ((MainActivity) context).handleServerError(se);
-        } else if (jsonResult.contains("errorCode")) {
-            // Parse JSON String to ServerError object.
-            hasErrorOccurred = true;
-            ServerError se = gson.fromJson(jsonResult, ServerError.class);
-            ((MainActivity) context).handleServerError(se);
-        }
-        return hasErrorOccurred;
+    public void subscribeChannel(int channelId) {
+        // Add channel id to url.
+        String url = serverAddressChannel + "/" + channelId + "/user";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(SUBSCRIBE_CHANNEL, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
     }
 }

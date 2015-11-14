@@ -28,7 +28,7 @@ public class Reminder {
     DateTime endDate;
     /** The interval in seconds on which the Reminder should fire. */
     Integer interval;
-    /** Defines if the next Reminder event should be ignored. */
+    /** Defines if the next Reminder icon_channel_event should be ignored. */
     Boolean ignore;
     /** The id of the Channel which is associated with the Reminder. */
     int channelId;
@@ -56,7 +56,7 @@ public class Reminder {
      * @param startDate The date on which the reminder should fire for the first time.
      * @param endDate The date on which the reminder should fire for the last time.
      * @param interval The interval in seconds on which the reminder should fire.
-     * @param ignore Indicates weather the next reminder event should be ignored or not.
+     * @param ignore Indicates weather the next reminder icon_channel_event should be ignored or not.
      * @param channelId The id of the channel which is associated with the reminder.
      * @param authorModerator The id of the moderator which links to the author of the reminder.
      * @param title The title of the announcement.

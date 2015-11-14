@@ -10,7 +10,7 @@
 
     <!-- LocalUser -->
     <string name="user_s_error_name_empty">You need to enter a user name.</string>
-    <string name="user_s_error_name_invalid">Your localUser name is invalid.</string>
+    <string name="user_s_error_name_invalid">Your user name is invalid.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="title_activity_start">StartActivity</string>
@@ -32,6 +32,15 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
     <string name="activity_create_account_s_name_hint">User name</string>
 
+    <!-- ChannelSearchActivity ##################################################################################### -->
+    <string name="activity_channel_search_s_updating">Updating channel data...</string>
+
     <!-- ChannelFragment ########################################################################################### -->
-    <string name="hello_blank_fragment">Hello channel fragment</string>
+    <string name="fragment_channel_title">Channels</string>
+
+    <!-- GroupFragment ############################################################################################# -->
+    <string name="fragment_group_title">Groups</string>
+
+    <!-- SettingsFragment ########################################################################################### -->
+    <string name="fragment_settings_title">Settings</string>
 </resources>

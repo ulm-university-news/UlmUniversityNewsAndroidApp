@@ -1,19 +1,3 @@
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ulm.university.news.app.manager.push;
 
 import android.app.NotificationManager;
@@ -31,6 +15,11 @@ import com.google.android.gms.gcm.GcmListenerService;
 import ulm.university.news.app.R;
 import ulm.university.news.app.controller.MainActivity;
 
+/**
+ * TODO
+ *
+ * @author Matthias Mak
+ */
 public class PushGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "PushGcmListenerService";
@@ -40,7 +29,7 @@ public class PushGcmListenerService extends GcmListenerService {
      *
      * @param from SenderID of the sender.
      * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
+     * For Set of keys use data.keySet().
      */
     // [START receive_message]
     @Override
@@ -75,7 +64,7 @@ public class PushGcmListenerService extends GcmListenerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
                 .setContentTitle("GCM Message")

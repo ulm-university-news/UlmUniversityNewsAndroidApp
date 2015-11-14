@@ -1,19 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="ulm.university.news.app.controller.ChannelFragment">
+             tools:context="ulm.university.news.app.controller.GroupFragment">
 
     <ListView
-        android:id="@+id/fragment_channel_lv_channels"
+        android:id="@+id/fragment_group_lv_channels"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/fragment_channel_tv_info"
+        android:id="@+id/fragment_group_tv_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="@string/fragment_group_title"/>
 
 </FrameLayout>

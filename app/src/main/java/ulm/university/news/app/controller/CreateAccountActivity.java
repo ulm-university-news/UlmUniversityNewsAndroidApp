@@ -20,7 +20,11 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.ChannelAPI;
+import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.api.ModeratorAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.LocalUser;
@@ -28,7 +32,6 @@ import ulm.university.news.app.data.enums.Platform;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.manager.push.PushTokenGenerationService;
 import ulm.university.news.app.util.Constants;
-import ulm.university.news.app.util.exceptions.DatabaseException;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.USER_DATA_INCOMPLETE;
@@ -36,18 +39,14 @@ import static ulm.university.news.app.util.Constants.USER_NAME_INVALID;
 import static ulm.university.news.app.util.Constants.USER_PUSH_TOKEN_INVALID;
 
 public class CreateAccountActivity extends AppCompatActivity {
-
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "CreateAccountActivity";
-
-    /** An instance of the UserAPI class. */
-    private UserAPI userAPI = new UserAPI(this);
-
+    private static final String TAG = "CreateAccountActivity";
     /** The code for the play service request. */
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-
-    /** This BroadcastReceiver listens for push token creation events. */
-    private BroadcastReceiver pushTokenBR;
+    /** The broadcast receiver for this activity. */
+    private BroadcastReceiver receiver;
+    /** This filter accepts broadcasts about push tokens. */
+    IntentFilter pushTokenFilter;
 
     // GUI elements.
     private ProgressBar pgrCreateAccount;
@@ -63,33 +62,28 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
-
         // Initialise GUI elements.
         initGUI();
+        // Initialise the broadcast receiver.
+        initReceiver();
+        // Display correct view elements.
+        if(UserAPI.getInstance(this).getUserAccessToken() != null){
+            showCreatedView();
+        }
+    }
 
-        // Listens to broadcast messages by PushTokenGenerationService.
-        pushTokenBR = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Proceed account creation with received push token.
-                if (intent.getAction().equals(Constants.PUSH_TOKEN_CREATED)) {
-                    // Get created push token.
-                    String pushToken = intent.getExtras().getString("pushToken");
-                    if (pushToken != null) {
-                        // Push token successfully created. Proceed with account creation.
-                        Log.d(LOG_TAG, "Push token retrieved. Proceed with account creation.");
-                        createLocalUser(pushToken);
-                    } else {
-                        // Couldn't create push token. LocalUser should try again.
-                        tvInfo.setVisibility(View.GONE);
-                        tvError.setVisibility(View.VISIBLE);
-                        tvError.setText(getString(R.string.activity_create_account_s_error_token));
-                        btnCreateAccount.setVisibility(View.VISIBLE);
-                        pgrCreateAccount.setVisibility(View.GONE);
-                    }
-                }
-            }
-        };
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, pushTokenFilter);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
     /**
@@ -124,17 +118,74 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(pushTokenBR,
-                new IntentFilter(Constants.PUSH_TOKEN_CREATED));
+    private void initReceiver() {
+        pushTokenFilter = new IntentFilter(Constants.PUSH_TOKEN_CREATED);
+
+        // Listens to broadcast messages by PushTokenGenerationService.
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                // Proceed account creation with received push token.
+                if (Constants.PUSH_TOKEN_CREATED.equals(action)) {
+                    // Get created push token.
+                    String pushToken = intent.getExtras().getString("pushToken");
+                    if (pushToken != null) {
+                        // Push token successfully created. Proceed with account creation.
+                        Log.d(TAG, "Push token retrieved. Proceed with account creation.");
+                        createLocalUser(pushToken);
+                    } else {
+                        // Couldn't create push token. LocalUser should try again.
+                        tvInfo.setVisibility(View.GONE);
+                        tvError.setVisibility(View.VISIBLE);
+                        tvError.setText(getString(R.string.activity_create_account_s_error_token));
+                        btnCreateAccount.setVisibility(View.VISIBLE);
+                        pgrCreateAccount.setVisibility(View.GONE);
+                    }
+                }
+            }
+        };
     }
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushTokenBR);
-        super.onPause();
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        handleServerError(serverError);
+    }
+
+    /**
+     * This method will be called when a local user is posted to the EventBus.
+     *
+     * @param localUser The created localUser object retrieved from server.
+     */
+    public void onEventMainThread(LocalUser localUser) {
+        // Store localUser in database.
+        new UserDatabaseManager(this).storeLocalUser(localUser);
+
+        // Update the local users server access token in the API Singletons.
+        ChannelAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
+        UserAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
+        GroupAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
+        ModeratorAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
+
+        // Update view.
+        showCreatedView();
+    }
+
+    private void showCreatedView(){
+        // Update view.
+        tvWelcome.setVisibility(View.GONE);
+        chkTermsOfUse.setVisibility(View.GONE);
+        etUserName.setVisibility(View.GONE);
+        pgrCreateAccount.setVisibility(View.GONE);
+        btnCreateAccount.setVisibility(View.GONE);
+        // Account successfully created. Show button to start main application.
+        btnStart.setVisibility(View.VISIBLE);
+        tvInfo.setText(getString(R.string.activity_create_account_s_account_created));
+        tvInfo.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -149,34 +200,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         LocalUser localUser = new LocalUser(name, pushToken, platform);
 
         // Sends POST /localUser
-        userAPI.createLocalUser(localUser);
-    }
-
-    /**
-     * This method is called by UserAPI after a server response.
-     *
-     * @param localUser The created localUser object retrieved from server.
-     */
-    public void createLocalUser(LocalUser localUser) {
-        // Store localUser in database.
-        UserDatabaseManager userDBM = new UserDatabaseManager(this);
-        try {
-            userDBM.storeLocalUser(localUser);
-        } catch (DatabaseException e) {
-            pgrCreateAccount.setVisibility(View.GONE);
-            btnCreateAccount.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.general_s_error_database));
-            tvError.setVisibility(View.VISIBLE);
-            return;
-        }
-        // Update view.
-        tvWelcome.setVisibility(View.GONE);
-        chkTermsOfUse.setVisibility(View.GONE);
-        etUserName.setVisibility(View.GONE);
-        pgrCreateAccount.setVisibility(View.GONE);
-        // Account successfully created. Show button to start main application.
-        btnStart.setVisibility(View.VISIBLE);
-        tvInfo.setText(getString(R.string.activity_create_account_s_account_created));
+        UserAPI.getInstance(this).createLocalUser(localUser);
     }
 
     /**
@@ -260,7 +284,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Log.e(LOG_TAG, "This device is not supported for Google Play Services.");
+                Log.e(TAG, "This device is not supported for Google Play Services.");
                 finish();
             }
             return false;

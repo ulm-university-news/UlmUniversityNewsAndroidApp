@@ -6,7 +6,7 @@ import ulm.university.news.app.data.enums.Priority;
 
 /**
  * The Announcement class represents a message which is sent within a channel. The message belongs to a certain
- * channel and is sent by a moderator or a reminder event. The message contains the id of the author, the id of the
+ * channel and is sent by a moderator or a reminder icon_channel_event. The message contains the id of the author, the id of the
  * channel and the title of the announcement.
  *
  * @author Matthias Mak

@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.manager.database.UserDatabaseManager;
+import ulm.university.news.app.util.Constants;
 
 
 public class StartActivity extends Activity {
-
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "StartActivity";
+    private static final String TAG = "StartActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,7 @@ public class StartActivity extends Activity {
         Intent intent;
 
         // Check if a local user account already exists.
-        UserDatabaseManager userDBM = new UserDatabaseManager(this);
-        if (userDBM.getLocalUser() != null) {
+        if (Constants.getInstance().getUserAccessToken(this) != null) {
             // Push token was already created and sent to the server.
             intent = new Intent(this, MainActivity.class);
         } else {

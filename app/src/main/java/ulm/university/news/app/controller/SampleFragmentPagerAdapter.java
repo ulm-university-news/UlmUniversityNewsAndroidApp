@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import ulm.university.news.app.controller.ChannelFragment;
+import ulm.university.news.app.R;
 
 /**
  * TODO
@@ -13,13 +13,18 @@ import ulm.university.news.app.controller.ChannelFragment;
  * @author Matthias Mak
  */
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Channels", "Groups", "Settings" };
+    final int PAGE_COUNT;
+    private String tabTitles[];
     private Context context;
 
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        tabTitles = new String[]{
+                context.getString(R.string.fragment_channel_title),
+                context.getString(R.string.fragment_group_title),
+                context.getString(R.string.fragment_settings_title)};
+        PAGE_COUNT = tabTitles.length;
     }
 
     @Override
@@ -29,7 +34,15 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ChannelFragment.newInstance(position + 1);
+        switch (position) {
+            case 0:
+                return ChannelFragment.newInstance();
+            case 1:
+                return GroupFragment.newInstance();
+            case 2:
+                return SettingsFragment.newInstance();
+        }
+        return null;
     }
 
     @Override

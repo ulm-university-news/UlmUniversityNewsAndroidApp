@@ -16,13 +16,13 @@
 
 package ulm.university.news.app.util;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.joda.time.DateTimeZone;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
  * The Constants class provides a variety of application information.
@@ -35,7 +35,6 @@ public class Constants {
     private static final String LOG_TAG = "Constants";
 
     // PushManager:
-    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String PUSH_TOKEN_CREATED = "pushTokenCreated";
 
     /** The local users server access token. */
@@ -43,9 +42,6 @@ public class Constants {
 
     /** The local moderators server access token. */
     private String moderatorAccessToken = null;
-
-    /** The REST servers internet root address. */
-    private String serverAddress = null;
 
     /** The time zone where the user is located. */
     public static final DateTimeZone TIME_ZONE = DateTimeZone.getDefault();
@@ -71,8 +67,10 @@ public class Constants {
     /** A pattern which describes the valid form of a resource name or title. */
     public static final String NAME_PATTERN = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{3,45}$";
 
-    /** A pattern which describes the valid form of a term string. The term is always noted in the form WS or SS plus
-     *  the year yyyy. In WS, the year can also be given as yyyy/yy, e.g. 2015/16.*/
+    /**
+     * A pattern which describes the valid form of a term string. The term is always noted in the form WS or SS plus
+     * the year yyyy. In WS, the year can also be given as yyyy/yy, e.g. 2015/16.
+     */
     public static final String TERM_PATTERN = "^[W,S][S][0-9]{4}[/]?[0-9]{0,2}$";
 
     /** The maximum length of a description field. */
@@ -232,48 +230,14 @@ public class Constants {
         return _instance;
     }
 
-    /**
-     * Gets the REST servers internet root address.
-     *
-     * @return The internet address.
-     */
-    public String getServerAddress() {
-        if (serverAddress == null) {
-            Properties serverInfo = retrieveServerInfo();
-            if (serverInfo != null) {
-                serverAddress = serverInfo.getProperty("serverAddress");
-            }
-            if (serverAddress == null) {
-                Log.e(LOG_TAG, "Couldn't read server address of properties object.");
-                return null;
+    public String getUserAccessToken(Context context) {
+        if (userAccessToken == null) {
+            Log.d(LOG_TAG, "userAccessToken is null.");
+            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
+            if (localUser != null) {
+                userAccessToken = localUser.getServerAccessToken();
             }
         }
-        return serverAddress;
-    }
-
-    /**
-     * Reads the properties file which contains information about the REST server. Returns the properties in a
-     * Properties object.
-     *
-     * @return Properties object, or null if reading of the properties file has failed.
-     */
-    private Properties retrieveServerInfo() {
-        Properties serverInfo = new Properties();
-        InputStream input = getClass().getClassLoader().getResourceAsStream("assets/Server.properties");
-        if (input == null) {
-            Log.e(LOG_TAG, "Could not localize the file Server.properties.");
-            return null;
-        }
-        try {
-            serverInfo.load(input);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Failed to load the server properties.");
-            return null;
-        }
-        return serverInfo;
-    }
-
-    public String getUserAccessToken() {
         return userAccessToken;
     }
 

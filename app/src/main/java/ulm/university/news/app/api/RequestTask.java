@@ -1,6 +1,5 @@
 package ulm.university.news.app.api;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -11,52 +10,69 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * The RequestTask sends a request build with given parameters to the REST server. The parameters have to be in the
- * following order: httpMethod, url (including url params), accessToken, body (JSON as String)
+ * The RequestTask is used to send a request to the REST server. This task runs in a separate thread in the
+ * background. This class uses two callback interfaces to notify the caller once the response is received.
  *
  * @author Matthias Mak
  */
-public class RequestTask extends AsyncTask<String, Void, String> {
-
+public class RequestTask implements Runnable {
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "RequestTask";
+    private static final String TAG = "RequestTask";
+    /** The RequestCallback interface used to notify the caller of the request. */
+    private RequestCallback rCallback;
+    /** The ErrorCallback interface used to notify the caller of the request. */
+    private ErrorCallback eCallback;
+    /** The http method which should be used to perform the request. */
+    private String httpMethod;
+    /** The url to which the connection should be established. */
+    private String url;
+    /** The access token of the local user. */
+    private String accessToken;
+    /** The content of the request. */
+    private String body;
+
+    /**
+     * Creates a new instance of RequestTask with the given parameters.<br>
+     * To run the task, at least one of the following parameters must be set: accessToken, body.
+     *
+     * @param rCallback The caller of the request who handles the successful response.
+     * @param eCallback The caller of the request who handles the error response.
+     * @param httpMethod The http method which should be used to perform the request.
+     * @param url The url to which the connection should be established.
+     */
+    public RequestTask(RequestCallback rCallback, ErrorCallback eCallback, String httpMethod, String url) {
+        this.rCallback = rCallback;
+        this.eCallback = eCallback;
+        this.httpMethod = httpMethod;
+        this.url = url;
+    }
 
     @Override
-    protected String doInBackground(String... params) {
-        // Parameters have to be in the following order:
-        // httpMethod, url (including url params), accessToken, body (JSON as String)
-        if (params.length < 3) {
-            Log.e(LOG_TAG, "Missing parameters. Method aborted.");
-            return null;
-        } else if (params.length > 4) {
-            Log.e(LOG_TAG, "To many parameters. Method aborted.");
-            return null;
+    public void run() {
+        // Check necessary parameters.
+        if (httpMethod == null || url == null || (accessToken == null && body == null)) {
+            Log.e(TAG, "Missing parameters. Method aborted.");
+            return;
         }
-        // Assign corresponding parameters.
-        String httpMethod = params[0];
-        String url = params[1];
-        String accessToken = params[2];
-        String body = null;
-        if (params.length == 4) {
-            body = params[3];
+        // Execute request and retrieve json String.
+        String json = executeRequest();
+        // Notify caller.
+        if (json == null || json.contains("errorCode")) {
+            // A server error has occurred.
+            eCallback.onServerError(json);
+        } else {
+            // No error has occurred.
+            rCallback.onResponse(json);
         }
-        Log.d(LOG_TAG, "httpMethod:" + httpMethod + ", url:" + url + ", accessToken:" + accessToken + ", body:" + body);
-
-        // Execute request and return response as String.
-        return executeRequest(httpMethod, url, accessToken, body);
     }
 
     /**
      * Establishes an HttpUrlConnection to the given url. Uses given http method, access token and body to send the
      * request. Retrieves the response content as a Stream, which it returns as a String.
      *
-     * @param httpMethod The http method which should be used to perform the request.
-     * @param url The url to which the connection should be established.
-     * @param accessToken The access token of the user.
-     * @param body The content of the request.
      * @return The response content.
      */
-    private String executeRequest(String httpMethod, String url, String accessToken, String body) {
+    private String executeRequest() {
         InputStream is = null;
         try {
             URL myUrl = new URL(url);
@@ -64,9 +80,13 @@ public class RequestTask extends AsyncTask<String, Void, String> {
             conn.setReadTimeout(10000);
             conn.setConnectTimeout(15000);
             conn.setRequestMethod(httpMethod);
-            conn.setRequestProperty("Authorization", accessToken);
             conn.setDoInput(true);
             conn.setDoInput(true);
+
+            if (accessToken != null) {
+                // If access token is given, set it as authorization header.
+                conn.setRequestProperty("Authorization", accessToken);
+            }
 
             if (body != null) {
                 // If body is given, send it as JSON data.
@@ -81,7 +101,7 @@ public class RequestTask extends AsyncTask<String, Void, String> {
 
             // Get http status code.
             int responseCode = conn.getResponseCode();
-            Log.d(LOG_TAG, "responseCode: " + responseCode);
+            Log.d(TAG, "responseCode: " + responseCode);
 
             // If response code indicates an error, use ErrorStream instead of InputStream to read response.
             if (responseCode > 299) {
@@ -91,11 +111,9 @@ public class RequestTask extends AsyncTask<String, Void, String> {
             }
 
             // Convert InputStream to String.
-            String responseBody = readStream(is);
-            Log.d(LOG_TAG, "responseBody: " + responseBody);
-            return responseBody;
+            return readStream(is);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "errorMessage: " + e.getMessage());
+            Log.e(TAG, "errorMessage: " + e.getMessage());
             return null;
         } finally {
             // Makes sure that the InputStream is closed after the app is finished using it.
@@ -103,7 +121,7 @@ public class RequestTask extends AsyncTask<String, Void, String> {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Log.e(LOG_TAG, "Unable to close InputStream.");
+                    Log.e(TAG, "Unable to close InputStream.");
                 }
             }
         }
@@ -124,5 +142,47 @@ public class RequestTask extends AsyncTask<String, Void, String> {
             baos.write(buffer, 0, length);
         }
         return new String(baos.toByteArray(), "UTF-8");
+    }
+
+    @Override
+    public String toString() {
+        return "RequestTask{" +
+                "httpMethod='" + httpMethod + '\'' +
+                ", url='" + url + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", body='" + body + '\'' +
+                '}';
+    }
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }
