@@ -8,13 +8,14 @@
     <ListView
         android:id="@+id/fragment_group_lv_channels"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/fragment_group_tv_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/fragment_group_title"/>
+        android:text="@string/fragment_group_s_empty_list"/>
 
 </FrameLayout>

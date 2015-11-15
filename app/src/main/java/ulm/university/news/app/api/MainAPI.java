@@ -103,6 +103,7 @@ public abstract class MainAPI implements ErrorCallback {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (first) {
                 first = false;
+                result.append("?");
             } else {
                 result.append("&");
             }

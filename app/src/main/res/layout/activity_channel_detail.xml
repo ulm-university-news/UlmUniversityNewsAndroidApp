@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ulm.university.news.app.controller.ChannelDetailActivity">
+
+    <ImageView
+        android:id="@+id/activity_channel_detail_iv_channel_icon"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="channel_icon"
+        android:singleLine="true"
+        android:src="@drawable/icon_channel_event"
+        android:paddingLeft="4dp"
+        android:paddingRight="12dp"/>
+
+    <TextView
+        android:id="@+id/activity_channel_detail_tv_channel_name"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toRightOf="@id/activity_channel_detail_iv_channel_icon"
+        android:gravity="center_vertical"
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textStyle="bold"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_channel_detail_lv_channel_details"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/activity_channel_detail_btn_subscribe"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_channel_detail_s_button_subscribe"
+        android:id="@+id/activity_channel_detail_btn_subscribe"
+        android:layout_below="@+id/activity_channel_detail_tv_channel_name"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_channel_detail_s_button_unsubscribe"
+        android:id="@+id/activity_channel_detail_btn_unsubscribe"
+        android:layout_below="@+id/activity_channel_detail_tv_channel_name"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

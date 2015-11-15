@@ -36,11 +36,44 @@
     <string name="activity_channel_search_s_updating">Updating channel data...</string>
 
     <!-- ChannelFragment ########################################################################################### -->
-    <string name="fragment_channel_title">Channels</string>
+    <string name="fragment_channel_s_title">My Channels</string>
+    <string name="fragment_channel_s_empty_list">You haven\'t subscribed to any channel.\nSearch for channels
+        and subscribe.</string>
 
     <!-- GroupFragment ############################################################################################# -->
-    <string name="fragment_group_title">Groups</string>
+    <string name="fragment_group_title">My Groups</string>
+    <string name="fragment_group_s_empty_list">You aren\'t a member of any group.\nSearch for groups and join.</string>
 
-    <!-- SettingsFragment ########################################################################################### -->
+    <!-- SettingsFragment ########################################################################################## -->
     <string name="fragment_settings_title">Settings</string>
+
+    <!-- ChannelDetailActivity ##################################################################################### -->
+    <string name="activity_channel_detail_s_button_subscribe">Subscribe</string>
+    <string name="activity_channel_detail_s_button_unsubscribe">Unsubscribe</string>
+
+    <!-- Channel ################################################################################################### -->
+    <string name="channel_description">Description</string>
+    <string name="channel_contacts">Contacts</string>
+    <string name="channel_locations">Locations</string>
+    <string name="channel_website">Website</string>
+    <string name="channel_term">Term</string>
+    <string name="channel_dates">Dates</string>
+    <string name="channel_type">Type</string>
+    <string name="channel_creation_date">Creation date</string>
+    <string name="channel_modification_date">Modification date</string>
+
+    <!-- Lecture ################################################################################################### -->
+    <string name="lecture_faculty">Faculty</string>
+    <string name="lecture_start_date">Start date</string>
+    <string name="lecture_end_date">End date</string>
+    <string name="lecture_lecturer">Lecturer</string>
+    <string name="lecture_assistant">Assistant</string>
+
+    <!-- Event ##################################################################################################### -->
+    <string name="event_cost">Cost</string>
+    <string name="event_organizer">Organizer</string>
+
+    <!-- Event ##################################################################################################### -->
+    <string name="sports_cost">Cost</string>
+    <string name="sports_participants">Number of participants</string>
 </resources>

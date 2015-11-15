@@ -43,6 +43,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.LECTURE_T
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_COST;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_PARTICIPANTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.SUBSCRIBED_CHANNELS_TABLE;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
 /**
@@ -157,13 +158,13 @@ public class ChannelDatabaseManager {
         if (c != null && c.moveToFirst()) {
             id = c.getInt(c.getColumnIndex(CHANNEL_ID));
             name = c.getString(c.getColumnIndex(CHANNEL_NAME));
-            description = c.getString(c.getColumnIndex(CHANNEL_NAME));
+            description = c.getString(c.getColumnIndex(CHANNEL_DESCRIPTION));
             type = ChannelType.values[(c.getInt(c.getColumnIndex(CHANNEL_TYPE)))];
             term = c.getString(c.getColumnIndex(CHANNEL_TERM));
             locations = c.getString(c.getColumnIndex(CHANNEL_LOCATIONS));
             contacts = c.getString(c.getColumnIndex(CHANNEL_CONTACTS));
-            creationDate = new DateTime(c.getInt(c.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
-            modificationDate = new DateTime(c.getInt(c.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
+            creationDate = new DateTime(c.getLong(c.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(c.getLong(c.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
             dates = c.getString(c.getColumnIndex(CHANNEL_DATES));
             website = c.getString(c.getColumnIndex(CHANNEL_WEBSITE));
             c.close();
@@ -215,6 +216,11 @@ public class ChannelDatabaseManager {
         return channel;
     }
 
+    /**
+     * Gets all channels from the database. The returned channel objects may be a subclasses of channel.
+     *
+     * @return A list of channel objects.
+     */
     public List<Channel> getChannels() {
         SQLiteDatabase db = dbm.getReadableDatabase();
         List<Channel> channels = new ArrayList<>();
@@ -233,19 +239,19 @@ public class ChannelDatabaseManager {
 
         // Get channel data from database.
         Cursor cSub;
-        Cursor cSuper = db.rawQuery(selectQuery, null);
-        while (cSuper != null && cSuper.moveToNext()) {
-            id = cSuper.getInt(cSuper.getColumnIndex(CHANNEL_ID));
-            name = cSuper.getString(cSuper.getColumnIndex(CHANNEL_NAME));
-            description = cSuper.getString(cSuper.getColumnIndex(CHANNEL_NAME));
-            type = ChannelType.values[(cSuper.getInt(cSuper.getColumnIndex(CHANNEL_TYPE)))];
-            term = cSuper.getString(cSuper.getColumnIndex(CHANNEL_TERM));
-            locations = cSuper.getString(cSuper.getColumnIndex(CHANNEL_LOCATIONS));
-            contacts = cSuper.getString(cSuper.getColumnIndex(CHANNEL_CONTACTS));
-            creationDate = new DateTime(cSuper.getInt(cSuper.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
-            modificationDate = new DateTime(cSuper.getInt(cSuper.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
-            dates = cSuper.getString(cSuper.getColumnIndex(CHANNEL_DATES));
-            website = cSuper.getString(cSuper.getColumnIndex(CHANNEL_WEBSITE));
+        Cursor cSup = db.rawQuery(selectQuery, null);
+        while (cSup != null && cSup.moveToNext()) {
+            id = cSup.getInt(cSup.getColumnIndex(CHANNEL_ID));
+            name = cSup.getString(cSup.getColumnIndex(CHANNEL_NAME));
+            description = cSup.getString(cSup.getColumnIndex(CHANNEL_DESCRIPTION));
+            type = ChannelType.values[(cSup.getInt(cSup.getColumnIndex(CHANNEL_TYPE)))];
+            term = cSup.getString(cSup.getColumnIndex(CHANNEL_TERM));
+            locations = cSup.getString(cSup.getColumnIndex(CHANNEL_LOCATIONS));
+            contacts = cSup.getString(cSup.getColumnIndex(CHANNEL_CONTACTS));
+            creationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
+            dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
+            website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
             args[0] = "" + id;
 
             // If necessary get additional channel data and create corresponding channel subclass.
@@ -293,10 +299,152 @@ public class ChannelDatabaseManager {
             // Add created channel to the channel list.
             channels.add(channel);
         }
-        if (cSuper != null) {
-            cSuper.close();
+        if (cSup != null) {
+            cSup.close();
         }
         Log.d(TAG, "End with " + channels);
         return channels;
+    }
+
+    /**
+     * Gets all subscribed channels from the database. The returned channel objects may be a subclasses of channel.
+     *
+     * @return A list of channel objects.
+     */
+    public List<Channel> getSubscribedChannels() {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        List<Channel> channels = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + CHANNEL_TABLE + " AS c INNER JOIN " + SUBSCRIBED_CHANNELS_TABLE
+                + " AS s ON c." + CHANNEL_ID + "=s." + CHANNEL_ID_FOREIGN;
+        String[] args = new String[1];
+        Log.d(TAG, selectQuery);
+
+        // Create fields before while loop, not within every pass.
+        Channel channel = null;
+        String name, description, term, locations, dates, contacts, website, startDate, endDate, lecturer,
+                assistant, cost, organizer, participants;
+        DateTime creationDate, modificationDate;
+        ChannelType type;
+        Faculty faculty;
+        int id;
+
+        // Get channel data from database.
+        Cursor cSub;
+        Cursor cSup = db.rawQuery(selectQuery, null);
+        while (cSup != null && cSup.moveToNext()) {
+            id = cSup.getInt(cSup.getColumnIndex(CHANNEL_ID));
+            name = cSup.getString(cSup.getColumnIndex(CHANNEL_NAME));
+            description = cSup.getString(cSup.getColumnIndex(CHANNEL_DESCRIPTION));
+            type = ChannelType.values[(cSup.getInt(cSup.getColumnIndex(CHANNEL_TYPE)))];
+            term = cSup.getString(cSup.getColumnIndex(CHANNEL_TERM));
+            locations = cSup.getString(cSup.getColumnIndex(CHANNEL_LOCATIONS));
+            contacts = cSup.getString(cSup.getColumnIndex(CHANNEL_CONTACTS));
+            creationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
+            dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
+            website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
+            args[0] = "" + id;
+
+            // If necessary get additional channel data and create corresponding channel subclass.
+            switch (type) {
+                case LECTURE:
+                    selectQuery = "SELECT * FROM " + LECTURE_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        faculty = Faculty.values[cSub.getInt(cSub.getColumnIndex(LECTURE_FACULTY))];
+                        startDate = cSub.getString(cSub.getColumnIndex(LECTURE_START_DATE));
+                        endDate = cSub.getString(cSub.getColumnIndex(LECTURE_END_DATE));
+                        lecturer = cSub.getString(cSub.getColumnIndex(LECTURE_LECTURER));
+                        assistant = cSub.getString(cSub.getColumnIndex(LECTURE_ASSISTANT));
+                        channel = new Lecture(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, faculty, startDate, endDate, lecturer, assistant);
+                        cSub.close();
+                    }
+                    break;
+                case EVENT:
+                    selectQuery = "SELECT * FROM " + EVENT_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        cost = cSub.getString(cSub.getColumnIndex(EVENT_COST));
+                        organizer = cSub.getString(cSub.getColumnIndex(EVENT_ORGANIZER));
+                        channel = new Event(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, cost, organizer);
+                        cSub.close();
+                    }
+                    break;
+                case SPORTS:
+                    selectQuery = "SELECT * FROM " + SPORTS_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        cost = cSub.getString(cSub.getColumnIndex(SPORTS_COST));
+                        participants = cSub.getString(cSub.getColumnIndex(SPORTS_PARTICIPANTS));
+                        channel = new Sports(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, cost, participants);
+                        cSub.close();
+                    }
+                    break;
+                default:
+                    channel = new Channel(id, name, description, type, creationDate, modificationDate, term,
+                            locations, dates, contacts, website);
+            }
+            // Add created channel to the channel list.
+            channels.add(channel);
+        }
+        if (cSup != null) {
+            cSup.close();
+        }
+        Log.d(TAG, "End with " + channels);
+        return channels;
+    }
+
+    /**
+     * Subscribes the local user to the channel identified by id.
+     *
+     * @param channelId The id of the channel that should be subscribed.
+     */
+    public void subscribeChannel(int channelId) {
+        Log.d(TAG, "Subscribe channel " + channelId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CHANNEL_ID_FOREIGN, channelId);
+        db.insert(SUBSCRIBED_CHANNELS_TABLE, null, values);
+    }
+
+    /**
+     * Unsubscribes the local user from the channel identified by id.
+     *
+     * @param channelId The id of the channel that should be unsubscribed.
+     */
+    public void unsubscribeChannel(int channelId) {
+        Log.d(TAG, "Unubscribe channel " + channelId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        String where = CHANNEL_ID_FOREIGN + "=?";
+        String[] args = {"" + channelId};
+        db.delete(SUBSCRIBED_CHANNELS_TABLE, where, args);
+    }
+
+    /**
+     * Checks if the channel identified by given id is subscribed or not.
+     *
+     * @param channelId The id of the channel that should be checked.
+     * @return true if the channel is subscribed.
+     */
+    public boolean isSubscribedChannel(int channelId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        boolean isSubscribedChannel = false;
+
+        String selectQuery = "SELECT * FROM " + SUBSCRIBED_CHANNELS_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+        String[] args = {"" + channelId};
+        Log.d(TAG, selectQuery + " -> " + channelId);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        if (c != null && c.moveToFirst()) {
+            isSubscribedChannel = true;
+            c.close();
+        }
+        Log.d(TAG, "End with " + isSubscribedChannel);
+        return isSubscribedChannel;
     }
 }

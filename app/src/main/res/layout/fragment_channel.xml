@@ -14,6 +14,7 @@
         android:id="@+id/fragment_channel_tv_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:text="@string/fragment_channel_s_empty_list"
         android:gravity="center"/>
 
 </FrameLayout>

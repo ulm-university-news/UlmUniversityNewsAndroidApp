@@ -21,7 +21,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.context = context;
         tabTitles = new String[]{
-                context.getString(R.string.fragment_channel_title),
+                context.getString(R.string.fragment_channel_s_title),
                 context.getString(R.string.fragment_group_title),
                 context.getString(R.string.fragment_settings_title)};
         PAGE_COUNT = tabTitles.length;

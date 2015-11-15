@@ -1,8 +1,8 @@
 package ulm.university.news.app.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
@@ -24,6 +25,8 @@ public class ChannelFragment extends Fragment {
     private AdapterView.OnItemClickListener itemClickListener;
 
     ChannelListAdapter listAdapter;
+    List<Channel> channels = null;
+    ChannelDatabaseManager channelDBM;
 
     private ListView lvChannels;
     private  TextView tvInfo;
@@ -35,10 +38,8 @@ public class ChannelFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(getActivity());
-        List<Channel> channels = channelDBM.getChannels();
-
+        channelDBM = new ChannelDatabaseManager(getActivity());
+        channels = channelDBM.getSubscribedChannels();
         listAdapter = new ChannelListAdapter(getActivity(), R.layout.channel_list_item, channels);
     }
 
@@ -47,19 +48,40 @@ public class ChannelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_channel, container, false);
         lvChannels = (ListView) view.findViewById(R.id.fragment_channel_lv_channels);
         tvInfo = (TextView) view.findViewById(R.id.fragment_channel_tv_info);
-        tvInfo.setText("My channels");
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Channel channel = (Channel) lvChannels.getItemAtPosition(position);
-                Log.d(TAG, "++++++++++++++ Type: " + channel.getType() + ", Name: " + channel.getName());
+                Intent intent = new Intent(arg0.getContext(), ChannelDetailActivity.class);
+                EventBus.getDefault().postSticky(channel);
+                startActivity(intent);
             }
         };
 
         lvChannels.setAdapter(listAdapter);
         lvChannels.setOnItemClickListener(itemClickListener);
 
+        if(channels != null && !channels.isEmpty()){
+            tvInfo.setVisibility(View.GONE);
+            lvChannels.setVisibility(View.VISIBLE);
+        }
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        channels.clear();
+        channels.addAll(channelDBM.getSubscribedChannels());
+        listAdapter.notifyDataSetChanged();
+        if(channels.isEmpty()){
+            lvChannels.setVisibility(View.GONE);
+            tvInfo.setVisibility(View.VISIBLE);
+        } else {
+            lvChannels.setVisibility(View.VISIBLE);
+            tvInfo.setVisibility(View.GONE);
+        }
     }
 }

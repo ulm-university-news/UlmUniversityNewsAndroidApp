@@ -35,6 +35,7 @@ public class ChannelAPI extends MainAPI {
     public static final String UPDATE_CHANNEL = "updateChannel";
     public static final String GET_CHANNELS = "getChannels";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
+    public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
 
     /**
      * Get the instance of the ChannelAPI class.
@@ -113,6 +114,23 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void unsubscribeChannel(int channelId, int userId) {
+        // Add channel id to url.
+        // TODO Update servers DELETE method (no user id needed, id is in access token included!)
+        String url = serverAddressChannel + "/" + channelId + "/user/" + userId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(UNSUBSCRIBE_CHANNEL, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
         rTask.setAccessToken(accessToken);
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
