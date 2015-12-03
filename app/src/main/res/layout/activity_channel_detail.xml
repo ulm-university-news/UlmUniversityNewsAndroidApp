@@ -44,7 +44,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_channel_detail_s_button_subscribe"
+        android:text="@string/activity_channel_detail_button_subscribe"
         android:id="@+id/activity_channel_detail_btn_subscribe"
         android:layout_below="@+id/activity_channel_detail_tv_channel_name"
         android:layout_centerHorizontal="true"/>
@@ -52,7 +52,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/activity_channel_detail_s_button_unsubscribe"
+        android:text="@string/activity_channel_detail_button_unsubscribe"
         android:id="@+id/activity_channel_detail_btn_unsubscribe"
         android:layout_below="@+id/activity_channel_detail_tv_channel_name"
         android:layout_centerHorizontal="true"

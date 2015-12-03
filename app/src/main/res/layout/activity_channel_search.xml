@@ -1,43 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/activity_channel_search_swipe_refresh_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="ulm.university.news.app.controller.ChannelSearchActivity">
+    android:layout_height="wrap_content">
 
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/activity_channel_search_lv_channels"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
-
-    <TextView
-        android:id="@+id/activity_channel_search_tv_info"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/activity_channel_search_lv_channels"
-        android:text="@string/activity_channel_search_s_updating"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:maxLines = "10000"
-        android:scrollbars = "vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/border_info"
-        android:padding="10dp"/>
-
-    <ProgressBar
-        android:id="@+id/activity_channel_search_pgr_updating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/activity_channel_search_tv_info"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"
-        android:indeterminateTint="#7d9aaa"
-        android:indeterminateTintMode="src_in"/>
-</RelativeLayout>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+</android.support.v4.widget.SwipeRefreshLayout>

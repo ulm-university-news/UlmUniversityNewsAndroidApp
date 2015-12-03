@@ -4,7 +4,10 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -14,8 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.DateTime;
 
@@ -28,12 +30,17 @@ import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
+import ulm.university.news.app.manager.loader.ChannelLoader;
+import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class ChannelSearchActivity extends AppCompatActivity {
+public class ChannelSearchActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Channel>> {
     /** This classes tag for logging. */
     private static final String TAG = "ChannelSearchActivity";
+
+    // The Loader's id (this id is specific to the ListFragment's LoaderManager)
+    private static final int LOADER_ID = 1;
 
     private AdapterView.OnItemClickListener itemClickListener;
     ChannelListAdapter listAdapter;
@@ -42,34 +49,30 @@ public class ChannelSearchActivity extends AppCompatActivity {
     private ChannelDatabaseManager channelDBM;
 
     // GUI elements.
-    private ProgressBar pgrUpdating;
-    private TextView tvInfo;
-    private TextView tvError;
     private ListView lvChannels;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private boolean isAutoRefresh = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_search);
 
+        // Initialize a Loader with id '1'. If the Loader with this id already
+        // exists, then the LoaderManager will reuse the existing Loader.
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
         channelDBM = new ChannelDatabaseManager(this);
         channels = channelDBM.getChannels();
-
-        listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item, this.channels);
 
         // Initialise GUI elements.
         initView();
 
-        DateTime latestUpdated = new DateTime(0);
-        // Get date from latest updated channel.
-        for (Channel channel : channels) {
-            if (channel.getModificationDate().isAfter(latestUpdated)) {
-                latestUpdated = channel.getModificationDate();
-            }
-        }
+        listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item);
+        lvChannels.setAdapter(listAdapter);
 
-        // Update channels when activity is created. Request new data only.
-        ChannelAPI.getInstance(this).getChannels(null, latestUpdated.toString());
+        refreshChannels();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,14 +109,38 @@ public class ChannelSearchActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public Loader<List<Channel>> onCreateLoader(int id, Bundle args) {
+        return new ChannelLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Channel>> loader, List<Channel> data) {
+        channels = data;
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Channel>> loader) {
+        listAdapter.setData(null);
+    }
+
     /**
      * Initialises all view elements of this activity.
      */
     private void initView() {
-        pgrUpdating = (ProgressBar) findViewById(R.id.activity_channel_search_pgr_updating);
-        tvInfo = (TextView) findViewById(R.id.activity_channel_search_tv_info);
         // tvError = (TextView) findViewById(R.id.activity_channel_search_);
         lvChannels = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_channel_search_swipe_refresh_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isAutoRefresh = false;
+                refreshChannels();
+            }
+        });
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -127,13 +154,41 @@ public class ChannelSearchActivity extends AppCompatActivity {
     }
 
     /**
+     * Sends a request to the server to get all new channel data.
+     */
+    private void refreshChannels() {
+        // Channel refresh is only possible if there is an internet connection.
+        if(Util.isOnline(this)){
+            // Get date from latest updated channel.
+            DateTime latestUpdated = new DateTime(0);
+            for (Channel channel : channels) {
+                if (channel.getModificationDate().isAfter(latestUpdated)) {
+                    latestUpdated = channel.getModificationDate();
+                }
+            }
+            // Update channels when activity is created. Request new data only.
+            ChannelAPI.getInstance(this).getChannels(null, latestUpdated.toString());
+        }else{
+            if(!isAutoRefresh){
+                // Only show error message if refreshing was triggered manually.
+                String message = getString(R.string.general_error_no_connection_refresh);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                // Reset the auto refresh flag.
+                isAutoRefresh = true;
+                // Can't refresh. Hide loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
+    }
+
+    /**
      * This method will be called when a list of channels is posted to the EventBus.
      *
      * @param channels The list containing channel objects.
      */
     public void onEventMainThread(List<Channel> channels) {
         Log.d(TAG, "EventBus: List<Channel>");
-        getChannels(channels);
+        processChannelData(channels);
     }
 
     /**
@@ -156,11 +211,11 @@ public class ChannelSearchActivity extends AppCompatActivity {
         }
     }
 
-    public void getChannels(List<Channel> channels) {
+    public void processChannelData(List<Channel> channels) {
         // Store or update channels in the database and update local channel list.
         Integer localChannelListId = null;
         for (Channel channel : channels) {
-            for (int i = 0; i<this.channels.size(); i++) {
+            for (int i = 0; i < this.channels.size(); i++) {
                 if (this.channels.get(i).getId() == channel.getId()) {
                     localChannelListId = i;
                     break;
@@ -168,24 +223,33 @@ public class ChannelSearchActivity extends AppCompatActivity {
             }
             if (localChannelListId == null) {
                 channelDBM.storeChannel(channel);
-                this.channels.add(channel);
+                // this.channels.add(channel);
             } else {
-                // TODO channelDBM.updateChannel(channel);
-                this.channels.remove(localChannelListId.intValue());
-                this.channels.add(channel);
+                channelDBM.updateChannel(channel);
+                // this.channels.remove(localChannelListId.intValue());
+                // this.channels.add(channel);
+                localChannelListId = null;
             }
         }
 
-        // Show updated channel list.
-        listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item, this.channels);
-        ListView listView = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
-        listView.setAdapter(listAdapter);
-
         // Update view.
-        pgrUpdating.setVisibility(View.GONE);
-        // tvInfo.setVisibility(View.GONE);
-        tvInfo.setText("Channel data is up to date.");
         lvChannels.setVisibility(View.VISIBLE);
+        // Channels were refreshed. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        if (!channels.isEmpty()) {
+            // If channel data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.channel_info_updated);
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        }        else{
+            if(!isAutoRefresh){
+                // Only show up to date message if a manual refresh was triggered.
+                String message = getString(R.string.channel_info_up_to_date);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        }
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
     }
 
     private void getChannel(Channel channel) {
@@ -213,6 +277,8 @@ public class ChannelSearchActivity extends AppCompatActivity {
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:

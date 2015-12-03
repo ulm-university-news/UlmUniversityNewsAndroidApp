@@ -2,8 +2,10 @@ package ulm.university.news.app.manager.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.joda.time.DateTime;
@@ -57,10 +59,16 @@ public class ChannelDatabaseManager {
     private static final String TAG = "ChannelDatabaseManager";
     /** The instance of DatabaseManager. */
     private DatabaseManager dbm;
+    /** The application context. */
+    private Context appContext;
+
+    public static final String STORE_CHANNEL = "storeChannel";
+    public static final String UPDATE_CHANNEL = "updateChannel";
 
     /** Creates a new instance of ChannelDatabaseManager. */
     public ChannelDatabaseManager(Context context) {
         dbm = DatabaseManager.getInstance(context);
+        appContext = context.getApplicationContext();
     }
 
     /**
@@ -119,11 +127,89 @@ public class ChannelDatabaseManager {
                     db.insertOrThrow(SPORTS_TABLE, null, subClassValues);
                     break;
             }
+
+            // Notify UI that registration has completed, so the progress indicator can be hidden.
+            Intent databaseChanged = new Intent(STORE_CHANNEL);
+            Log.d(TAG, "sendBroadcast: "+LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+
             // Mark transaction as successful.
             db.setTransactionSuccessful();
             Log.d(TAG, "End. Channel stored successfully.");
         } catch (Exception e) {
             Log.e(TAG, "Database failure during storeChannel(). Need to rollback transaction.");
+        } finally {
+            if (db != null) {
+                // Commit on success or rollback transaction if an error has occurred.
+                db.endTransaction();
+            }
+        }
+    }
+
+    /**
+     * Updates the given channel in the database.
+     *
+     * @param channel The updated channel.
+     */
+    public void updateChannel(Channel channel) {
+        Log.d(TAG, "Update " + channel);
+        SQLiteDatabase db = null;
+        try {
+            db = dbm.getWritableDatabase();
+            ContentValues channelValues = new ContentValues();
+            channelValues.put(CHANNEL_NAME, channel.getName());
+            channelValues.put(CHANNEL_DESCRIPTION, channel.getDescription());
+            channelValues.put(CHANNEL_TYPE, channel.getType().ordinal());
+            channelValues.put(CHANNEL_TERM, channel.getTerm());
+            channelValues.put(CHANNEL_LOCATIONS, channel.getLocations());
+            channelValues.put(CHANNEL_CONTACTS, channel.getContacts());
+            channelValues.put(CHANNEL_CREATION_DATE, channel.getCreationDate().getMillis());
+            channelValues.put(CHANNEL_MODIFICATION_DATE, channel.getModificationDate().getMillis());
+            channelValues.put(CHANNEL_DATES, channel.getDates());
+            channelValues.put(CHANNEL_WEBSITE, channel.getWebsite());
+            String where = CHANNEL_ID + "=" + channel.getId();
+
+            // If there are two update statements make sure that they are performed in one transaction.
+            db.beginTransaction();
+            db.update(CHANNEL_TABLE, channelValues, where, null);
+
+            // Check if there is a subclass of channel which has to be updated in another table.
+            ContentValues subClassValues = new ContentValues();
+            switch (channel.getType()) {
+                case LECTURE:
+                    Lecture lecture = (Lecture) channel;
+                    subClassValues.put(LECTURE_FACULTY, lecture.getFaculty().ordinal());
+                    subClassValues.put(LECTURE_START_DATE, lecture.getStartDate());
+                    subClassValues.put(LECTURE_END_DATE, lecture.getEndDate());
+                    subClassValues.put(LECTURE_LECTURER, lecture.getLecturer());
+                    subClassValues.put(LECTURE_ASSISTANT, lecture.getAssistant());
+                    where = CHANNEL_ID_FOREIGN + "=" + channel.getId();
+                    db.update(LECTURE_TABLE, subClassValues, where, null);
+                    break;
+                case EVENT:
+                    Event event = (Event) channel;
+                    subClassValues.put(EVENT_COST, event.getCost());
+                    subClassValues.put(EVENT_ORGANIZER, event.getOrganizer());
+                    where = CHANNEL_ID_FOREIGN + "=" + channel.getId();
+                    db.update(EVENT_TABLE, subClassValues, where, null);
+                    break;
+                case SPORTS:
+                    Sports sports = (Sports) channel;
+                    subClassValues.put(SPORTS_COST, sports.getCost());
+                    subClassValues.put(SPORTS_PARTICIPANTS, sports.getNumberOfParticipants());
+                    where = CHANNEL_ID_FOREIGN + "=" + channel.getId();
+                    db.update(SPORTS_TABLE, subClassValues, where, null);
+                    break;
+            }
+
+            // Notify UI that registration has completed, so the progress indicator can be hidden.
+            Intent databaseChanged = new Intent(UPDATE_CHANNEL);
+            LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+
+            // Mark transaction as successful.
+            db.setTransactionSuccessful();
+            Log.d(TAG, "End. Channel updated successfully.");
+        } catch (Exception e) {
+            Log.e(TAG, "Database failure during updateChannel(). Need to rollback transaction.");
         } finally {
             if (db != null) {
                 // Commit on success or rollback transaction if an error has occurred.

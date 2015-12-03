@@ -28,6 +28,15 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
         super(context, resource, channels);
     }
 
+    public void setData(List<Channel> data) {
+        clear();
+        if (data != null) {
+            for (int i = 0; i < data.size(); i++) {
+                add(data.get(i));
+            }
+        }
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

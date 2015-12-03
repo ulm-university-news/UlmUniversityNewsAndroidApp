@@ -4,52 +4,50 @@
     <string name="app_name_launcher">University News</string>
 
     <!-- General ################################################################################################### -->
-    <string name="general_s_error_something">Something went wrong. Please try again.</string>
-    <string name="general_s_error_database">Database failure. Please try again.</string>
-    <string name="general_s_error_connection">Connecting to server failed. Please try again.</string>
-
-    <!-- LocalUser -->
-    <string name="user_s_error_name_empty">You need to enter a user name.</string>
-    <string name="user_s_error_name_invalid">Your user name is invalid.</string>
+    <string name="general_error_something">Something went wrong. Please try again.</string>
+    <string name="general_error_database">Database failure. Please try again.</string>
+    <string name="general_error_connection_failed">Connecting to server failed. Please try again.</string>
+    <string name="general_error_no_connection_refresh">Can\'t refresh. No internet connection.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="title_activity_start">StartActivity</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
     <string name="title_activity_create_account">CreateAccountActivity</string>
-    <string name="activity_create_account_s_information">Welcome to the Ulm University News App.\n\nTo use this
+    <string name="activity_create_account_information">Welcome to the Ulm University News App.\n\nTo use this
         app you need to create a user account. To do that you just have to enter a user name below and accept
         the terms of use.These are:\nTODO</string>
-    <string name="activity_create_account_s_creating_account">Creating user account...</string>
-    <string name="activity_create_account_s_checkbox">I accept the terms of use.</string>
-    <string name="activity_create_account_s_button_create">Create account</string>
-    <string name="activity_create_account_s_button_start">Start</string>
-    <string name="activity_create_account_s_account_created">User account has been created successfully. You\'re
+    <string name="activity_create_account_creating_account">Creating user account...</string>
+    <string name="activity_create_account_checkbox">I accept the terms of use.</string>
+    <string name="activity_create_account_button_create">Create account</string>
+    <string name="activity_create_account_button_start">Start</string>
+    <string name="activity_create_account_account_created">User account has been created successfully. You\'re
     now ready to use this app.</string>
-    <string name="activity_create_account_s_error_offline">You need an internet connection.</string>
-    <string name="activity_create_account_s_error_checkbox">You need to accept the terms of use.</string>
-    <string name="activity_create_account_s_error_token">An error occurred while either fetching the InstanceID token,
+    <string name="activity_create_account_error_offline">You need an internet connection.</string>
+    <string name="activity_create_account_error_checkbox">You need to accept the terms of use.</string>
+    <string name="activity_create_account_error_token">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
-    <string name="activity_create_account_s_name_hint">User name</string>
+    <string name="activity_create_account_name_hint">User name</string>
 
     <!-- ChannelSearchActivity ##################################################################################### -->
-    <string name="activity_channel_search_s_updating">Updating channel data...</string>
+    <string name="activity_channel_search_updating">Updating channel data...</string>
 
     <!-- ChannelFragment ########################################################################################### -->
-    <string name="fragment_channel_s_title">My Channels</string>
-    <string name="fragment_channel_s_empty_list">You haven\'t subscribed to any channel.\nSearch for channels
+    <string name="fragment_channel_title">My Channels</string>
+    <string name="fragment_channel_empty_list">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
 
     <!-- GroupFragment ############################################################################################# -->
     <string name="fragment_group_title">My Groups</string>
-    <string name="fragment_group_s_empty_list">You aren\'t a member of any group.\nSearch for groups and join.</string>
-
-    <!-- SettingsFragment ########################################################################################## -->
-    <string name="fragment_settings_title">Settings</string>
+    <string name="fragment_group_empty_list">You aren\'t a member of any group.\nSearch for groups and join.</string>
 
     <!-- ChannelDetailActivity ##################################################################################### -->
-    <string name="activity_channel_detail_s_button_subscribe">Subscribe</string>
-    <string name="activity_channel_detail_s_button_unsubscribe">Unsubscribe</string>
+    <string name="activity_channel_detail_button_subscribe">Subscribe</string>
+    <string name="activity_channel_detail_button_unsubscribe">Unsubscribe</string>
+
+    <!-- LocalUser -->
+    <string name="user_error_name_empty">You need to enter a user name.</string>
+    <string name="user_error_name_invalid">Your user name is invalid.</string>
 
     <!-- Channel ################################################################################################### -->
     <string name="channel_description">Description</string>
@@ -61,6 +59,8 @@
     <string name="channel_type">Type</string>
     <string name="channel_creation_date">Creation date</string>
     <string name="channel_modification_date">Modification date</string>
+    <string name="channel_info_updated">Channel data updated.</string>
+    <string name="channel_info_up_to_date">Channel data already up to date.</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_faculty">Faculty</string>
@@ -73,7 +73,7 @@
     <string name="event_cost">Cost</string>
     <string name="event_organizer">Organizer</string>
 
-    <!-- Event ##################################################################################################### -->
+    <!-- Sports #################################################################################################### -->
     <string name="sports_cost">Cost</string>
     <string name="sports_participants">Number of participants</string>
 </resources>
