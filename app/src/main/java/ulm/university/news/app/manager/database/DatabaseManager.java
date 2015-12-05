@@ -365,7 +365,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /**
      * Creates the instance of DatabaseManager.
      *
-     * @param context The context from which this method is called.
+     * @param context The context from which the constructor is called.
      */
     private DatabaseManager(Context context) {
         // Use the application context, which will ensure that one don't accidentally leak an Activity's context.

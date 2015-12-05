@@ -28,6 +28,11 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
         super(context, resource, channels);
     }
 
+    /**
+     * Updates the data of the ChannelListAdapter.
+     *
+     * @param data The updated channel list.
+     */
     public void setData(List<Channel> data) {
         clear();
         if (data != null) {
@@ -35,6 +40,11 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
                 add(data.get(i));
             }
         }
+    }
+
+    @Override
+    public int getCount() {
+        return super.getCount();
     }
 
     @Override
@@ -59,12 +69,12 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             // tvSecondLine.setText(channel.getCreationDate().toString());
 
             // Set appropriate channel icon.
-            switch (channel.getType()){
+            switch (channel.getType()) {
                 case LECTURE:
                     Lecture lecture = (Lecture) channel;
                     tvSecondLine.setText(lecture.getLecturer());
                     // Set icon with appropriate faculty color.
-                    switch (lecture.getFaculty()){
+                    switch (lecture.getFaculty()) {
                         case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
                             ivIcon.setImageResource(R.drawable.icon_channel_lecture_informatics);
                             break;

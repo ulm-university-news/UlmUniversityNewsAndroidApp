@@ -64,6 +64,8 @@ public class ChannelDatabaseManager {
 
     public static final String STORE_CHANNEL = "storeChannel";
     public static final String UPDATE_CHANNEL = "updateChannel";
+    public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
+    public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
 
     /** Creates a new instance of ChannelDatabaseManager. */
     public ChannelDatabaseManager(Context context) {
@@ -128,7 +130,7 @@ public class ChannelDatabaseManager {
                     break;
             }
 
-            // Notify UI that registration has completed, so the progress indicator can be hidden.
+            // Notify observers that database content has changed.
             Intent databaseChanged = new Intent(STORE_CHANNEL);
             Log.d(TAG, "sendBroadcast: "+LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
 
@@ -201,7 +203,7 @@ public class ChannelDatabaseManager {
                     break;
             }
 
-            // Notify UI that registration has completed, so the progress indicator can be hidden.
+            // Notify observers that database content has changed.
             Intent databaseChanged = new Intent(UPDATE_CHANNEL);
             LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
 
@@ -495,6 +497,10 @@ public class ChannelDatabaseManager {
         ContentValues values = new ContentValues();
         values.put(CHANNEL_ID_FOREIGN, channelId);
         db.insert(SUBSCRIBED_CHANNELS_TABLE, null, values);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(SUBSCRIBE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
     /**
@@ -509,6 +515,10 @@ public class ChannelDatabaseManager {
         String where = CHANNEL_ID_FOREIGN + "=?";
         String[] args = {"" + channelId};
         db.delete(SUBSCRIBED_CHANNELS_TABLE, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UNSUBSCRIBE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
     /**

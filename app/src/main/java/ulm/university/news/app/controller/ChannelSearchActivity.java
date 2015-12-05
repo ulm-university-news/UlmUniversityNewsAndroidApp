@@ -3,6 +3,7 @@ package ulm.university.news.app.controller;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -30,7 +31,7 @@ import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
-import ulm.university.news.app.manager.loader.ChannelLoader;
+import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
@@ -39,8 +40,10 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     /** This classes tag for logging. */
     private static final String TAG = "ChannelSearchActivity";
 
-    // The Loader's id (this id is specific to the ListFragment's LoaderManager)
+    /** The loader's id. This id is specific to the ChannelSearchActivity's LoaderManager. */
     private static final int LOADER_ID = 1;
+
+    private DatabaseLoader<List<Channel>> databaseLoader;
 
     private AdapterView.OnItemClickListener itemClickListener;
     ChannelListAdapter listAdapter;
@@ -59,11 +62,13 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_search);
 
+        channelDBM = new ChannelDatabaseManager(this);
+
         // Initialize a Loader with id '1'. If the Loader with this id already
         // exists, then the LoaderManager will reuse the existing Loader.
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
-        channelDBM = new ChannelDatabaseManager(this);
+        // Load initial channel data directly, don't use async database loader.
         channels = channelDBM.getChannels();
 
         // Initialise GUI elements.
@@ -111,7 +116,24 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public Loader<List<Channel>> onCreateLoader(int id, Bundle args) {
-        return new ChannelLoader(this);
+        databaseLoader = new DatabaseLoader<>(this, new DatabaseLoader
+                .DatabaseLoaderCallbacks<List<Channel>>() {
+            @Override
+            public List<Channel> onLoadInBackground() {
+                return databaseLoader.getChannelDBM().getChannels();
+            }
+
+            @Override
+            public IntentFilter observerFilter() {
+                // Listen to database changes on channel subscriptions.
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(ChannelDatabaseManager.STORE_CHANNEL);
+                filter.addAction(ChannelDatabaseManager.UPDATE_CHANNEL);
+                return filter;
+            }
+        });
+        databaseLoader.setChannelDBM(channelDBM);
+        return databaseLoader;
     }
 
     @Override
@@ -134,6 +156,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         lvChannels = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_channel_search_swipe_refresh_layout);
 
+        // TODO Set color style to ulm university colors. Somehow, doesn't work correctly.
+        // swipeRefreshLayout.setColorSchemeColors(R.color.uni);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -141,6 +166,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 refreshChannels();
             }
         });
+
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override

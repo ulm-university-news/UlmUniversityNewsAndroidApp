@@ -1,7 +1,7 @@
 <resources>
     <!-- App ####################################################################################################### -->
-    <string name="app_name">Ulm University News</string>
-    <string name="app_name_launcher">University News</string>
+    <string name="app_name">University News Ulm</string>
+    <!-- <string name="app_name_launcher">University News</string> -->
 
     <!-- General ################################################################################################### -->
     <string name="general_error_something">Something went wrong. Please try again.</string>
@@ -34,8 +34,10 @@
 
     <!-- ChannelFragment ########################################################################################### -->
     <string name="fragment_channel_title">My Channels</string>
-    <string name="fragment_channel_empty_list">You haven\'t subscribed to any channel.\nSearch for channels
+    <string name="fragment_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
+    <string name="fragment_channel_list_loading">Loading channel data...</string>
+
 
     <!-- GroupFragment ############################################################################################# -->
     <string name="fragment_group_title">My Groups</string>
