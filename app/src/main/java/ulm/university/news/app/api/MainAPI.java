@@ -143,14 +143,14 @@ public abstract class MainAPI implements ErrorCallback {
     }
 
     @Override
-    public void onServerError(String json) {
+    public void onServerError(String response) {
         ServerError serverError = null;
-        if (json == null) {
+        if (response == null || response.contains("Tomcat")) {
             // Failed to connect to server.
             serverError = new ServerError(503, Constants.CONNECTION_FAILURE);
-        } else if (json.contains("errorCode")) {
+        } else if (response.contains("errorCode")) {
             // Parse JSON String to ServerError object.
-            serverError = gson.fromJson(json, ServerError.class);
+            serverError = gson.fromJson(response, ServerError.class);
         }
         // Send server error
         EventBus.getDefault().post(serverError);

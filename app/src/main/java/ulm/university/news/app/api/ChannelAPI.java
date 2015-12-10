@@ -119,10 +119,9 @@ public class ChannelAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
-    public void unsubscribeChannel(int channelId, int userId) {
+    public void unsubscribeChannel(int channelId) {
         // Add channel id to url.
-        // TODO Update servers DELETE method (no user id needed, id is in access token included!)
-        String url = serverAddressChannel + "/" + channelId + "/user/" + userId;
+        String url = serverAddressChannel + "/" + channelId + "/user";
 
         RequestCallback rCallback = new RequestCallback() {
             @Override

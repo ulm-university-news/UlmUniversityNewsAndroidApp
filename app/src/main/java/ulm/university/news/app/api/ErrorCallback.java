@@ -9,7 +9,7 @@ public interface ErrorCallback {
     /**
      * Called when an error occurred on the RequestTask.
      *
-     * @param json The response body as JSON String.
+     * @param response The response body as String.
      */
-    void onServerError(String json);
+    void onServerError(String response);
 }

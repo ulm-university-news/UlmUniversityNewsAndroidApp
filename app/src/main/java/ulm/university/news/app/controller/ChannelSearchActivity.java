@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.joda.time.DateTime;
@@ -54,6 +57,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     // GUI elements.
     private ListView lvChannels;
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    private String errorMessage;
+    private Toast toast;
 
     private boolean isAutoRefresh = true;
 
@@ -98,6 +104,19 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                     .this.getComponentName()));
         }
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = NavUtils.getParentActivityIntent(this);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                NavUtils.navigateUpTo(this, intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -152,9 +171,12 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      * Initialises all view elements of this activity.
      */
     private void initView() {
-        // tvError = (TextView) findViewById(R.id.activity_channel_search_);
         lvChannels = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_channel_search_swipe_refresh_layout);
+
+        toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
 
         // TODO Set color style to ulm university colors. Somehow, doesn't work correctly.
         // swipeRefreshLayout.setColorSchemeColors(R.color.uni);
@@ -173,7 +195,8 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Channel channel = (Channel) lvChannels.getItemAtPosition(position);
                 Intent intent = new Intent(arg0.getContext(), ChannelDetailActivity.class);
-                EventBus.getDefault().postSticky(channel);
+                intent.putExtra("channelId", channel.getId());
+                // EventBus.getDefault().postSticky(channel);
                 startActivity(intent);
             }
         };
@@ -184,7 +207,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      */
     private void refreshChannels() {
         // Channel refresh is only possible if there is an internet connection.
-        if(Util.isOnline(this)){
+        if (Util.isOnline(this)) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
             // Get date from latest updated channel.
             DateTime latestUpdated = new DateTime(0);
             for (Channel channel : channels) {
@@ -194,11 +219,13 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             }
             // Update channels when activity is created. Request new data only.
             ChannelAPI.getInstance(this).getChannels(null, latestUpdated.toString());
-        }else{
-            if(!isAutoRefresh){
+        } else {
+            if (!isAutoRefresh) {
+                errorMessage = getString(R.string.general_error_no_connection);
+                errorMessage += getString(R.string.general_error_refresh);
                 // Only show error message if refreshing was triggered manually.
-                String message = getString(R.string.general_error_no_connection_refresh);
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                toast.setText(errorMessage);
+                toast.show();
                 // Reset the auto refresh flag.
                 isAutoRefresh = true;
                 // Can't refresh. Hide loading animation.
@@ -266,12 +293,14 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         if (!channels.isEmpty()) {
             // If channel data was updated show message no matter if it was a manual or auto refresh.
             String message = getString(R.string.channel_info_updated);
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-        }        else{
-            if(!isAutoRefresh){
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
                 // Only show up to date message if a manual refresh was triggered.
                 String message = getString(R.string.channel_info_up_to_date);
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                toast.setText(message);
+                toast.show();
             }
         }
         // Reset the auto refresh flag.
@@ -303,12 +332,21 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
-        // Reset the auto refresh flag.
-        isAutoRefresh = true;
+        // Can't refresh. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
+                if (!isAutoRefresh) {
+                    // Only show error message if refreshing was triggered manually.
+                    toast.setText(errorMessage);
+                    toast.show();
+                }
                 break;
         }
+
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
     }
 }

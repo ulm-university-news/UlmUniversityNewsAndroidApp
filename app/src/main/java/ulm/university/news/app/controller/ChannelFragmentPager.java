@@ -12,17 +12,17 @@ import ulm.university.news.app.R;
  *
  * @author Matthias Mak
  */
-public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class ChannelFragmentPager extends FragmentPagerAdapter {
     final int PAGE_COUNT;
     private String tabTitles[];
-    private Context context;
+    private int channelId;
 
-    public SampleFragmentPagerAdapter(FragmentManager fm, Context context) {
+    public ChannelFragmentPager(FragmentManager fm, Context context, int channelId) {
         super(fm);
-        this.context = context;
+        this.channelId = channelId;
         tabTitles = new String[]{
-                context.getString(R.string.fragment_channel_title),
-                context.getString(R.string.fragment_group_title)};
+                context.getString(R.string.activity_channel_announcement_tab),
+                context.getString(R.string.activity_channel_channel_details_tab)};
         PAGE_COUNT = tabTitles.length;
     }
 
@@ -35,16 +35,16 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return ChannelFragment.newInstance();
+                return AnnouncementFragment.newInstance();
             case 1:
-                return GroupFragment.newInstance();
+                return ChannelDetailFragment.newInstance(channelId);
         }
         return null;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
+        // Generate title based on item position.
         return tabTitles[position];
     }
 }

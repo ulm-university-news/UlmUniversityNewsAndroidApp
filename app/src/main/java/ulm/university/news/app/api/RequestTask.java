@@ -54,15 +54,15 @@ public class RequestTask implements Runnable {
             Log.e(TAG, "Missing parameters. Method aborted.");
             return;
         }
-        // Execute request and retrieve json String.
-        String json = executeRequest();
+        // Execute request and retrieve response String.
+        String response = executeRequest();
         // Notify caller.
-        if (json == null || json.contains("errorCode")) {
+        if (response == null || response.contains("errorCode") || response.contains("Tomcat")) {
             // A server error has occurred.
-            eCallback.onServerError(json);
+            eCallback.onServerError(response);
         } else {
             // No error has occurred.
-            rCallback.onResponse(json);
+            rCallback.onResponse(response);
         }
     }
 

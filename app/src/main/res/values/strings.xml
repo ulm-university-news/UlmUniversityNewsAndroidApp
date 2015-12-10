@@ -6,8 +6,11 @@
     <!-- General ################################################################################################### -->
     <string name="general_error_something">Something went wrong. Please try again.</string>
     <string name="general_error_database">Database failure. Please try again.</string>
-    <string name="general_error_connection_failed">Connecting to server failed. Please try again.</string>
-    <string name="general_error_no_connection_refresh">Can\'t refresh. No internet connection.</string>
+    <string name="general_error_connection_failed">Connection to server failed.\n</string>
+    <string name="general_error_no_connection">No internet connection.\n</string>
+    <string name="general_error_refresh">Can\'t refresh.</string>
+    <string name="general_error_subscribe">Can\'t subscribe.</string>
+    <string name="general_error_unsubscribe">Can\'t unsubscribe.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="title_activity_start">StartActivity</string>
@@ -32,16 +35,23 @@
     <!-- ChannelSearchActivity ##################################################################################### -->
     <string name="activity_channel_search_updating">Updating channel data...</string>
 
-    <!-- ChannelFragment ########################################################################################### -->
-    <string name="fragment_channel_title">My Channels</string>
-    <string name="fragment_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
+    <!-- MainActivity ############################################################################################## -->
+    <string name="activity_main_channel_tab">My Channels</string>
+    <string name="activity_main_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
-    <string name="fragment_channel_list_loading">Loading channel data...</string>
+    <string name="activity_main_channel_list_loading">Loading channel data...</string>
+    <string name="activity_main_group_tap">My Groups</string>
+    <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for groups and join.
+        </string>
+    <string name="activity_main_group_list_loading">Loading group data...</string>
 
+    <!-- ChannelActivity ########################################################################################### -->
+    <string name="activity_channel_announcement_tab">Announcements</string>
+    <string name="activity_channel_channel_details_tab">Details</string>
+    <string name="activity_channel_channel_details_list_loading">Loading channel data...</string>
 
     <!-- GroupFragment ############################################################################################# -->
-    <string name="fragment_group_title">My Groups</string>
-    <string name="fragment_group_empty_list">You aren\'t a member of any group.\nSearch for groups and join.</string>
+
 
     <!-- ChannelDetailActivity ##################################################################################### -->
     <string name="activity_channel_detail_button_subscribe">Subscribe</string>
@@ -78,4 +88,8 @@
     <!-- Sports #################################################################################################### -->
     <string name="sports_cost">Cost</string>
     <string name="sports_participants">Number of participants</string>
+
+    <!-- AnnouncementFragment ###################################################################################### -->
+    <string name="fragment_announcement_list_empty">There are no announcements yet.</string>
+    <string name="fragment_announcement_list_loading">Loading announcement data...</string>
 </resources>

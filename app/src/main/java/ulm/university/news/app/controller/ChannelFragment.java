@@ -16,7 +16,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
@@ -69,8 +68,8 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Channel channel = (Channel) lvChannels.getItemAtPosition(position);
-                Intent intent = new Intent(arg0.getContext(), ChannelDetailActivity.class);
-                EventBus.getDefault().postSticky(channel);
+                Intent intent = new Intent(arg0.getContext(), ChannelActivity.class);
+                intent.putExtra("channelId", channel.getId());
                 startActivity(intent);
             }
         };
@@ -119,12 +118,12 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
         // Update view.
         if (channels.isEmpty()) {
             lvChannels.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.fragment_channel_list_empty));
+            tvInfo.setText(getText(R.string.activity_main_channel_list_empty));
             tvInfo.setVisibility(View.VISIBLE);
         } else {
             lvChannels.setVisibility(View.VISIBLE);
             tvInfo.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.fragment_channel_list_loading));
+            tvInfo.setText(getText(R.string.activity_main_channel_list_loading));
         }
     }
 
