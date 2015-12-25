@@ -31,10 +31,8 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
 
     private AdapterView.OnItemClickListener itemClickListener;
 
-    ChannelListAdapter listAdapter;
-    List<Channel> channels;
-    ChannelDatabaseManager channelDBM;
-
+    private ChannelListAdapter listAdapter;
+    private List<Channel> channels;
     private ListView lvChannels;
     private TextView tvInfo;
 
@@ -52,8 +50,6 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
 
         // Initialize or reuse an existing database loader.
         getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-        // Load data when fragment is created.
-        databaseLoader.onContentChanged();
 
         listAdapter = new ChannelListAdapter(getActivity(), R.layout.channel_list_item, channels);
     }
