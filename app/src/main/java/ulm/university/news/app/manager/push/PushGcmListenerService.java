@@ -13,9 +13,14 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;
 
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.controller.ChannelActivity;
 import ulm.university.news.app.controller.MainActivity;
+import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.PushMessage;
 
 /**
@@ -26,6 +31,12 @@ import ulm.university.news.app.data.PushMessage;
 public class PushGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "PushGcmListenerService";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        EventBus.getDefault().register(this);
+    }
 
     /**
      * Called when message is received.
@@ -61,6 +72,24 @@ public class PushGcmListenerService extends GcmListenerService {
      */
     private void handlePushMessage(PushMessage pushMessage) {
         // TODO
+        switch (pushMessage.getPushType()){
+            case ANNOUNCEMENT_NEW:
+                ChannelAPI.getInstance(getApplicationContext()).getAnnouncements(pushMessage.getId1(), null);
+                break;
+            default:
+        }
+    }
+
+    /**
+     * This method will be called when a list of announcements is posted to the EventBus.
+     *
+     * @param announcements The list containing announcement objects.
+     */
+    public void onEvent(List<Announcement> announcements) {
+        Log.d(TAG, "EventBus: List<Channel>");
+        Log.d(TAG, announcements.toString());
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -87,7 +116,7 @@ public class PushGcmListenerService extends GcmListenerService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_ic_notification)
                 .setContentTitle("GCM Message")
-                .setContentText(pushMessage.getPushType().toString() + " " + pushMessage.getId1())
+                .setContentText(pushMessage.getPushType().toString() + ", id1: " + pushMessage.getId1())
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

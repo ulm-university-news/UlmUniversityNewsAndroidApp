@@ -13,13 +13,19 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.data.enums.Faculty;
+import ulm.university.news.app.data.enums.Priority;
 
+import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_AUTHOR;
+import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_MESSAGE_NUMBER;
+import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_TITLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_CONTACTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_DATES;
@@ -42,6 +48,13 @@ import static ulm.university.news.app.manager.database.DatabaseManager.LECTURE_F
 import static ulm.university.news.app.manager.database.DatabaseManager.LECTURE_LECTURER;
 import static ulm.university.news.app.manager.database.DatabaseManager.LECTURE_START_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.LECTURE_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_CREATION_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_PRIORITY;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_READ;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_COST;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_PARTICIPANTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_TABLE;
@@ -66,6 +79,7 @@ public class ChannelDatabaseManager {
     public static final String UPDATE_CHANNEL = "updateChannel";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
+    public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
 
     /** Creates a new instance of ChannelDatabaseManager. */
     public ChannelDatabaseManager(Context context) {
@@ -132,7 +146,7 @@ public class ChannelDatabaseManager {
 
             // Notify observers that database content has changed.
             Intent databaseChanged = new Intent(STORE_CHANNEL);
-            Log.d(TAG, "sendBroadcast: "+LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+            Log.d(TAG, "sendBroadcast: " + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
 
             // Mark transaction as successful.
             db.setTransactionSuccessful();
@@ -542,5 +556,129 @@ public class ChannelDatabaseManager {
         }
         Log.d(TAG, "End with " + isSubscribedChannel);
         return isSubscribedChannel;
+    }
+
+    /**
+     * Stores the given announcement in the database.
+     *
+     * @param announcement The announcement which should be stored.
+     */
+    public void storeAnnouncement(Announcement announcement) {
+        Log.d(TAG, "Store " + announcement);
+        SQLiteDatabase db = null;
+        try {
+            db = dbm.getWritableDatabase();
+
+            // Message values.
+            ContentValues messageValues = new ContentValues();
+            messageValues.put(MESSAGE_ID, announcement.getId());
+            messageValues.put(MESSAGE_TEXT, announcement.getText());
+            messageValues.put(MESSAGE_CREATION_DATE, announcement.getCreationDate().getMillis());
+            messageValues.put(MESSAGE_PRIORITY, announcement.getPriority().ordinal());
+            messageValues.put(MESSAGE_READ, false);
+
+            // Announcement values.
+            ContentValues announcementValues = new ContentValues();
+            announcementValues.put(ANNOUNCEMENT_MESSAGE_NUMBER, announcement.getMessageNumber());
+            announcementValues.put(MESSAGE_ID_FOREIGN, announcement.getId());
+            announcementValues.put(CHANNEL_ID_FOREIGN, announcement.getChannelId());
+            announcementValues.put(ANNOUNCEMENT_TITLE, announcement.getTitle());
+            announcementValues.put(ANNOUNCEMENT_AUTHOR, announcement.getAuthorModerator());
+
+            // If there are two insert statements make sure that they are performed in one transaction.
+            db.beginTransaction();
+            db.insertOrThrow(MESSAGE_TABLE, null, messageValues);
+            db.insertOrThrow(ANNOUNCEMENT_TABLE, null, announcementValues);
+
+            // Notify observers that database content has changed.
+            Intent databaseChanged = new Intent(STORE_ANNOUNCEMENT);
+            Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+
+            // Mark transaction as successful.
+            db.setTransactionSuccessful();
+            Log.d(TAG, "End. Announcement stored successfully.");
+        } catch (Exception e) {
+            Log.e(TAG, "Database failure during storeAnnouncement(). Need to rollback transaction.");
+        } finally {
+            if (db != null) {
+                // Commit on success or rollback transaction if an error has occurred.
+                db.endTransaction();
+            }
+        }
+    }
+
+    /**
+     * Gets all announcements of a specific channel from the database.
+     *
+     * @param channelId The id of the channel.
+     * @return A list of announcement objects.
+     */
+    public List<Announcement> getAnnouncements(int channelId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        List<Announcement> announcements = new ArrayList<>();
+        String announcementsQuery = "SELECT * FROM " + MESSAGE_TABLE + " AS m JOIN " + ANNOUNCEMENT_TABLE + " AS a" +
+                " ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN + " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
+        // "SELECT * FROM Message AS m JOIN Announcement AS a ON m.Id=a.Message_Id WHERE a.Channel_Id=? AND a" +
+        //        ".MessageNumber>?;";
+        String[] args = new String[1];
+        args[0] = "" + channelId;
+        Log.d(TAG, announcementsQuery);
+
+        // Create fields before while loop, not within every pass.
+        Announcement announcement;
+        String text, title;
+        int messageId, messageNumber, author;
+        boolean read;
+        Priority priority;
+        DateTime creationDate;
+
+        // Get message data from database.
+        Cursor cMessage = db.rawQuery(announcementsQuery, args);
+        while (cMessage != null && cMessage.moveToNext()) {
+            messageId = cMessage.getInt(cMessage.getColumnIndex(MESSAGE_ID));
+            messageNumber = cMessage.getInt(cMessage.getColumnIndex(ANNOUNCEMENT_MESSAGE_NUMBER));
+            author = cMessage.getInt(cMessage.getColumnIndex(ANNOUNCEMENT_AUTHOR));
+            text = cMessage.getString(cMessage.getColumnIndex(MESSAGE_TEXT));
+            title = cMessage.getString(cMessage.getColumnIndex(ANNOUNCEMENT_TITLE));
+            priority = Priority.values[(cMessage.getInt(cMessage.getColumnIndex(MESSAGE_PRIORITY)))];
+            read = cMessage.getInt(cMessage.getColumnIndex(MESSAGE_READ)) != 0;
+            creationDate = new DateTime(cMessage.getLong(cMessage.getColumnIndex(MESSAGE_CREATION_DATE)), TIME_ZONE);
+
+            // Add new announcement to the announcement list.
+            announcement = new Announcement(messageId, text, messageNumber, creationDate, priority, channelId,
+                    author, title, read);
+            announcements.add(announcement);
+        }
+        if (cMessage != null) {
+            cMessage.close();
+        }
+        Log.d(TAG, "End with " + announcements);
+        return announcements;
+    }
+
+    /**
+     * Gets the biggest message number of announcements of a specific channel from the database.
+     *
+     * @param channelId The id of the channel.
+     * @return The biggest message number.
+     */
+    public int getMaxMessageNumberAnnouncement(int channelId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String announcementsQuery = "SELECT MAX(a." + ANNOUNCEMENT_MESSAGE_NUMBER + ") FROM " + MESSAGE_TABLE +
+                " AS m JOIN " + ANNOUNCEMENT_TABLE + " AS a ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN +
+                " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
+        String[] args = new String[1];
+        args[0] = "" + channelId;
+        Log.d(TAG, announcementsQuery);
+
+        // Get message data from database.
+        int messageNumber = 0;
+        Cursor cMessage = db.rawQuery(announcementsQuery, args);
+        if (cMessage != null && cMessage.moveToNext()) {
+            messageNumber = cMessage.getInt(0);
+            cMessage.close();
+        }
+        Log.d(TAG, "End with " + messageNumber);
+        return messageNumber;
     }
 }

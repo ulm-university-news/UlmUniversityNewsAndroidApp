@@ -26,6 +26,8 @@ public class Message {
     protected DateTime creationDate;
     /** The priority of the message. */
     protected Priority priority;
+    /** A flag that indicates weather the message was read or not. */
+    boolean read;
 
     /**
      * Creates an instance of the Message class.
@@ -57,13 +59,15 @@ public class Message {
      * @param messageNumber The number of the message regarding their parent-resource.
      * @param creationDate The date and time when the message was created.
      * @param priority The priority of the message.
+     * @param read Weather the message was already read or not.
      */
-    public Message(int id, String text, int messageNumber, DateTime creationDate, Priority priority){
+    public Message(int id, String text, int messageNumber, DateTime creationDate, Priority priority, boolean read){
         this.id = id;
         this.text = text;
         this.messageNumber = messageNumber;
         this.creationDate = creationDate;
         this.priority = priority;
+        this.read = read;
     }
 
     /**
@@ -115,6 +119,14 @@ public class Message {
         this.messageNumber = messageNumber;
     }
 
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
@@ -123,6 +135,7 @@ public class Message {
                 ", messageNumber=" + messageNumber +
                 ", creationDate=" + creationDate +
                 ", priority=" + priority +
+                ", read=" + read +
                 '}';
     }
 }

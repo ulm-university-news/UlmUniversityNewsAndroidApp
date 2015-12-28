@@ -35,7 +35,7 @@ public class ChannelFragmentPager extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return AnnouncementFragment.newInstance();
+                return AnnouncementFragment.newInstance(channelId);
             case 1:
                 return ChannelDetailFragment.newInstance(channelId);
         }

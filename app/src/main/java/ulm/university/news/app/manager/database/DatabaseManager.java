@@ -168,7 +168,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     // Columns of the Announcement table.
     public static final String ANNOUNCEMENT_TABLE = "Announcement";
     public static final String ANNOUNCEMENT_MESSAGE_NUMBER = "MessageNumber";
-    public static final String ANNOUNCEMENT_TITLE = "Text";
+    public static final String ANNOUNCEMENT_TITLE = "Title";
     public static final String ANNOUNCEMENT_AUTHOR = "Author_Moderator_Id";
 
     /** SQL statement to create the Announcement table. */

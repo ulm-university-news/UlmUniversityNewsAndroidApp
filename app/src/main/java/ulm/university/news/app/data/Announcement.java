@@ -56,10 +56,11 @@ public class Announcement extends Message {
      * @param channelId The id of the channel to which the announcement belongs.
      * @param authorModerator The id of the moderator who is the author of the announcement.
      * @param title The title of the announcement.
+     * @param read Weather the message was already read or not.
      */
     public Announcement(int id, String text, int messageNumber, DateTime creationDate, Priority priority, int
-            channelId, int authorModerator, String title) {
-        super(id, text, messageNumber, creationDate, priority);
+            channelId, int authorModerator, String title, boolean read) {
+        super(id, text, messageNumber, creationDate, priority, read);
         this.channelId = channelId;
         this.authorModerator = authorModerator;
         this.title = title;

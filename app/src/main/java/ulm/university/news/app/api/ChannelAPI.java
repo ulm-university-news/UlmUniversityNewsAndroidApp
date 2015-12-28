@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 
 /**
@@ -130,6 +131,32 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getAnnouncements(int channelId, Integer messageNumber) {
+        // Create url to specific channel and point to announcement resource.
+        String url = serverAddressChannel + "/" + channelId + "/announcement";
+        HashMap<String, String> params = new HashMap<>();
+        if (messageNumber != null) {
+            params.put("messageNr", messageNumber.toString());
+        }
+        // Add parameters to url.
+        url += getUrlParams(params);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of announcements as deserialization type.
+                Type listType = new TypeToken<List<Announcement>>() {
+                }.getType();
+                List<Announcement> announcements = gson.fromJson(json, listType);
+                EventBus.getDefault().post(announcements);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
         rTask.setAccessToken(accessToken);
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
