@@ -4,9 +4,17 @@
              android:layout_height="match_parent"
              tools:context="ulm.university.news.app.controller.AnnouncementFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/fragment_announcement_lv_announcements"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/fragment_announcement_tv_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/fragment_announcement_list_empty"/>
 
 </FrameLayout>
