@@ -4,7 +4,7 @@
                 android:padding="8dp" >
 
     <ImageView
-        android:id="@+id/channel_detail_list_view_iv_icon"
+        android:id="@+id/channel_detail_list_item_iv_icon"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:adjustViewBounds="true"
@@ -16,23 +16,23 @@
         android:paddingRight="12dp"/>
 
     <TextView
-        android:id="@+id/channel_detail_list_view_tv_second_line"
+        android:id="@+id/channel_detail_list_item_tv_second_line"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/channel_detail_list_view_iv_icon"
+        android:layout_below="@id/channel_detail_list_item_iv_icon"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/channel_detail_list_view_tv_first_line"
+        android:id="@+id/channel_detail_list_item_tv_first_line"
         android:layout_width="fill_parent"
         android:layout_height="26dp"
-        android:layout_above="@id/channel_detail_list_view_tv_second_line"
+        android:layout_above="@id/channel_detail_list_item_tv_second_line"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/channel_detail_list_view_iv_icon"
+        android:layout_toRightOf="@id/channel_detail_list_item_iv_icon"
         android:gravity="center_vertical"
         android:textSize="16sp"
         android:singleLine="true"

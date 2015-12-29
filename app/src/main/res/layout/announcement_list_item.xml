@@ -11,7 +11,7 @@
         android:paddingBottom="5dp">
 
         <TextView
-            android:id="@+id/announcement_list_view_tv_title"
+            android:id="@+id/announcement_list_item_tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -21,7 +21,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/announcement_list_view_tv_date"
+            android:id="@+id/announcement_list_item_tv_date"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/announcement_list_view_tv_text"
+        android:id="@+id/announcement_list_item_tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"

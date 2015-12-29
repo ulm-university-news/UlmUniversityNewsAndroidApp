@@ -60,9 +60,9 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
         Announcement announcement = getItem(position);
 
         if (announcement != null) {
-            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.announcement_list_view_tv_title);
-            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.announcement_list_view_tv_text);
-            TextView tvThirdLine = (TextView) convertView.findViewById(R.id.announcement_list_view_tv_date);
+            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_title);
+            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_text);
+            TextView tvThirdLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_date);
 
             // Format the date for output.
             DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");

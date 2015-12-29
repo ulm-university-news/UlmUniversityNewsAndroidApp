@@ -1,44 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                android:padding="8dp" >
-
-    <ImageView
-        android:id="@+id/channel_list_view_iv_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:adjustViewBounds="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="channel_icon"
-        android:singleLine="true"
-        android:src="@drawable/icon_channel_other"
-        android:paddingLeft="4dp"
-        android:paddingRight="12dp"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="10dp">
 
     <TextView
-        android:id="@+id/channel_list_view_tv_second_line"
-        android:layout_width="fill_parent"
-        android:layout_height="22dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/channel_list_view_iv_icon"
+        android:id="@+id/channel_list_item_tv_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/circle_main"
         android:ellipsize="end"
-        android:singleLine="true"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/channel_list_view_tv_first_line"
-        android:layout_width="fill_parent"
-        android:layout_height="26dp"
-        android:layout_above="@id/channel_list_view_tv_second_line"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/channel_list_view_iv_icon"
-        android:gravity="center_vertical"
-        android:textSize="16sp"
-        android:singleLine="true"
-        android:ellipsize="end"
+        android:gravity="center"
+        android:paddingBottom="5dp"
+        android:textColor="#fff"
+        android:textSize="34sp"
         android:textStyle="bold"/>
-</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/channel_list_item_tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/channel_list_item_tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:singleLine="true"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+</LinearLayout>

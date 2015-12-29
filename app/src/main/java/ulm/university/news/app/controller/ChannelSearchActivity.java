@@ -12,6 +12,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -67,6 +68,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_search);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_channel_search_toolbar);
+        setSupportActionBar(toolbar);
 
         channelDBM = new ChannelDatabaseManager(this);
 

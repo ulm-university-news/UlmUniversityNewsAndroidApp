@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +21,9 @@ import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
+import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.util.Util;
 
@@ -45,8 +46,6 @@ public class ChannelDetailFragment extends Fragment {
     private Channel channel;
     HashMap<String, String> channelData;
 
-    private ImageView ivChannelIcon;
-    private TextView tvChannelName;
     private Button btnSubscribe;
     private Button btnUnsubscribe;
 
@@ -85,12 +84,9 @@ public class ChannelDetailFragment extends Fragment {
     }
 
     private void initView(View v) {
-        lvChannelDetails = (ListView) v.findViewById(R.id.activity_channel_detail_lv_channel_details);
-        tvChannelName = (TextView) v.findViewById(R.id.activity_channel_detail_tv_channel_name);
-        ivChannelIcon = (ImageView) v.findViewById(R.id.activity_channel_detail_iv_channel_icon);
-        btnSubscribe = (Button) v.findViewById(R.id.activity_channel_detail_btn_subscribe);
-        btnUnsubscribe = (Button) v.findViewById(R.id.activity_channel_detail_btn_unsubscribe);
-
+        lvChannelDetails = (ListView) v.findViewById(R.id.fragment_channel_detail_lv_channel_details);
+        btnSubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_subscribe);
+        btnUnsubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_unsubscribe);
         toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
         if (tv != null) tv.setGravity(Gravity.CENTER);
@@ -137,51 +133,11 @@ public class ChannelDetailFragment extends Fragment {
             btnUnsubscribe.setVisibility(View.INVISIBLE);
         }
         setChannelData();
-        tvChannelName.setText(channel.getName());
-        setChannelIcon();
+//         setChannelIcon();
 
         listAdapter = new ChannelDetailListAdapter();
         listAdapter.setChannelData(channelData);
         lvChannelDetails.setAdapter(listAdapter);
-    }
-
-    /**
-     * Sets the appropriate channel icon.
-     */
-    private void setChannelIcon() {
-        // Set appropriate channel icon.
-        switch (channel.getType()) {
-            case LECTURE:
-                Lecture lecture = (Lecture) channel;
-                // Set icon with appropriate faculty color.
-                switch (lecture.getFaculty()) {
-                    case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
-                        ivChannelIcon.setImageResource(R.drawable.icon_channel_lecture_informatics);
-                        break;
-                    case MATHEMATICS_ECONOMICS:
-                        ivChannelIcon.setImageResource(R.drawable.icon_channel_lecture_math);
-                        break;
-                    case MEDICINES:
-                        ivChannelIcon.setImageResource(R.drawable.icon_channel_lecture_medicine);
-                        break;
-                    case NATURAL_SCIENCES:
-                        ivChannelIcon.setImageResource(R.drawable.icon_channel_lecture_science);
-                        break;
-                }
-                break;
-            case EVENT:
-                ivChannelIcon.setImageResource(R.drawable.icon_channel_event);
-                break;
-            case SPORTS:
-                ivChannelIcon.setImageResource(R.drawable.icon_channel_sports);
-                break;
-            case STUDENT_GROUP:
-                ivChannelIcon.setImageResource(R.drawable.icon_channel_student_group);
-                break;
-            case OTHER:
-                ivChannelIcon.setImageResource(R.drawable.icon_channel_other);
-                break;
-        }
     }
 
     private void setChannelData() {
@@ -204,6 +160,44 @@ public class ChannelDetailFragment extends Fragment {
         }
         if (channel.getDates() != null) {
             channelData.put(getString(R.string.channel_dates), channel.getDates());
+        }
+        // Check type specific fields.
+        switch (channel.getType()) {
+            case LECTURE:
+                Lecture lecture = (Lecture) channel;
+                channelData.put(getString(R.string.lecture_lecturer), lecture.getLecturer());
+                channelData.put(getString(R.string.lecture_faculty), lecture.getFaculty().toString());
+                // Check nullable fields.
+                if (lecture.getAssistant() != null) {
+                    channelData.put(getString(R.string.lecture_assistant), lecture.getAssistant());
+                }
+                if (lecture.getStartDate() != null) {
+                    channelData.put(getString(R.string.lecture_start_date), lecture.getStartDate());
+                }
+                if (lecture.getEndDate() != null) {
+                    channelData.put(getString(R.string.lecture_end_date), lecture.getEndDate());
+                }
+                break;
+            case EVENT:
+                Event event = (Event) channel;
+                // Check nullable fields.
+                if (event.getCost() != null) {
+                    channelData.put(getString(R.string.event_cost), event.getCost());
+                }
+                if (event.getOrganizer() != null) {
+                    channelData.put(getString(R.string.event_organizer), event.getOrganizer());
+                }
+                break;
+            case SPORTS:
+                Sports sports = (Sports) channel;
+                // Check nullable fields.
+                if (sports.getCost() != null) {
+                    channelData.put(getString(R.string.sports_cost), sports.getCost());
+                }
+                if (sports.getNumberOfParticipants() != null) {
+                    channelData.put(getString(R.string.sports_cost), sports.getNumberOfParticipants());
+                }
+                break;
         }
     }
 

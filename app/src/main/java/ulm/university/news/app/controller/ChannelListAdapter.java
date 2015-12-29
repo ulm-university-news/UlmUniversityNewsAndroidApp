@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -60,46 +59,51 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
         Channel channel = getItem(position);
 
         if (channel != null) {
-            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.channel_list_view_tv_first_line);
-            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.channel_list_view_tv_second_line);
-            ImageView ivIcon = (ImageView) convertView.findViewById(R.id.channel_list_view_iv_icon);
+            TextView tvName = (TextView) convertView.findViewById(R.id.channel_list_item_tv_name);
+            TextView tvDescription = (TextView) convertView.findViewById(R.id.channel_list_item_tv_description);
+            TextView tvIcon = (TextView) convertView.findViewById(R.id.channel_list_item_tv_icon);
 
-            tvFirstLine.setText(channel.getName());
-            tvSecondLine.setText(channel.getTerm());
-            // tvSecondLine.setText(channel.getCreationDate().toString());
+            tvName.setText(channel.getName());
+            tvDescription.setText(channel.getTerm());
+            // tvDescription.setText(channel.getCreationDate().toString());
 
             // Set appropriate channel icon.
             switch (channel.getType()) {
                 case LECTURE:
+                    tvIcon.setText("V");
                     Lecture lecture = (Lecture) channel;
-                    tvSecondLine.setText(lecture.getLecturer());
+                    tvDescription.setText(lecture.getLecturer());
                     // Set icon with appropriate faculty color.
                     switch (lecture.getFaculty()) {
                         case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
-                            ivIcon.setImageResource(R.drawable.icon_channel_lecture_informatics);
+                            tvIcon.setBackgroundResource(R.drawable.circle_informatics);
                             break;
                         case MATHEMATICS_ECONOMICS:
-                            ivIcon.setImageResource(R.drawable.icon_channel_lecture_math);
+                            tvIcon.setBackgroundResource(R.drawable.circle_mathematics);
                             break;
                         case MEDICINES:
-                            ivIcon.setImageResource(R.drawable.icon_channel_lecture_medicine);
+                            tvIcon.setBackgroundResource(R.drawable.circle_medicines);
                             break;
                         case NATURAL_SCIENCES:
-                            ivIcon.setImageResource(R.drawable.icon_channel_lecture_science);
+                            tvIcon.setBackgroundResource(R.drawable.circle_science);
                             break;
                     }
                     break;
                 case EVENT:
-                    ivIcon.setImageResource(R.drawable.icon_channel_event);
+                    tvIcon.setText("E");
+                    tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case SPORTS:
-                    ivIcon.setImageResource(R.drawable.icon_channel_sports);
+                    tvIcon.setText("S");
+                    tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case STUDENT_GROUP:
-                    ivIcon.setImageResource(R.drawable.icon_channel_student_group);
+                    tvIcon.setText("G");
+                    tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case OTHER:
-                    ivIcon.setImageResource(R.drawable.icon_channel_other);
+                    tvIcon.setText("O");
+                    tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
             }
         }

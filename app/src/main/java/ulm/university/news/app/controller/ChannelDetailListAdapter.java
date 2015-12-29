@@ -58,8 +58,8 @@ public class ChannelDetailListAdapter extends BaseAdapter {
         Map.Entry<String, String> item = getItem(position);
 
         if (item != null) {
-            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.channel_detail_list_view_tv_first_line);
-            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.channel_detail_list_view_tv_second_line);
+            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_first_line);
+            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_second_line);
 
             tvFirstLine.setText(item.getKey());
             tvSecondLine.setText(item.getValue());
@@ -70,7 +70,7 @@ public class ChannelDetailListAdapter extends BaseAdapter {
 
     private void setItemIcon(View view, String key) {
         // TODO Add nice and appropriate icons.
-        ImageView ivIcon = (ImageView) view.findViewById(R.id.channel_detail_list_view_iv_icon);
+        ImageView ivIcon = (ImageView) view.findViewById(R.id.channel_detail_list_item_iv_icon);
         if (key.equals(view.getContext().getString(R.string.channel_description))) {
             ivIcon.setImageResource(android.R.drawable.ic_menu_info_details);
         } else if (key.equals(view.getContext().getString(R.string.channel_dates))) {

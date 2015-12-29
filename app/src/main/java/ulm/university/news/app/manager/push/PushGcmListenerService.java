@@ -22,6 +22,7 @@ import ulm.university.news.app.controller.ChannelActivity;
 import ulm.university.news.app.controller.MainActivity;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.PushMessage;
+import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 
 /**
  * TODO
@@ -74,7 +75,9 @@ public class PushGcmListenerService extends GcmListenerService {
         // TODO
         switch (pushMessage.getPushType()){
             case ANNOUNCEMENT_NEW:
-                ChannelAPI.getInstance(getApplicationContext()).getAnnouncements(pushMessage.getId1(), null);
+                int messageNumber = new ChannelDatabaseManager(getApplication()).getMaxMessageNumberAnnouncement
+                        (pushMessage.getId1());
+                ChannelAPI.getInstance(getApplicationContext()).getAnnouncements(pushMessage.getId1(), messageNumber);
                 break;
             default:
         }
@@ -86,7 +89,7 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param announcements The list containing announcement objects.
      */
     public void onEvent(List<Announcement> announcements) {
-        Log.d(TAG, "EventBus: List<Channel>");
+        Log.d(TAG, "EventBus: List<Announcement>");
         Log.d(TAG, announcements.toString());
         // Unregister this instance. For new push messages the new instance will be registered in onCreate().
         EventBus.getDefault().unregister(this);
