@@ -5,6 +5,10 @@ import android.content.Context;
 import android.text.Html;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.HashSet;
 import java.util.List;
 
@@ -99,5 +103,19 @@ public class ChannelController {
             Log.d(TAG, "authorId:" + authorId);
             // TODO Check moderator existence, load and store if necessary.
         }
+    }
+
+    public static String getFormattedDateShort(DateTime date){
+        // Format the date for output.
+        // TODO Language dependency.
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("HH:mm MM/dd/yy");
+        return dtfOut.print(date);
+    }
+
+    public static String getFormattedDateLong(DateTime date){
+        // Format the date for output.
+        // TODO Language dependency.
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
+        return dtfOut.print(date);
     }
 }

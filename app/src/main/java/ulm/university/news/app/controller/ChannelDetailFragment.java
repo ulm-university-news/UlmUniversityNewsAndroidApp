@@ -143,8 +143,8 @@ public class ChannelDetailFragment extends Fragment {
         channelData.put(getString(R.string.channel_name), channel.getName());
         channelData.put(getString(R.string.channel_type), channel.getType().toString());
         channelData.put(getString(R.string.channel_contacts), channel.getContacts());
-        channelData.put(getString(R.string.channel_creation_date), channel.getCreationDate().toString());
-        channelData.put(getString(R.string.channel_modification_date), channel.getModificationDate().toString());
+        channelData.put(getString(R.string.channel_creation_date), ChannelController.getFormattedDateLong(channel.getCreationDate()));
+        channelData.put(getString(R.string.channel_modification_date),  ChannelController.getFormattedDateLong(channel.getModificationDate()));
         // Check nullable fields.
         if (channel.getLocations() != null) {
             channelData.put(getString(R.string.channel_locations), channel.getLocations());

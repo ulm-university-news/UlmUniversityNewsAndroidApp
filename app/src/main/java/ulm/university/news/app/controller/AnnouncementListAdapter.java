@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.List;
 
 import ulm.university.news.app.R;
@@ -65,12 +62,9 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
             TextView tvText = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_text);
             TextView tvDate = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_date);
 
-            // Format the date for output.
-            DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
-
             tvTitle.setText(announcement.getTitle());
             tvText.setText(announcement.getText());
-            tvDate.setText(dtfOut.print(announcement.getCreationDate()));
+            tvDate.setText(ChannelController.getFormattedDateShort(announcement.getCreationDate()));
 
             // Mark unread announcements.
             if(!announcement.isRead()){
