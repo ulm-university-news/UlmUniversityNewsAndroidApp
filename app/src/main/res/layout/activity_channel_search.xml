@@ -23,11 +23,12 @@
 
         <ListView
             android:id="@+id/activity_channel_search_lv_channels"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            android:background="#ffffff"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

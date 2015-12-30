@@ -489,6 +489,10 @@ public class ChannelDatabaseManager {
                     channel = new Channel(id, name, description, type, creationDate, modificationDate, term,
                             locations, dates, contacts, website);
             }
+            // Add count of unread announcements to the channel.
+            if (channel != null) {
+                channel.setNumberOfUnreadAnnouncements(getNumberOfUnreadAnnouncements(id));
+            }
             // Add created channel to the channel list.
             channels.add(channel);
         }
@@ -693,7 +697,32 @@ public class ChannelDatabaseManager {
             messageNumber = cMessage.getInt(0);
             cMessage.close();
         }
-        Log.d(TAG, "End with " + messageNumber);
+        Log.d(TAG, "End with max message number " + messageNumber);
         return messageNumber;
+    }
+
+    private int getNumberOfUnreadAnnouncements(int channelId) {
+        int count = 0;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String announcementsQuery = "SELECT * FROM " + MESSAGE_TABLE +
+                " AS m JOIN " + ANNOUNCEMENT_TABLE + " AS a ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN +
+                " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
+        String[] args = new String[1];
+        args[0] = "" + channelId;
+        Log.d(TAG, announcementsQuery);
+
+        // Count unread announcements in database.
+        Cursor cMessage = db.rawQuery(announcementsQuery, args);
+        while (cMessage != null && cMessage.moveToNext()) {
+            if (cMessage.getInt(cMessage.getColumnIndex(MESSAGE_READ)) == 0) {
+                count++;
+            }
+        }
+        if (cMessage != null) {
+            cMessage.close();
+        }
+
+        Log.d(TAG, "End with unread announcements count " + count);
+        return count;
     }
 }

@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -99,23 +98,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     public void onEventMainThread(List<Announcement> announcements) {
         Log.d(TAG, "EventBus: List<Announcement>");
         Log.d(TAG, announcements.toString());
-        storeAnnouncements(announcements);
-    }
-
-    private void storeAnnouncements(List<Announcement> announcements) {
-        HashSet<Integer> authorIds = new HashSet<>();
-
-        // Store new announcements.
-        for (Announcement announcement : announcements) {
-            databaseLoader.getChannelDBM().storeAnnouncement(announcement);
-            authorIds.add(announcement.getAuthorModerator());
-        }
-
-        // Load and store new moderators.
-        for (Integer authorId : authorIds) {
-            Log.d(TAG, "authorId:" + authorId);
-            // TODO Check moderator existence, load and store if necessary.
-        }
+        ChannelController.storeAnnouncements(getActivity(), announcements);
     }
 
     @Override

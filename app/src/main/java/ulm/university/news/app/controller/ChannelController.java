@@ -1,12 +1,19 @@
 package ulm.university.news.app.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.Html;
+import android.util.Log;
+
+import java.util.HashSet;
+import java.util.List;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.enums.ChannelType;
+import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 
 /**
  * This class provides static util methods which are often used across different activities.
@@ -14,6 +21,8 @@ import ulm.university.news.app.data.enums.ChannelType;
  * @author Matthias Mak
  */
 public class ChannelController {
+    /** This classes tag for logging. */
+    private static final String TAG = "ChannelController";
 
     /**
      * Changes the apps color theme which defines the toolbar colors and others. Must be called before super.onCreate()
@@ -73,5 +82,22 @@ public class ChannelController {
         }
         headerText += " " + Html.fromHtml("&#448; ") + channel.getName();
         return headerText;
+    }
+
+    public static void storeAnnouncements(Context context, List<Announcement> announcements) {
+        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
+        HashSet<Integer> authorIds = new HashSet<>();
+
+        // Store new announcements.
+        for (Announcement announcement : announcements) {
+            channelDBM.storeAnnouncement(announcement);
+            authorIds.add(announcement.getAuthorModerator());
+        }
+
+        // Load and store new moderators.
+        for (Integer authorId : authorIds) {
+            Log.d(TAG, "authorId:" + authorId);
+            // TODO Check moderator existence, load and store if necessary.
+        }
     }
 }

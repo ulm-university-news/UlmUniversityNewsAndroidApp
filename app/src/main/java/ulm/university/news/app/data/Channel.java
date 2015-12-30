@@ -46,6 +46,8 @@ public class Channel {
     List<Moderator> moderators;
     /** A list of all subscribers of the channel. */
     List<User> subscribers;
+    /** A counter which determine how many unread announcements the channel contains. */
+    Integer numberOfUnreadAnnouncements;
 
     public Channel() {
     }
@@ -101,6 +103,14 @@ public class Channel {
                 ", moderators=" + moderators +
                 ", subscribers=" + subscribers +
                 '}';
+    }
+
+    public Integer getNumberOfUnreadAnnouncements() {
+        return numberOfUnreadAnnouncements;
+    }
+
+    public void setNumberOfUnreadAnnouncements(Integer numberOfUnreadAnnouncements) {
+        this.numberOfUnreadAnnouncements = numberOfUnreadAnnouncements;
     }
 
     public int getId() {

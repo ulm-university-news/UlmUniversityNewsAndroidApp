@@ -63,10 +63,24 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             TextView tvType = (TextView) convertView.findViewById(R.id.channel_list_item_tv_type);
             TextView tvTerm = (TextView) convertView.findViewById(R.id.channel_list_item_tv_term);
             TextView tvIcon = (TextView) convertView.findViewById(R.id.channel_list_item_tv_icon);
+            TextView tvNew = (TextView) convertView.findViewById(R.id.channel_list_item_tv_new);
 
             tvName.setText(channel.getName());
             tvType.setText(channel.getType().toString());
             tvTerm.setText(channel.getTerm());
+
+            // Show number of unread announcements.
+            Integer number = channel.getNumberOfUnreadAnnouncements();
+            if (number != null && number > 0) {
+                if (number > 99) {
+                    tvNew.setText("" + 99);
+                } else {
+                    tvNew.setText(number.toString());
+                }
+                tvNew.setVisibility(View.VISIBLE);
+            } else {
+                tvNew.setVisibility(View.GONE);
+            }
 
             // Set appropriate channel icon.
             switch (channel.getType()) {
@@ -108,5 +122,11 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             }
         }
         return convertView;
+    }
+
+    public int dpsToPixles(int dps) {
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int pixels = (int) (dps * scale + 0.5f);
+        return pixels;
     }
 }

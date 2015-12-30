@@ -43,6 +43,15 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Update channel list to make changes like read messages visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -93,10 +102,11 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
 
             @Override
             public IntentFilter observerFilter() {
-                // Listen to database changes on channel subscriptions.
+                // Listen to database changes on channel subscriptions and new announcements.
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(ChannelDatabaseManager.SUBSCRIBE_CHANNEL);
                 filter.addAction(ChannelDatabaseManager.UNSUBSCRIBE_CHANNEL);
+                filter.addAction(ChannelDatabaseManager.STORE_ANNOUNCEMENT);
                 return filter;
             }
         });

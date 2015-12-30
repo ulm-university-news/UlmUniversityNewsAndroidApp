@@ -19,6 +19,7 @@ import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.controller.ChannelActivity;
+import ulm.university.news.app.controller.ChannelController;
 import ulm.university.news.app.controller.MainActivity;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.PushMessage;
@@ -91,6 +92,7 @@ public class PushGcmListenerService extends GcmListenerService {
     public void onEvent(List<Announcement> announcements) {
         Log.d(TAG, "EventBus: List<Announcement>");
         Log.d(TAG, announcements.toString());
+        ChannelController.storeAnnouncements(getApplicationContext(), announcements);
         // Unregister this instance. For new push messages the new instance will be registered in onCreate().
         EventBus.getDefault().unregister(this);
     }
