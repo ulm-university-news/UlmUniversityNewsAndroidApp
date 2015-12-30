@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     /** This classes tag for logging. */
     private static final String TAG = "MainActivity";
 
+    private MainFragmentPager pager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_viewpager);
-        viewPager.setAdapter(new MainFragmentPager(getSupportFragmentManager(),
-                MainActivity.this));
+        pager = new MainFragmentPager(getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pager);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_main_sliding_tabs);
@@ -45,7 +47,13 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection.
         switch (item.getItemId()) {
             case R.id.options_menu_search:
-                Intent intent = new Intent(this, ChannelSearchActivity.class);
+                Intent intent;
+                if(pager.getCurrentFragment() instanceof ChannelFragment){
+                    intent = new Intent(this, ChannelSearchActivity.class);
+                } else {
+                    // TODO Link to GroupSearchActivity
+                    intent = new Intent(this, StartActivity.class);
+                }
                 startActivity(intent);
                 return true;
             default:

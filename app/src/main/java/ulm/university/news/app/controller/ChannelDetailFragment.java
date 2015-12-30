@@ -126,14 +126,13 @@ public class ChannelDetailFragment extends Fragment {
         });
 
         if (channelDBM.isSubscribedChannel(channel.getId())) {
-            btnSubscribe.setVisibility(View.INVISIBLE);
+            btnSubscribe.setVisibility(View.GONE);
             btnUnsubscribe.setVisibility(View.VISIBLE);
         } else {
             btnSubscribe.setVisibility(View.VISIBLE);
-            btnUnsubscribe.setVisibility(View.INVISIBLE);
+            btnUnsubscribe.setVisibility(View.GONE);
         }
         setChannelData();
-//         setChannelIcon();
 
         listAdapter = new ChannelDetailListAdapter();
         listAdapter.setChannelData(channelData);
@@ -141,6 +140,7 @@ public class ChannelDetailFragment extends Fragment {
     }
 
     private void setChannelData() {
+        channelData.put(getString(R.string.channel_name), channel.getName());
         channelData.put(getString(R.string.channel_type), channel.getType().toString());
         channelData.put(getString(R.string.channel_contacts), channel.getContacts());
         channelData.put(getString(R.string.channel_creation_date), channel.getCreationDate().toString());
@@ -224,7 +224,7 @@ public class ChannelDetailFragment extends Fragment {
         String action = busEvent.getAction();
         if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.subscribeChannel(channel.getId());
-            btnSubscribe.setVisibility(View.INVISIBLE);
+            btnSubscribe.setVisibility(View.GONE);
             btnUnsubscribe.setVisibility(View.VISIBLE);
             Intent intent = new Intent(getActivity(), ChannelActivity.class);
             intent.putExtra("channelId", channel.getId());
@@ -233,7 +233,7 @@ public class ChannelDetailFragment extends Fragment {
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
             btnSubscribe.setVisibility(View.VISIBLE);
-            btnUnsubscribe.setVisibility(View.INVISIBLE);
+            btnUnsubscribe.setVisibility(View.GONE);
             getActivity().finish();
         }
     }

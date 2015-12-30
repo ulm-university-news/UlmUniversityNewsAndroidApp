@@ -157,6 +157,12 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
             tvInfo.setVisibility(View.GONE);
             tvInfo.setText(getText(R.string.fragment_announcement_list_loading));
         }
+        // Mark loaded and unread announcements as read after displaying.
+        for(Announcement announcement: announcements){
+            if(!announcement.isRead()){
+                databaseLoader.getChannelDBM().setMessageToRead(announcement.getId());
+            }
+        }
     }
 
     @Override

@@ -33,6 +33,7 @@
     <string name="activity_create_account_name_hint">User name</string>
 
     <!-- ChannelSearchActivity ##################################################################################### -->
+    <string name="activity_channel_search_title">Channel Search</string>
     <string name="activity_channel_search_updating">Updating channel data...</string>
 
     <!-- MainActivity ############################################################################################## -->
@@ -62,6 +63,7 @@
     <string name="user_error_name_invalid">Your user name is invalid.</string>
 
     <!-- Channel ################################################################################################### -->
+    <string name="channel_name">Name</string>
     <string name="channel_description">Description</string>
     <string name="channel_contacts">Contacts</string>
     <string name="channel_locations">Locations</string>
@@ -75,6 +77,7 @@
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
 
     <!-- Lecture ################################################################################################### -->
+    <string name="lecture_symbol">L</string>
     <string name="lecture_faculty">Faculty</string>
     <string name="lecture_start_date">Start date</string>
     <string name="lecture_end_date">End date</string>
@@ -82,12 +85,20 @@
     <string name="lecture_assistant">Assistant</string>
 
     <!-- Event ##################################################################################################### -->
+    <string name="event_symbol">E</string>
     <string name="event_cost">Cost</string>
     <string name="event_organizer">Organizer</string>
 
     <!-- Sports #################################################################################################### -->
+    <string name="sports_symbol">S</string>
     <string name="sports_cost">Cost</string>
     <string name="sports_participants">Number of participants</string>
+
+    <!-- StudentGroup ############################################################################################## -->
+    <string name="student_group_symbol">G</string>
+
+    <!-- Other ##################################################################################################### -->
+    <string name="other_symbol">O</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

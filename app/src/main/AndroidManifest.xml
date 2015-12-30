@@ -69,7 +69,9 @@
             android:name="android.app.default_searchable"
             android:value=".controller.ChannelSearchActivity"/>
 
-        <activity android:name=".controller.ChannelSearchActivity">
+        <activity
+            android:name=".controller.ChannelSearchActivity"
+            android:label="@string/activity_channel_search_title">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
@@ -85,10 +87,12 @@
                 android:value="ulm.university.news.app.controller.MainActivity" />
         </activity>
         <activity android:name=".controller.ChannelDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.ChannelSearchActivity" />
         </activity>
         <activity
-            android:name=".controller.ChannelActivity"
-            android:label="@string/app_name">
+            android:name=".controller.ChannelActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.MainActivity" />

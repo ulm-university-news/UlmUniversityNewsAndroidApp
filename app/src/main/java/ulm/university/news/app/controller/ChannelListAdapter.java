@@ -60,19 +60,19 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
 
         if (channel != null) {
             TextView tvName = (TextView) convertView.findViewById(R.id.channel_list_item_tv_name);
-            TextView tvDescription = (TextView) convertView.findViewById(R.id.channel_list_item_tv_description);
+            TextView tvType = (TextView) convertView.findViewById(R.id.channel_list_item_tv_type);
+            TextView tvTerm = (TextView) convertView.findViewById(R.id.channel_list_item_tv_term);
             TextView tvIcon = (TextView) convertView.findViewById(R.id.channel_list_item_tv_icon);
 
             tvName.setText(channel.getName());
-            tvDescription.setText(channel.getTerm());
-            // tvDescription.setText(channel.getCreationDate().toString());
+            tvType.setText(channel.getType().toString());
+            tvTerm.setText(channel.getTerm());
 
             // Set appropriate channel icon.
             switch (channel.getType()) {
                 case LECTURE:
-                    tvIcon.setText("V");
+                    tvIcon.setText(getContext().getString(R.string.lecture_symbol));
                     Lecture lecture = (Lecture) channel;
-                    tvDescription.setText(lecture.getLecturer());
                     // Set icon with appropriate faculty color.
                     switch (lecture.getFaculty()) {
                         case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
@@ -90,19 +90,19 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
                     }
                     break;
                 case EVENT:
-                    tvIcon.setText("E");
+                    tvIcon.setText(getContext().getString(R.string.event_symbol));
                     tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case SPORTS:
-                    tvIcon.setText("S");
+                    tvIcon.setText(getContext().getString(R.string.sports_symbol));
                     tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case STUDENT_GROUP:
-                    tvIcon.setText("G");
+                    tvIcon.setText(getContext().getString(R.string.student_group_symbol));
                     tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
                 case OTHER:
-                    tvIcon.setText("O");
+                    tvIcon.setText(getContext().getString(R.string.other_symbol));
                     tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
             }

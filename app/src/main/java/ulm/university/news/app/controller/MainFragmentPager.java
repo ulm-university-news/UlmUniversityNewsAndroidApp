@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import ulm.university.news.app.R;
 
@@ -24,6 +25,20 @@ public class MainFragmentPager extends FragmentPagerAdapter {
                 context.getString(R.string.activity_main_channel_tab),
                 context.getString(R.string.activity_main_group_tap)};
         PAGE_COUNT = tabTitles.length;
+    }
+
+    private Fragment mCurrentFragment;
+
+    public Fragment getCurrentFragment() {
+        return mCurrentFragment;
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        if (getCurrentFragment() != object) {
+            mCurrentFragment = ((Fragment) object);
+        }
+        super.setPrimaryItem(container, position, object);
     }
 
     @Override

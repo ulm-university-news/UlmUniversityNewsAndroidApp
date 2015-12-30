@@ -657,6 +657,21 @@ public class ChannelDatabaseManager {
     }
 
     /**
+     * Marks a message as read.
+     *
+     * @param messageId The message which should be set to read.
+     */
+    public void setMessageToRead(int messageId) {
+        Log.d(TAG, "Update message with id " + messageId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(MESSAGE_READ, true);
+        String where = MESSAGE_ID + "=" + messageId;
+        db.update(MESSAGE_TABLE, values, where, null);
+    }
+
+    /**
      * Gets the biggest message number of announcements of a specific channel from the database.
      *
      * @param channelId The id of the channel.

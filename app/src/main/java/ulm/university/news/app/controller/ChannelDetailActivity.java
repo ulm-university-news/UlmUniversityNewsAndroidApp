@@ -14,19 +14,22 @@ public class ChannelDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_channel_detail);
-
         int channelId = getIntent().getIntExtra("channelId", 0);
         Channel channel = new ChannelDatabaseManager(this).getChannel(channelId);
+        ChannelController.setColorTheme(this, channel);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_channel_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_channel_detail_toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle(channel.getName());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(ChannelController.getHeaderText(this, channel));
 
         // Add the fragment to the 'fragment_container' FrameLayout
         ChannelDetailFragment fragment = ChannelDetailFragment.newInstance(channelId);
-        getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_channel_detail_fragment_container, fragment)
+                .commit();
     }
 }

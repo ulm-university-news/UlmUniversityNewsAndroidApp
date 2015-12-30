@@ -1,6 +1,7 @@
 package ulm.university.news.app.controller;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,16 +61,23 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
         Announcement announcement = getItem(position);
 
         if (announcement != null) {
-            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_title);
-            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_text);
-            TextView tvThirdLine = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_date);
+            TextView tvTitle = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_title);
+            TextView tvText = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_text);
+            TextView tvDate = (TextView) convertView.findViewById(R.id.announcement_list_item_tv_date);
 
             // Format the date for output.
             DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
 
-            tvFirstLine.setText(announcement.getTitle());
-            tvSecondLine.setText(announcement.getText());
-            tvThirdLine.setText(dtfOut.print(announcement.getCreationDate()));
+            tvTitle.setText(announcement.getTitle());
+            tvText.setText(announcement.getText());
+            tvDate.setText(dtfOut.print(announcement.getCreationDate()));
+
+            // Mark unread announcements.
+            if(!announcement.isRead()){
+                convertView.setBackgroundColor(Color.parseColor("#eeeeee"));
+            } else {
+                convertView.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
         }
         return convertView;
     }
