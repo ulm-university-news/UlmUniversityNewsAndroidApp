@@ -35,7 +35,14 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
     public void setData(List<Announcement> data) {
         clear();
         if (data != null) {
+            /*
+            // DESC
             for (int i = 0; i < data.size(); i++) {
+                add(data.get(i));
+            }
+            */
+            // ASC
+            for (int i = data.size() - 1; i >= 0; i--) {
                 add(data.get(i));
             }
         }
@@ -67,8 +74,8 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
             tvDate.setText(ChannelController.getFormattedDateShort(announcement.getCreationDate()));
 
             // Mark unread announcements.
-            if(!announcement.isRead()){
-                convertView.setBackgroundColor(Color.parseColor("#eeeeee"));
+            if (!announcement.isRead()) {
+                convertView.setBackgroundColor(Color.parseColor("#d6d6d6"));
             } else {
                 convertView.setBackgroundColor(Color.parseColor("#ffffff"));
             }
