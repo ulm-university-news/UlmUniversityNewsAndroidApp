@@ -17,10 +17,11 @@
     <!-- extend one of the Theme.AppCompat themes -->
     <style name="Theme.UlmUniversityMain" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#7D9AAA</item>
+        <item name="colorPrimary">#7d9aaa</item>
         <item name="colorAccent">#97aebb</item>
         <item name="colorPrimaryDark">#647b88</item>
         <item name="android:textColorPrimary">#fff</item>
+        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
     </style>
 
     <style name="Theme.UlmUniversityMedicines" parent="Theme.AppCompat.Light.NoActionBar">
@@ -29,6 +30,7 @@
         <item name="colorAccent">#7c98b0</item>
         <item name="colorPrimaryDark">#1e4363</item>
         <item name="android:textColorPrimary">#fff</item>
+        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
     </style>
 
     <style name="Theme.UlmUniversityScience" parent="Theme.AppCompat.Light.NoActionBar">
@@ -37,6 +39,7 @@
         <item name="colorAccent">#d79f69</item>
         <item name="colorPrimaryDark">#974c04</item>
         <item name="android:textColorPrimary">#fff</item>
+        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
     </style>
 
     <style name="Theme.UlmUniversityInformatics" parent="Theme.AppCompat.Light.NoActionBar">
@@ -45,6 +48,7 @@
         <item name="colorAccent">#c77c87</item>
         <item name="colorPrimaryDark">#821e2c</item>
         <item name="android:textColorPrimary">#fff</item>
+        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
     </style>
 
     <style name="Theme.UlmUniversityMathematics" parent="Theme.AppCompat.Light.NoActionBar">
@@ -53,6 +57,13 @@
         <item name="colorAccent">#99cc76</item>
         <item name="colorPrimaryDark">#448816</item>
         <item name="android:textColorPrimary">#fff</item>
+        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
     </style>
+
+    <!-- extend one of the Theme.AppCompat themes -->
+    <style name="UlmUniversityAlertDialogMain" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#888888</item>
+    </style>
+
 
 </resources>

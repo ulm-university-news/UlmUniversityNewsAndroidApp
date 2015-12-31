@@ -34,7 +34,7 @@ import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
  *
  * @author Matthias Mak
  */
-public class ChannelDetailFragment extends Fragment {
+public class ChannelDetailFragment extends Fragment implements DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "ChannelDetailFragment";
 
@@ -113,7 +113,9 @@ public class ChannelDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (Util.isOnline(v.getContext())) {
-                    ChannelAPI.getInstance(v.getContext()).unsubscribeChannel(channel.getId());
+                    UnsubscribeDialogFragment dialog = new UnsubscribeDialogFragment();
+                    dialog.setTargetFragment(ChannelDetailFragment.this, 0);
+                    dialog.show(getFragmentManager(), "unsubscribeDialog");
                     errorMessage = getString(R.string.general_error_connection_failed);
                     errorMessage += getString(R.string.general_error_unsubscribe);
                 } else {
@@ -144,7 +146,7 @@ public class ChannelDetailFragment extends Fragment {
         channelData.put(getString(R.string.channel_type), channel.getType().toString());
         channelData.put(getString(R.string.channel_contacts), channel.getContacts());
         channelData.put(getString(R.string.channel_creation_date), ChannelController.getFormattedDateLong(channel.getCreationDate()));
-        channelData.put(getString(R.string.channel_modification_date),  ChannelController.getFormattedDateLong(channel.getModificationDate()));
+        channelData.put(getString(R.string.channel_modification_date), ChannelController.getFormattedDateLong(channel.getModificationDate()));
         // Check nullable fields.
         if (channel.getLocations() != null) {
             channelData.put(getString(R.string.channel_locations), channel.getLocations());
@@ -224,16 +226,16 @@ public class ChannelDetailFragment extends Fragment {
         String action = busEvent.getAction();
         if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.subscribeChannel(channel.getId());
-            btnSubscribe.setVisibility(View.GONE);
-            btnUnsubscribe.setVisibility(View.VISIBLE);
+            // btnSubscribe.setVisibility(View.GONE);
+            // btnUnsubscribe.setVisibility(View.VISIBLE);
             Intent intent = new Intent(getActivity(), ChannelActivity.class);
             intent.putExtra("channelId", channel.getId());
             startActivity(intent);
             getActivity().finish();
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
-            btnSubscribe.setVisibility(View.VISIBLE);
-            btnUnsubscribe.setVisibility(View.GONE);
+            // btnSubscribe.setVisibility(View.VISIBLE);
+            // btnUnsubscribe.setVisibility(View.GONE);
             getActivity().finish();
         }
     }
@@ -262,5 +264,10 @@ public class ChannelDetailFragment extends Fragment {
                 toast.show();
                 break;
         }
+    }
+
+    @Override
+    public void onDialogPositiveClick() {
+        ChannelAPI.getInstance(getContext()).unsubscribeChannel(channel.getId());
     }
 }

@@ -58,7 +58,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
         channels = new ArrayList<>();
 
         // Initialize or reuse an existing database loader.
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         listAdapter = new ChannelListAdapter(getActivity(), R.layout.channel_list_item, channels);
     }

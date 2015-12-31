@@ -53,7 +53,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize or reuse an existing database loader.
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         announcements = new ArrayList<>();
         listAdapter = new AnnouncementListAdapter(getActivity(), R.layout.announcement_list_item, announcements);
@@ -141,8 +141,8 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
             tvInfo.setText(getText(R.string.fragment_announcement_list_loading));
         }
         // Mark loaded and unread announcements as read after displaying.
-        for(Announcement announcement: announcements){
-            if(!announcement.isRead()){
+        for (Announcement announcement : announcements) {
+            if (!announcement.isRead()) {
                 databaseLoader.getChannelDBM().setMessageToRead(announcement.getId());
             }
         }

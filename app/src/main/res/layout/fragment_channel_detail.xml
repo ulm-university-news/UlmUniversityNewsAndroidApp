@@ -2,33 +2,38 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
     tools:context="ulm.university.news.app.controller.ChannelDetailActivity">
 
     <ListView
         android:id="@+id/fragment_channel_detail_lv_channel_details"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#ffffff"/>
+        android:layout_weight="1"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="?android:attr/listDivider"/>
 
     <Button
         android:id="@+id/fragment_channel_detail_btn_subscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textColor="#000000"
-        android:text="@string/activity_channel_detail_button_subscribe"/>
+        android:text="@string/activity_channel_detail_button_subscribe"
+        android:textColor="#000000"/>
 
     <Button
         android:id="@+id/fragment_channel_detail_btn_unsubscribe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textColor="#000000"
         android:text="@string/activity_channel_detail_button_unsubscribe"
+        android:textColor="#000000"
         android:visibility="gone"/>
 
 </LinearLayout>

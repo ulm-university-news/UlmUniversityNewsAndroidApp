@@ -75,6 +75,9 @@
     <string name="channel_modification_date">Modification date</string>
     <string name="channel_info_updated">Channel data updated.</string>
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
+    <string name="channel_unsubscribe_dialog_title">Unsubscribe Channel</string>
+    <string name="channel_unsubscribe_dialog_text">This channels data will be deleted. You won\'t be able to receive
+        or read announcements of this channel.\nDo you really want to unsubscribe?</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>

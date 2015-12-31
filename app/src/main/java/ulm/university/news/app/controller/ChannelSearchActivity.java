@@ -51,9 +51,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     private AdapterView.OnItemClickListener itemClickListener;
     ChannelListAdapter listAdapter;
-
     private List<Channel> channels;
-    private ChannelDatabaseManager channelDBM;
 
     // GUI elements.
     private ListView lvChannels;
@@ -72,14 +70,12 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_channel_search_toolbar);
         setSupportActionBar(toolbar);
 
-        channelDBM = new ChannelDatabaseManager(this);
-
         // Initialize a Loader with id '1'. If the Loader with this id already
         // exists, then the LoaderManager will reuse the existing Loader.
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader = (DatabaseLoader) getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         // Load initial channel data directly, don't use async database loader.
-        channels = channelDBM.getChannels();
+        channels = databaseLoader.getChannelDBM().getChannels();
 
         // Initialise GUI elements.
         initView();
@@ -155,7 +151,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 return filter;
             }
         });
-        databaseLoader.setChannelDBM(channelDBM);
+        databaseLoader.setChannelDBM(new ChannelDatabaseManager(this));
         return databaseLoader;
     }
 
@@ -279,10 +275,10 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 }
             }
             if (localChannelListId == null) {
-                channelDBM.storeChannel(channel);
+                databaseLoader.getChannelDBM().storeChannel(channel);
                 // this.channels.add(channel);
             } else {
-                channelDBM.updateChannel(channel);
+                databaseLoader.getChannelDBM().updateChannel(channel);
                 // this.channels.remove(localChannelListId.intValue());
                 // this.channels.add(channel);
                 localChannelListId = null;
