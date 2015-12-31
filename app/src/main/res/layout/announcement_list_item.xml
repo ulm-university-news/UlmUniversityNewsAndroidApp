@@ -38,5 +38,4 @@
         android:ellipsize="end"
         android:paddingBottom="5dp"
         android:textSize="12sp"/>
-
 </LinearLayout>

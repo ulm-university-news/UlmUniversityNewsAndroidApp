@@ -13,7 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
@@ -21,6 +22,7 @@ import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
+import ulm.university.news.app.data.ChannelDetail;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.Sports;
@@ -38,23 +40,18 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "ChannelDetailFragment";
 
-    private ListView lvChannelDetails;
-    private ChannelDetailListAdapter listAdapter;
-
     private ChannelDatabaseManager channelDBM;
-
     private Channel channel;
-    HashMap<String, String> channelData;
+    List<ChannelDetail> channelDetails;
 
+    private ListView lvChannelDetails;
     private Button btnSubscribe;
     private Button btnUnsubscribe;
-
     private String errorMessage;
     private Toast toast;
 
     public ChannelDetailFragment() {
     }
-
 
     public static ChannelDetailFragment newInstance(int channelId) {
         ChannelDetailFragment fragment = new ChannelDetailFragment();
@@ -69,14 +66,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         super.onCreate(savedInstanceState);
         int channelId = getArguments().getInt("channelId");
         channel = new ChannelDatabaseManager(getActivity()).getChannel(channelId);
-        channelData = new HashMap<>();
         channelDBM = new ChannelDatabaseManager(getActivity());
+        channelDetails = new ArrayList<>();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_channel_detail, container, false);
         initView(v);
         initChannel();
@@ -134,73 +129,118 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             btnSubscribe.setVisibility(View.VISIBLE);
             btnUnsubscribe.setVisibility(View.GONE);
         }
-        setChannelData();
 
-        listAdapter = new ChannelDetailListAdapter();
-        listAdapter.setChannelData(channelData);
+        setChannelDetails();
+        ChannelDetailListAdapter listAdapter = new ChannelDetailListAdapter();
+        listAdapter.setChannelDetails(channelDetails);
         lvChannelDetails.setAdapter(listAdapter);
     }
 
-    private void setChannelData() {
-        channelData.put(getString(R.string.channel_name), channel.getName());
-        channelData.put(getString(R.string.channel_type), channel.getType().toString());
-        channelData.put(getString(R.string.channel_contacts), channel.getContacts());
-        channelData.put(getString(R.string.channel_creation_date), ChannelController.getFormattedDateLong(channel.getCreationDate()));
-        channelData.put(getString(R.string.channel_modification_date), ChannelController.getFormattedDateLong(channel.getModificationDate()));
+    /**
+     * Adds all existing channel detail data to the details list. The details are adde in a specific order.
+     */
+    private void setChannelDetails() {
+        ChannelDetail name = new ChannelDetail(getString(R.string.channel_name), channel.getName(),
+                android.R.drawable.ic_menu_info_details);
+        ChannelDetail type = new ChannelDetail(getString(R.string.channel_type), channel.getType().toString(),
+                android.R.drawable.ic_menu_help);
+        ChannelDetail term = new ChannelDetail(getString(R.string.channel_term), channel.getTerm(),
+                android.R.drawable.ic_menu_help);
+        channelDetails.add(name);
+        channelDetails.add(type);
+        channelDetails.add(term);
+
         // Check nullable fields.
-        if (channel.getLocations() != null) {
-            channelData.put(getString(R.string.channel_locations), channel.getLocations());
-        }
         if (channel.getDescription() != null) {
-            channelData.put(getString(R.string.channel_description), channel.getDescription());
+            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description),
+                    channel.getDescription(), android.R.drawable.ic_dialog_map);
+            channelDetails.add(description);
         }
-        if (channel.getWebsite() != null) {
-            channelData.put(getString(R.string.channel_website), channel.getWebsite());
-        }
-        if (channel.getTerm() != null) {
-            channelData.put(getString(R.string.channel_term), channel.getTerm());
-        }
-        if (channel.getDates() != null) {
-            channelData.put(getString(R.string.channel_dates), channel.getDates());
-        }
+
         // Check type specific fields.
         switch (channel.getType()) {
             case LECTURE:
                 Lecture lecture = (Lecture) channel;
-                channelData.put(getString(R.string.lecture_lecturer), lecture.getLecturer());
-                channelData.put(getString(R.string.lecture_faculty), lecture.getFaculty().toString());
+                ChannelDetail faculty = new ChannelDetail(getString(R.string.lecture_faculty),
+                        lecture.getFaculty().toString(), android.R.drawable.ic_menu_help);
+                ChannelDetail lecturer = new ChannelDetail(getString(R.string.lecture_lecturer),
+                        lecture.getLecturer(), android.R.drawable.ic_menu_help);
+                channelDetails.add(faculty);
+                channelDetails.add(lecturer);
+
                 // Check nullable fields.
                 if (lecture.getAssistant() != null) {
-                    channelData.put(getString(R.string.lecture_assistant), lecture.getAssistant());
+                    ChannelDetail assistant = new ChannelDetail(getString(R.string.lecture_assistant),
+                            lecture.getAssistant(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(assistant);
                 }
                 if (lecture.getStartDate() != null) {
-                    channelData.put(getString(R.string.lecture_start_date), lecture.getStartDate());
+                    ChannelDetail startDate = new ChannelDetail(getString(R.string.lecture_start_date),
+                            lecture.getStartDate(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(startDate);
                 }
                 if (lecture.getEndDate() != null) {
-                    channelData.put(getString(R.string.lecture_end_date), lecture.getEndDate());
+                    ChannelDetail endDate = new ChannelDetail(getString(R.string.lecture_end_date),
+                            lecture.getEndDate(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(endDate);
                 }
                 break;
             case EVENT:
                 Event event = (Event) channel;
                 // Check nullable fields.
                 if (event.getCost() != null) {
-                    channelData.put(getString(R.string.event_cost), event.getCost());
+                    ChannelDetail cost = new ChannelDetail(getString(R.string.event_cost),
+                            event.getCost(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(cost);
                 }
                 if (event.getOrganizer() != null) {
-                    channelData.put(getString(R.string.event_organizer), event.getOrganizer());
+                    ChannelDetail organizer = new ChannelDetail(getString(R.string.event_organizer),
+                            event.getOrganizer(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(organizer);
                 }
                 break;
             case SPORTS:
                 Sports sports = (Sports) channel;
                 // Check nullable fields.
                 if (sports.getCost() != null) {
-                    channelData.put(getString(R.string.sports_cost), sports.getCost());
+                    ChannelDetail cost = new ChannelDetail(getString(R.string.sports_cost),
+                            sports.getCost(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(cost);
                 }
                 if (sports.getNumberOfParticipants() != null) {
-                    channelData.put(getString(R.string.sports_cost), sports.getNumberOfParticipants());
+                    ChannelDetail participants = new ChannelDetail(getString(R.string.sports_participants),
+                            sports.getNumberOfParticipants(), android.R.drawable.ic_menu_help);
+                    channelDetails.add(participants);
                 }
                 break;
         }
+
+        // Check nullable fields.
+        if (channel.getDates() != null) {
+            ChannelDetail dates = new ChannelDetail(getString(R.string.channel_dates), channel.getDates(),
+                    android.R.drawable.ic_menu_my_calendar);
+            channelDetails.add(dates);
+        }
+        if (channel.getLocations() != null) {
+            ChannelDetail locations = new ChannelDetail(getString(R.string.channel_locations), channel.getLocations(),
+                    android.R.drawable.ic_dialog_map);
+            channelDetails.add(locations);
+        }
+        if (channel.getWebsite() != null) {
+            ChannelDetail website = new ChannelDetail(getString(R.string.channel_website), channel.getWebsite(),
+                    android.R.drawable.ic_dialog_map);
+            channelDetails.add(website);
+        }
+
+        ChannelDetail contacts = new ChannelDetail(getString(R.string.channel_contacts), channel.getContacts(),
+                android.R.drawable.ic_dialog_dialer);
+        ChannelDetail creationDate = new ChannelDetail(getString(R.string.channel_creation_date),
+                ChannelController.getFormattedDateLong(channel.getCreationDate()), android.R.drawable.ic_menu_help);
+        ChannelDetail modificationDate = new ChannelDetail(getString(R.string.channel_modification_date),
+                ChannelController.getFormattedDateLong(channel.getModificationDate()), android.R.drawable.ic_menu_help);
+        channelDetails.add(contacts);
+        channelDetails.add(creationDate);
+        channelDetails.add(modificationDate);
     }
 
     @Override
