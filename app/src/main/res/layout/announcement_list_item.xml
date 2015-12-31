@@ -34,8 +34,9 @@
         android:id="@+id/announcement_list_item_tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:autoLink="web|email"
         android:ellipsize="end"
-        android:textSize="12sp"
-        android:paddingBottom="5dp"/>
+        android:paddingBottom="5dp"
+        android:textSize="12sp"/>
 
 </LinearLayout>

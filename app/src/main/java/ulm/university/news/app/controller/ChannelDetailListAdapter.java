@@ -58,8 +58,8 @@ public class ChannelDetailListAdapter extends BaseAdapter {
         Map.Entry<String, String> item = getItem(position);
 
         if (item != null) {
-            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_first_line);
-            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_second_line);
+            TextView tvFirstLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_first_title);
+            TextView tvSecondLine = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_content);
 
             tvFirstLine.setText(item.getKey());
             tvSecondLine.setText(item.getValue());
