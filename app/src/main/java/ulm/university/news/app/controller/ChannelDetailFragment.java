@@ -142,7 +142,25 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     private void setChannelDetails() {
         ChannelDetail name = new ChannelDetail(getString(R.string.channel_name), channel.getName(),
                 R.drawable.ic_info_black_36dp);
-        ChannelDetail type = new ChannelDetail(getString(R.string.channel_type), channel.getType().toString(),
+        String typeName;
+        switch (channel.getType()) {
+            case LECTURE:
+                typeName = getString(R.string.channel_type_lecture);
+                break;
+            case EVENT:
+                typeName = getString(R.string.channel_type_event);
+                break;
+            case SPORTS:
+                typeName = getString(R.string.channel_type_sports);
+                break;
+            case STUDENT_GROUP:
+                typeName = getString(R.string.channel_type_student_group);
+                break;
+            default:
+                typeName = getString(R.string.channel_type_other);
+
+        }
+        ChannelDetail type = new ChannelDetail(getString(R.string.channel_type), typeName,
                 R.drawable.ic_details_black_36dp);
         ChannelDetail term = new ChannelDetail(getString(R.string.channel_term), channel.getTerm(),
                 R.drawable.ic_date_range_black_36dp);
@@ -152,8 +170,8 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
 
         // Check nullable fields.
         if (channel.getDescription() != null) {
-            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description),
-                    channel.getDescription(), R.drawable.ic_info_outline_black_36dp);
+            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description), channel.getDescription(),
+                    R.drawable.ic_info_outline_black_36dp);
             channelDetails.add(description);
         }
 
@@ -161,8 +179,22 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         switch (channel.getType()) {
             case LECTURE:
                 Lecture lecture = (Lecture) channel;
-                ChannelDetail faculty = new ChannelDetail(getString(R.string.lecture_faculty),
-                        lecture.getFaculty().toString(), R.drawable.ic_school_black_36dp);
+                String facultyName;
+                switch (lecture.getFaculty()) {
+                    case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
+                        facultyName = getString(R.string.lecture_faculty_informatics);
+                        break;
+                    case MEDICINES:
+                        facultyName = getString(R.string.lecture_faculty_medicines);
+                        break;
+                    case NATURAL_SCIENCES:
+                        facultyName = getString(R.string.lecture_faculty_sciences);
+                        break;
+                    default:
+                        facultyName = getString(R.string.lecture_faculty_mathematics);
+                }
+                ChannelDetail faculty = new ChannelDetail(getString(R.string.lecture_faculty), facultyName,
+                        R.drawable.ic_school_black_36dp);
                 ChannelDetail lecturer = new ChannelDetail(getString(R.string.lecture_lecturer),
                         lecture.getLecturer(), R.drawable.ic_person_black_36dp);
                 channelDetails.add(faculty);

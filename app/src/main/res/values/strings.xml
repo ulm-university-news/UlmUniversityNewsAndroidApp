@@ -71,6 +71,11 @@
     <string name="channel_term">Term</string>
     <string name="channel_dates">Times</string>
     <string name="channel_type">Type</string>
+    <string name="channel_type_lecture">Lecture</string>
+    <string name="channel_type_event">Event</string>
+    <string name="channel_type_sports">Sports</string>
+    <string name="channel_type_student_group">Student Group</string>
+    <string name="channel_type_other">Other</string>
     <string name="channel_creation_date">Creation date</string>
     <string name="channel_modification_date">Modification date</string>
     <string name="channel_info_updated">Channel data updated.</string>
@@ -82,6 +87,10 @@
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>
     <string name="lecture_faculty">Faculty</string>
+    <string name="lecture_faculty_informatics">Engineering, Computer Science, Psychology</string>
+    <string name="lecture_faculty_medicines">Medicines</string>
+    <string name="lecture_faculty_sciences">Natural Sciences</string>
+    <string name="lecture_faculty_mathematics">Mathematics, Economics</string>
     <string name="lecture_start_date">Start date</string>
     <string name="lecture_end_date">End date</string>
     <string name="lecture_lecturer">Lecturer</string>

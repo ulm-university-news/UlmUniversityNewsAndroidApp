@@ -19,12 +19,16 @@ import ulm.university.news.app.data.Lecture;
  * @author Matthias Mak
  */
 public class ChannelListAdapter extends ArrayAdapter<Channel> {
+    private Context context;
+
     public ChannelListAdapter(Context context, int resource) {
         super(context, resource);
+        this.context = context;
     }
 
     public ChannelListAdapter(Context context, int resource, List<Channel> channels) {
         super(context, resource, channels);
+        this.context = context;
     }
 
     /**
@@ -65,8 +69,27 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             TextView tvIcon = (TextView) convertView.findViewById(R.id.channel_list_item_tv_icon);
             TextView tvNew = (TextView) convertView.findViewById(R.id.channel_list_item_tv_new);
 
+            String typeName;
+            switch (channel.getType()) {
+                case LECTURE:
+                    typeName = context.getString(R.string.channel_type_lecture);
+                    break;
+                case EVENT:
+                    typeName = context.getString(R.string.channel_type_event);
+                    break;
+                case SPORTS:
+                    typeName = context.getString(R.string.channel_type_sports);
+                    break;
+                case STUDENT_GROUP:
+                    typeName = context.getString(R.string.channel_type_student_group);
+                    break;
+                default:
+                    typeName = context.getString(R.string.channel_type_other);
+
+            }
+
             tvName.setText(channel.getName());
-            tvType.setText(channel.getType().toString());
+            tvType.setText(typeName);
             tvTerm.setText(channel.getTerm());
 
             // Show number of unread announcements.
@@ -99,7 +122,7 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
                             tvIcon.setBackgroundResource(R.drawable.circle_medicines);
                             break;
                         case NATURAL_SCIENCES:
-                            tvIcon.setBackgroundResource(R.drawable.circle_science);
+                            tvIcon.setBackgroundResource(R.drawable.circle_sciences);
                             break;
                     }
                     break;
@@ -122,11 +145,5 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             }
         }
         return convertView;
-    }
-
-    public int dpsToPixles(int dps) {
-        final float scale = getContext().getResources().getDisplayMetrics().density;
-        int pixels = (int) (dps * scale + 0.5f);
-        return pixels;
     }
 }
