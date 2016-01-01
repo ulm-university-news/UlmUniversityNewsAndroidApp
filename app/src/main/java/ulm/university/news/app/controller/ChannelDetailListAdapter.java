@@ -1,5 +1,6 @@
 package ulm.university.news.app.controller;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class ChannelDetailListAdapter extends BaseAdapter {
             TextView tvName = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_title);
             TextView tvValue = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_value);
             ImageView ivIcon = (ImageView) convertView.findViewById(R.id.channel_detail_list_item_iv_icon);
+            ivIcon.setColorFilter(Color.parseColor("#888888"));
 
             tvName.setText(item.getName());
             tvValue.setText(item.getValue());

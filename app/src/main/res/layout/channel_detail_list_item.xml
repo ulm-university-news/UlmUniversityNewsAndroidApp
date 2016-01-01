@@ -7,22 +7,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="2dp">
 
         <ImageView
             android:id="@+id/channel_detail_list_item_iv_icon"
             android:layout_width="wrap_content"
-            android:layout_height="26dp"
+            android:layout_height="36dp"
             android:adjustViewBounds="true"
-            android:paddingEnd="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true"
-            android:src="@android:drawable/ic_menu_info_details"/>
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/channel_detail_list_item_tv_title"
             android:layout_width="0dp"
-            android:layout_height="26dp"
+            android:layout_height="36dp"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"

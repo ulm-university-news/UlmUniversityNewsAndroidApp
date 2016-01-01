@@ -69,7 +69,7 @@
     <string name="channel_locations">Locations</string>
     <string name="channel_website">Website</string>
     <string name="channel_term">Term</string>
-    <string name="channel_dates">Dates</string>
+    <string name="channel_dates">Times</string>
     <string name="channel_type">Type</string>
     <string name="channel_creation_date">Creation date</string>
     <string name="channel_modification_date">Modification date</string>

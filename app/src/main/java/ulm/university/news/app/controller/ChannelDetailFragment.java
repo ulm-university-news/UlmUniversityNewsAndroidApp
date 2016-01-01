@@ -141,11 +141,11 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
      */
     private void setChannelDetails() {
         ChannelDetail name = new ChannelDetail(getString(R.string.channel_name), channel.getName(),
-                android.R.drawable.ic_menu_info_details);
+                R.drawable.ic_info_black_36dp);
         ChannelDetail type = new ChannelDetail(getString(R.string.channel_type), channel.getType().toString(),
-                android.R.drawable.ic_menu_help);
+                R.drawable.ic_details_black_36dp);
         ChannelDetail term = new ChannelDetail(getString(R.string.channel_term), channel.getTerm(),
-                android.R.drawable.ic_menu_help);
+                R.drawable.ic_date_range_black_36dp);
         channelDetails.add(name);
         channelDetails.add(type);
         channelDetails.add(term);
@@ -153,7 +153,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         // Check nullable fields.
         if (channel.getDescription() != null) {
             ChannelDetail description = new ChannelDetail(getString(R.string.channel_description),
-                    channel.getDescription(), android.R.drawable.ic_dialog_map);
+                    channel.getDescription(), R.drawable.ic_info_outline_black_36dp);
             channelDetails.add(description);
         }
 
@@ -162,26 +162,26 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             case LECTURE:
                 Lecture lecture = (Lecture) channel;
                 ChannelDetail faculty = new ChannelDetail(getString(R.string.lecture_faculty),
-                        lecture.getFaculty().toString(), android.R.drawable.ic_menu_help);
+                        lecture.getFaculty().toString(), R.drawable.ic_school_black_36dp);
                 ChannelDetail lecturer = new ChannelDetail(getString(R.string.lecture_lecturer),
-                        lecture.getLecturer(), android.R.drawable.ic_menu_help);
+                        lecture.getLecturer(), R.drawable.ic_person_black_36dp);
                 channelDetails.add(faculty);
                 channelDetails.add(lecturer);
 
                 // Check nullable fields.
                 if (lecture.getAssistant() != null) {
                     ChannelDetail assistant = new ChannelDetail(getString(R.string.lecture_assistant),
-                            lecture.getAssistant(), android.R.drawable.ic_menu_help);
+                            lecture.getAssistant(), R.drawable.ic_person_outline_black_36dp);
                     channelDetails.add(assistant);
                 }
                 if (lecture.getStartDate() != null) {
                     ChannelDetail startDate = new ChannelDetail(getString(R.string.lecture_start_date),
-                            lecture.getStartDate(), android.R.drawable.ic_menu_help);
+                            lecture.getStartDate(), R.drawable.ic_today_black_36dp);
                     channelDetails.add(startDate);
                 }
                 if (lecture.getEndDate() != null) {
                     ChannelDetail endDate = new ChannelDetail(getString(R.string.lecture_end_date),
-                            lecture.getEndDate(), android.R.drawable.ic_menu_help);
+                            lecture.getEndDate(), R.drawable.ic_event_black_36dp);
                     channelDetails.add(endDate);
                 }
                 break;
@@ -190,12 +190,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 // Check nullable fields.
                 if (event.getCost() != null) {
                     ChannelDetail cost = new ChannelDetail(getString(R.string.event_cost),
-                            event.getCost(), android.R.drawable.ic_menu_help);
+                            event.getCost(), R.drawable.ic_attach_money_black_36dp);
                     channelDetails.add(cost);
                 }
                 if (event.getOrganizer() != null) {
                     ChannelDetail organizer = new ChannelDetail(getString(R.string.event_organizer),
-                            event.getOrganizer(), android.R.drawable.ic_menu_help);
+                            event.getOrganizer(), R.drawable.ic_person_black_36dp);
                     channelDetails.add(organizer);
                 }
                 break;
@@ -204,12 +204,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 // Check nullable fields.
                 if (sports.getCost() != null) {
                     ChannelDetail cost = new ChannelDetail(getString(R.string.sports_cost),
-                            sports.getCost(), android.R.drawable.ic_menu_help);
+                            sports.getCost(), R.drawable.ic_attach_money_black_36dp);
                     channelDetails.add(cost);
                 }
                 if (sports.getNumberOfParticipants() != null) {
                     ChannelDetail participants = new ChannelDetail(getString(R.string.sports_participants),
-                            sports.getNumberOfParticipants(), android.R.drawable.ic_menu_help);
+                            sports.getNumberOfParticipants(), R.drawable.ic_group_black_36dp);
                     channelDetails.add(participants);
                 }
                 break;
@@ -218,26 +218,26 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         // Check nullable fields.
         if (channel.getDates() != null) {
             ChannelDetail dates = new ChannelDetail(getString(R.string.channel_dates), channel.getDates(),
-                    android.R.drawable.ic_menu_my_calendar);
+                    R.drawable.ic_schedule_black_36dp);
             channelDetails.add(dates);
         }
         if (channel.getLocations() != null) {
             ChannelDetail locations = new ChannelDetail(getString(R.string.channel_locations), channel.getLocations(),
-                    android.R.drawable.ic_dialog_map);
+                    R.drawable.ic_room_black_36dp);
             channelDetails.add(locations);
         }
         if (channel.getWebsite() != null) {
             ChannelDetail website = new ChannelDetail(getString(R.string.channel_website), channel.getWebsite(),
-                    android.R.drawable.ic_dialog_map);
+                    R.drawable.ic_public_black_36dp);
             channelDetails.add(website);
         }
 
         ChannelDetail contacts = new ChannelDetail(getString(R.string.channel_contacts), channel.getContacts(),
-                android.R.drawable.ic_dialog_dialer);
+                R.drawable.ic_account_circle_black_36dp);
         ChannelDetail creationDate = new ChannelDetail(getString(R.string.channel_creation_date),
-                ChannelController.getFormattedDateLong(channel.getCreationDate()), android.R.drawable.ic_menu_help);
+                ChannelController.getFormattedDateLong(channel.getCreationDate()), R.drawable.ic_today_black_36dp);
         ChannelDetail modificationDate = new ChannelDetail(getString(R.string.channel_modification_date),
-                ChannelController.getFormattedDateLong(channel.getModificationDate()), android.R.drawable.ic_menu_help);
+                ChannelController.getFormattedDateLong(channel.getModificationDate()), R.drawable.ic_event_black_36dp);
         channelDetails.add(contacts);
         channelDetails.add(creationDate);
         channelDetails.add(modificationDate);
