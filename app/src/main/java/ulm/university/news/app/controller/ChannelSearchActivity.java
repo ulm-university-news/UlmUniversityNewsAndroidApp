@@ -88,9 +88,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.search_menu, menu);
+        menuInflater.inflate(R.menu.activity_channel_search_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.search_menu_action_search);
+        MenuItem searchItem = menu.findItem(R.id.activity_channel_search_menu_search);
 
         SearchManager searchManager = (SearchManager) ChannelSearchActivity.this.getSystemService(
                 Context.SEARCH_SERVICE);

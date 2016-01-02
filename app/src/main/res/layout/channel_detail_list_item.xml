@@ -13,16 +13,16 @@
         <ImageView
             android:id="@+id/channel_detail_list_item_iv_icon"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="30dp"
             android:adjustViewBounds="true"
-            android:paddingEnd="8dp"
-            android:paddingRight="8dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
             android:singleLine="true"/>
 
         <TextView
             android:id="@+id/channel_detail_list_item_tv_title"
             android:layout_width="0dp"
-            android:layout_height="36dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"

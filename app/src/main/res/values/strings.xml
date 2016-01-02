@@ -45,6 +45,11 @@
     <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for groups and join.
         </string>
     <string name="activity_main_group_list_loading">Loading group data...</string>
+    <string name="activity_main_channel_menu_search">Search Channel</string>
+    <string name="activity_main_channel_menu_settings">Settings</string>
+    <string name="activity_main_group_menu_settings">Settings</string>
+    <string name="activity_main_group_menu_search">Search Group</string>
+    <string name="activity_main_group_menu_add">Add Group</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>

@@ -3,6 +3,9 @@ package ulm.university.news.app.controller;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,4 +43,37 @@ public class GroupFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_group, container, false);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.activity_main_group_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection.
+        switch (item.getItemId()) {
+            case R.id.activity_main_group_menu_search_text:
+            case R.id.activity_main_group_menu_search:
+                // TODO
+                // startActivity(new Intent(getActivity(), GroupSearchActivity.class));
+                return true;
+            case R.id.activity_main_group_menu_settings:
+                // TODO
+                // startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            case R.id.activity_main_group_menu_add:
+                // TODO
+                // startActivity(new Intent(getActivity(), GroupAddActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

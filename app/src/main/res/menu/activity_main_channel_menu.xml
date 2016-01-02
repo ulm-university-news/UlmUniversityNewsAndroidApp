@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/activity_main_channel_menu_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/activity_main_channel_menu_search"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/activity_main_channel_menu_search_text"
+        android:icon="@drawable/ic_search_black_36dp"
+        android:title="@string/activity_main_channel_menu_search"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_main_channel_menu_settings"
+        android:icon="@drawable/ic_settings_black_36dp"
+        android:title="@string/activity_main_channel_menu_settings"
+        app:showAsAction="never"/>
+</menu>
