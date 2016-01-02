@@ -15,8 +15,110 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <ListView
-        android:id="@+id/activity_group_search_lv_groups"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/activity_group_search_et_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/activity_group_search_et_hint_id"
+                android:textColor="#000000"/>
+
+            <ImageView
+                android:id="@+id/activity_group_search_ib_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:src="@drawable/ic_search_black_36dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/activity_group_search_tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_group_search_tv_info"/>
+
+        <RadioGroup
+            android:id="@+id/activity_group_search_rg_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/activity_group_search_rb_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/activity_group_search_rb_id"/>
+
+            <RadioButton
+                android:id="@+id/activity_group_search_rb_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_group_search_rb_name"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/activity_group_search_chk_tutorial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/activity_group_search_chk_tutorial"
+                android:visibility="gone"/>
+
+            <CheckBox
+                android:id="@+id/activity_group_search_chk_work"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/activity_group_search_chk_work"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/activity_group_search_btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableLeft="@drawable/ic_search_black_24dp"
+            android:drawableStart="@drawable/ic_search_black_24dp"
+            android:text="@string/activity_group_search_btn_search"
+            android:textColor="#000000"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/activity_group_search_tv_error"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/border_error"
+            android:padding="10dp"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/activity_group_search_lv_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

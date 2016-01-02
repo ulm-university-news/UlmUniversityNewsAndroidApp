@@ -47,10 +47,7 @@ public class Constants {
     public static final DateTimeZone TIME_ZONE = DateTimeZone.getDefault();
 
     /** The name of the application. */
-    public static final String APPLICATION_NAME = "Ulm University News";
-
-    /** The location of the Email resource bundle. */
-    public static final String RESOURCE_BUNDLE_EMAIL = "i18n/Email";
+    public static final String APPLICATION_NAME = "University News Ulm";
 
     /** A pattern which describes the valid form of a user or moderator name. */
     public static final String ACCOUNT_NAME_PATTERN = "^[-_a-zA-Z0-9]{3,35}$";

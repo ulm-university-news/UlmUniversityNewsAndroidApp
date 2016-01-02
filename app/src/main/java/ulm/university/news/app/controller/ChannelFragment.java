@@ -127,7 +127,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
                 .DatabaseLoaderCallbacks<List<Channel>>() {
             @Override
             public List<Channel> onLoadInBackground() {
-                // Load all subscribed channels.
+                // Load all subscribed channels with announcement data.
                 return databaseLoader.getChannelDBM().getSubscribedChannels();
             }
 

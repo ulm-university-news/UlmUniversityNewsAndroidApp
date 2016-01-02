@@ -209,7 +209,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Check if device is connected to the internet.
         if (!Util.isOnline(this)) {
             tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_error_offline));
+            tvError.setText(getString(R.string.general_error_no_connection));
             // Check if terms of use are accepted.
         } else if (!chkTermsOfUse.isChecked()) {
             tvError.setVisibility(View.VISIBLE);
@@ -217,7 +217,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             // Check if user name is empty.
         } else if (etUserName.getText().toString().trim().length() == 0) {
             tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.user_error_name_empty));
+            tvError.setText(getString(R.string.activity_create_account_error_name_empty));
         } else {
             // Checks passed. Attempt to create user account.
             btnCreateAccount.setVisibility(View.GONE);
@@ -248,10 +248,10 @@ public class CreateAccountActivity extends AppCompatActivity {
                 tvError.setText(getString(R.string.general_error_connection_failed));
                 break;
             case USER_DATA_INCOMPLETE:
-                tvError.setText(getString(R.string.user_error_name_empty));
+                tvError.setText(getString(R.string.activity_create_account_error_name_empty));
                 break;
             case USER_NAME_INVALID:
-                tvError.setText(getString(R.string.user_error_name_invalid));
+                tvError.setText(getString(R.string.activity_create_account_error_name_invalid));
                 break;
             case USER_PUSH_TOKEN_INVALID:
                 tvError.setText(getString(R.string.general_error_something));

@@ -26,11 +26,12 @@
     <string name="activity_create_account_button_start">Start</string>
     <string name="activity_create_account_account_created">User account has been created successfully. You\'re
     now ready to use this app.</string>
-    <string name="activity_create_account_error_offline">You need an internet connection.</string>
     <string name="activity_create_account_error_checkbox">You need to accept the terms of use.</string>
     <string name="activity_create_account_error_token">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
     <string name="activity_create_account_name_hint">User name</string>
+    <string name="activity_create_account_error_name_empty">You need to enter a user name.</string>
+    <string name="activity_create_account_error_name_invalid">Your user name is invalid.</string>
 
     <!-- ChannelSearchActivity ##################################################################################### -->
     <string name="activity_channel_search_title">Search Channel</string>
@@ -38,6 +39,19 @@
 
     <!-- GroupSearchActivity ####################################################################################### -->
     <string name="activity_group_search_title">Search Group</string>
+    <string name="activity_group_search_et_hint_id">Group Id</string>
+    <string name="activity_group_search_et_hint_name">Group Name</string>
+    <string name="activity_group_search_btn_search">Search Group</string>
+    <string name="activity_group_search_tv_info">Search for</string>
+    <string name="activity_group_search_rb_id">Id</string>
+    <string name="activity_group_search_rb_name">Name</string>
+    <string name="activity_group_search_chk_tutorial">Tutorial Group</string>
+    <string name="activity_group_search_chk_work">Working Group</string>
+    <string name="activity_group_search_error_search_empty">The search field is empty.</string>
+    <string name="activity_group_search_error_search_name">This group name is invalid.\nIt may include invalid
+        characters or has more than 35 or less than 3 characters.</string>
+    <string name="activity_group_search_error_search_numbers">This group id is invalid.\nUse numbers only to search
+        for id.</string>
 
     <!-- GroupAddActivity ########################################################################################## -->
     <string name="activity_group_add_title">Add Group</string>
@@ -67,14 +81,9 @@
 
     <!-- GroupFragment ############################################################################################# -->
 
-
     <!-- ChannelDetailActivity ##################################################################################### -->
     <string name="activity_channel_detail_button_subscribe">Subscribe</string>
     <string name="activity_channel_detail_button_unsubscribe">Unsubscribe</string>
-
-    <!-- LocalUser -->
-    <string name="user_error_name_empty">You need to enter a user name.</string>
-    <string name="user_error_name_invalid">Your user name is invalid.</string>
 
     <!-- Channel ################################################################################################### -->
     <string name="channel_name">Name</string>

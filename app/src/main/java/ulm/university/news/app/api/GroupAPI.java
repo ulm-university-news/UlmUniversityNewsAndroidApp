@@ -1,6 +1,16 @@
 package ulm.university.news.app.api;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import ulm.university.news.app.data.Group;
 
 /**
  * The GroupAPI is responsible for sending requests regarding the group resource. Required data is handed over from
@@ -40,5 +50,50 @@ public class GroupAPI extends MainAPI{
     private GroupAPI(Context context) {
         super(context);
         serverAddressGroup = serverAddress + "/group";
+    }
+
+    public void getGroup(int groupId) {
+        // Add id to url.
+        String url = serverAddressGroup + "/" + groupId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of groups as deserialization type.
+                Group group = gson.fromJson(json, Group.class);
+                EventBus.getDefault().post(group);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getGroups(String groupName, String groupType) {
+        HashMap<String, String> params = new HashMap<>();
+        if (groupName != null) {
+            params.put("groupName", groupName);
+        }
+        if (groupType != null) {
+            params.put("groupType", groupType);
+        }
+        // Add parameters to url.
+        String url = serverAddressGroup + getUrlParams(params);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of groups as deserialization type.
+                Type listType = new TypeToken<List<Group>>() {
+                }.getType();
+                List<Group> groups = gson.fromJson(json, listType);
+                EventBus.getDefault().post(groups);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
     }
 }
