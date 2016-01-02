@@ -1,5 +1,6 @@
 package ulm.university.news.app.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -61,16 +62,13 @@ public class GroupFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.activity_main_group_menu_search_text:
             case R.id.activity_main_group_menu_search:
-                // TODO
-                // startActivity(new Intent(getActivity(), GroupSearchActivity.class));
+                startActivity(new Intent(getActivity(), GroupSearchActivity.class));
                 return true;
             case R.id.activity_main_group_menu_settings:
-                // TODO
-                // startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             case R.id.activity_main_group_menu_add:
-                // TODO
-                // startActivity(new Intent(getActivity(), GroupAddActivity.class));
+                startActivity(new Intent(getActivity(), GroupAddActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

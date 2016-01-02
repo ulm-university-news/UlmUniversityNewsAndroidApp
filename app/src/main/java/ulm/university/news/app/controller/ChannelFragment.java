@@ -114,8 +114,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
                 startActivity(new Intent(getActivity(), ChannelSearchActivity.class));
                 return true;
             case R.id.activity_main_channel_menu_settings:
-                // TODO
-                // startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

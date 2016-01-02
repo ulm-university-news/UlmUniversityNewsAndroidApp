@@ -70,6 +70,10 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_channel_search_toolbar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         // Initialize a Loader with id '1'. If the Loader with this id already
         // exists, then the LoaderManager will reuse the existing Loader.
         databaseLoader = (DatabaseLoader) getSupportLoaderManager().initLoader(LOADER_ID, null, this);
