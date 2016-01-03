@@ -218,12 +218,17 @@ public class GroupSearchActivity extends AppCompatActivity {
         // Check which radio button is selected.
         switch (checkedId) {
             case R.id.activity_group_search_rb_id:
-                searchView.setQueryHint(getString(R.string.activity_group_search_et_hint_id));
+                if (searchView != null) {
+                    searchView.setQueryHint(getString(R.string.activity_group_search_et_hint_id));
+                }
+
                 chkTutorial.setVisibility(View.GONE);
                 chkWork.setVisibility(View.GONE);
                 break;
             case R.id.activity_group_search_rb_name:
-                searchView.setQueryHint(getString(R.string.activity_group_search_et_hint_name));
+                if (searchView != null) {
+                    searchView.setQueryHint(getString(R.string.activity_group_search_et_hint_name));
+                }
                 chkTutorial.setVisibility(View.VISIBLE);
                 chkWork.setVisibility(View.VISIBLE);
                 break;
@@ -238,7 +243,7 @@ public class GroupSearchActivity extends AppCompatActivity {
         // Validate input.
         validateTextInput(input);
         // Check if device is connected to the internet.
-        if (!Util.isOnline(this)) {
+        if (!Util.getInstance(this).isOnline()) {
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(getString(R.string.general_error_no_connection));
             // Check if input is valid.

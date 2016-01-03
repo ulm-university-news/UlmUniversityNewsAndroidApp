@@ -91,7 +91,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         btnSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Util.isOnline(v.getContext())) {
+                if (Util.getInstance(v.getContext()).isOnline()) {
                     ChannelAPI.getInstance(v.getContext()).subscribeChannel(channel.getId());
                     errorMessage = getString(R.string.general_error_connection_failed);
                     errorMessage += getString(R.string.general_error_subscribe);
@@ -107,7 +107,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         btnUnsubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Util.isOnline(v.getContext())) {
+                if (Util.getInstance(v.getContext()).isOnline()) {
                     UnsubscribeDialogFragment dialog = new UnsubscribeDialogFragment();
                     dialog.setTargetFragment(ChannelDetailFragment.this, 0);
                     dialog.show(getFragmentManager(), "unsubscribeDialog");

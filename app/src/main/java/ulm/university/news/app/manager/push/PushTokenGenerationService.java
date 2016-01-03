@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -56,7 +57,7 @@ public class PushTokenGenerationService extends IntentService {
         // TODO Check if user account already exists. Do check via local database.
         // TODO If account exists just update push token in local and server database.
         // TODO Otherwise proceed like below: Create user account.
-        if(Constants.getInstance().getUserAccessToken(this.getApplicationContext()) != null){
+        if (Util.getInstance(this.getApplicationContext()).getUserAccessToken() != null) {
             updatePushToken(token);
         } else {
             // Notify UI that registration has completed, so the progress indicator can be hidden.
@@ -80,7 +81,7 @@ public class PushTokenGenerationService extends IntentService {
         }
     }
 
-    private void updatePushToken(String token){
+    private void updatePushToken(String token) {
         // TODO Update push token on server.
         // TODO Update user (push token) in local database.
     }

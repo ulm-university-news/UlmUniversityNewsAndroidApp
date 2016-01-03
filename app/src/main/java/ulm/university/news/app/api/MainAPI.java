@@ -17,9 +17,8 @@ import java.util.Properties;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.LocalUser;
-import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -57,8 +56,8 @@ public abstract class MainAPI implements ErrorCallback {
         // Make sure, dates are (de)serialized properly.
         gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd).create();
         initServerAddress();
-        getUserAccessToken();
-        getModeratorAccessToken();
+        userAccessToken = Util.getInstance(context).getUserAccessToken();
+        moderatorAccessToken = Util.getInstance(context).getModeratorAccessToken();
         // Use the access token of the local moderator if available (logged in).
         accessToken = moderatorAccessToken;
         if (accessToken == null) {
@@ -117,29 +116,6 @@ public abstract class MainAPI implements ErrorCallback {
             }
         }
         return result.toString();
-    }
-
-    public String getUserAccessToken() {
-        if (userAccessToken == null) {
-            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
-            if (localUser != null) {
-                userAccessToken = localUser.getServerAccessToken();
-            }
-        }
-        return userAccessToken;
-    }
-
-    public void setUserAccessToken(String userAccessToken) {
-        this.userAccessToken = userAccessToken;
-    }
-
-    public String getModeratorAccessToken() {
-        // TODO Load from database.
-        return moderatorAccessToken;
-    }
-
-    public void setModeratorAccessToken(String moderatorAccessToken) {
-        this.moderatorAccessToken = moderatorAccessToken;
     }
 
     @Override

@@ -20,9 +20,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
-import ulm.university.news.app.api.ChannelAPI;
-import ulm.university.news.app.api.GroupAPI;
-import ulm.university.news.app.api.ModeratorAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.LocalUser;
@@ -66,7 +63,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Initialise the broadcast receiver.
         initReceiver();
         // Display correct view elements.
-        if(UserAPI.getInstance(this).getUserAccessToken() != null){
+        if (Util.getInstance(this).getUserAccessToken() != null) {
             showCreatedView();
         }
     }
@@ -164,17 +161,11 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Store localUser in database.
         new UserDatabaseManager(this).storeLocalUser(localUser);
 
-        // Update the local users server access token in the API Singletons.
-        ChannelAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
-        UserAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
-        GroupAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
-        ModeratorAPI.getInstance(this).setUserAccessToken(localUser.getServerAccessToken());
-
         // Update view.
         showCreatedView();
     }
 
-    private void showCreatedView(){
+    private void showCreatedView() {
         // Update view.
         tvWelcome.setVisibility(View.GONE);
         chkTermsOfUse.setVisibility(View.GONE);
@@ -207,7 +198,7 @@ public class CreateAccountActivity extends AppCompatActivity {
      */
     private void createPushToken() {
         // Check if device is connected to the internet.
-        if (!Util.isOnline(this)) {
+        if (!Util.getInstance(this).isOnline()) {
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(getString(R.string.general_error_no_connection));
             // Check if terms of use are accepted.

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.util.Util;
 
 
 public class StartActivity extends Activity {
@@ -32,7 +32,7 @@ public class StartActivity extends Activity {
         Intent intent;
 
         // Check if a local user account already exists.
-        if (Constants.getInstance().getUserAccessToken(this) != null) {
+        if (Util.getInstance(this).getUserAccessToken() != null) {
             // Push token was already created and sent to the server.
             intent = new Intent(this, MainActivity.class);
         } else {

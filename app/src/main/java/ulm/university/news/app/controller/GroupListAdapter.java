@@ -12,6 +12,7 @@ import java.util.List;
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -76,10 +77,10 @@ public class GroupListAdapter extends ArrayAdapter<Group> {
             }
 
             // TODO Set appropriate group symbol.
-            if (group.isGroupAdmin(0)) {
-                tvIcon.setBackgroundResource(R.drawable.circle_main);
+            if (group.isGroupAdmin(Util.getInstance(getContext()).getUserId())) {
+                tvIcon.setBackgroundResource(R.drawable.circle_group_admin);
             } else {
-                tvIcon.setBackgroundResource(R.drawable.circle_main);
+                tvIcon.setBackgroundResource(R.drawable.circle_group);
             }
 
             tvName.setText(group.getName());

@@ -16,32 +16,17 @@
 
 package ulm.university.news.app.util;
 
-import android.content.Context;
-import android.util.Log;
-
 import org.joda.time.DateTimeZone;
-
-import ulm.university.news.app.data.LocalUser;
-import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
  * The Constants class provides a variety of application information.
  */
 public class Constants {
-    /** The reference for the Constants Singleton class. */
-    private static Constants _instance;
-
     /** This classes tag for logging. */
     private static final String LOG_TAG = "Constants";
 
     // PushManager:
     public static final String PUSH_TOKEN_CREATED = "pushTokenCreated";
-
-    /** The local users server access token. */
-    private String userAccessToken = null;
-
-    /** The local moderators server access token. */
-    private String moderatorAccessToken = null;
 
     /** The time zone where the user is located. */
     public static final DateTimeZone TIME_ZONE = DateTimeZone.getDefault();
@@ -214,39 +199,4 @@ public class Constants {
     public static final int RESOURCE_BUNDLE_NOT_FOUND = 5004;
     public static final int PARSING_FAILURE = 5005;
     public static final int CONNECTION_FAILURE = 9999;
-
-    /**
-     * Get the instance of the Constants class.
-     *
-     * @return Instance of Constants.
-     */
-    public static synchronized Constants getInstance() {
-        if (_instance == null) {
-            _instance = new Constants();
-        }
-        return _instance;
-    }
-
-    public String getUserAccessToken(Context context) {
-        if (userAccessToken == null) {
-            Log.d(LOG_TAG, "userAccessToken is null.");
-            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
-            if (localUser != null) {
-                userAccessToken = localUser.getServerAccessToken();
-            }
-        }
-        return userAccessToken;
-    }
-
-    public void setUserAccessToken(String userAccessToken) {
-        this.userAccessToken = userAccessToken;
-    }
-
-    public String getModeratorAccessToken() {
-        return moderatorAccessToken;
-    }
-
-    public void setModeratorAccessToken(String moderatorAccessToken) {
-        this.moderatorAccessToken = moderatorAccessToken;
-    }
 }

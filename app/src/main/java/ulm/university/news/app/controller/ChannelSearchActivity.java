@@ -227,7 +227,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      */
     private void refreshChannels() {
         // Channel refresh is only possible if there is an internet connection.
-        if (Util.isOnline(this)) {
+        if (Util.getInstance(this).isOnline()) {
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
             // Get date from latest updated channel.
