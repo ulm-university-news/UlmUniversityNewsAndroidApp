@@ -19,16 +19,13 @@ import ulm.university.news.app.data.Lecture;
  * @author Matthias Mak
  */
 public class ChannelListAdapter extends ArrayAdapter<Channel> {
-    private Context context;
 
     public ChannelListAdapter(Context context, int resource) {
         super(context, resource);
-        this.context = context;
     }
 
     public ChannelListAdapter(Context context, int resource, List<Channel> channels) {
         super(context, resource, channels);
-        this.context = context;
     }
 
     /**
@@ -72,19 +69,19 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             String typeName;
             switch (channel.getType()) {
                 case LECTURE:
-                    typeName = context.getString(R.string.channel_type_lecture);
+                    typeName = getContext().getString(R.string.channel_type_lecture);
                     break;
                 case EVENT:
-                    typeName = context.getString(R.string.channel_type_event);
+                    typeName = getContext().getString(R.string.channel_type_event);
                     break;
                 case SPORTS:
-                    typeName = context.getString(R.string.channel_type_sports);
+                    typeName = getContext().getString(R.string.channel_type_sports);
                     break;
                 case STUDENT_GROUP:
-                    typeName = context.getString(R.string.channel_type_student_group);
+                    typeName = getContext().getString(R.string.channel_type_student_group);
                     break;
                 default:
-                    typeName = context.getString(R.string.channel_type_other);
+                    typeName = getContext().getString(R.string.channel_type_other);
 
             }
 

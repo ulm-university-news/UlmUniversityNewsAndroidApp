@@ -23,6 +23,7 @@
         <item name="android:textColorPrimary">#fff</item>
         <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
         <item name="android:textColorLink">#1919ff</item>
+        <item name="android:textColorHint">#eeeeee</item>
     </style>
 
     <style name="Theme.UlmUniversityMedicines" parent="Theme.UlmUniversityMain">

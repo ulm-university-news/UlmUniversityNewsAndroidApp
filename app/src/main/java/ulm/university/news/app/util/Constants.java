@@ -62,7 +62,7 @@ public class Constants {
     public static final String MODERATOR_TOKEN_PATTERN = "^[a-fA-F0-9]{64}$";
 
     /** A pattern which describes the valid form of a resource name or title. */
-    public static final String NAME_PATTERN = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{3,45}$";
+    public static final String NAME_PATTERN = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{1,45}$";
 
     /**
      * A pattern which describes the valid form of a term string. The term is always noted in the form WS or SS plus

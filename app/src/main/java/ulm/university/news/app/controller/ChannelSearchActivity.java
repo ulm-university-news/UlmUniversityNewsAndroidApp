@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,6 +57,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     // GUI elements.
     private ListView lvChannels;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SearchView searchView;
 
     private String errorMessage;
     private Toast toast;
@@ -99,13 +101,29 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         SearchManager searchManager = (SearchManager) ChannelSearchActivity.this.getSystemService(
                 Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
         if (searchItem != null) {
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         }
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(ChannelSearchActivity
                     .this.getComponentName()));
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    Toast.makeText(ChannelSearchActivity.this, query, Toast.LENGTH_SHORT).show();
+                    searchView.clearFocus();
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+            searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH);
+            searchView.setQueryHint(getString(R.string.activity_channel_search_hint));
+            searchView.setIconified(true);
+
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -182,8 +200,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
-        // TODO Set color style to ulm university colors. Somehow, doesn't work correctly.
-        // swipeRefreshLayout.setColorSchemeColors(R.color.uni);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
