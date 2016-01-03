@@ -76,7 +76,7 @@ public class GroupListAdapter extends ArrayAdapter<Group> {
                 tvIcon.setText(getContext().getString(R.string.group_working_symbol));
             }
 
-            // TODO Set appropriate group symbol.
+            // Set appropriate group symbol.
             if (group.isGroupAdmin(Util.getInstance(getContext()).getUserId())) {
                 tvIcon.setBackgroundResource(R.drawable.circle_group_admin);
             } else {

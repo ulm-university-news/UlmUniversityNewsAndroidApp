@@ -17,46 +17,46 @@
     <!-- extend one of the Theme.AppCompat themes -->
     <style name="Theme.UlmUniversityMain" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#7d9aaa</item>
-        <item name="colorAccent">#97aebb</item>
-        <item name="colorPrimaryDark">#647b88</item>
-        <item name="android:textColorPrimary">#fff</item>
+        <item name="colorPrimary">@color/uni_main_primary</item>
+        <item name="colorAccent">@color/uni_main_accent</item>
+        <item name="colorPrimaryDark">@color/uni_main_dark</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
-        <item name="android:textColorLink">#1919ff</item>
-        <item name="android:textColorHint">#eeeeee</item>
+        <item name="android:textColorLink">@color/hyperlink</item>
+        <item name="android:textColorHint">@color/light_grey</item>
     </style>
 
     <style name="Theme.UlmUniversityMedicines" parent="Theme.UlmUniversityMain">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#26547c</item>
-        <item name="colorAccent">#7c98b0</item>
-        <item name="colorPrimaryDark">#1e4363</item>
+        <item name="colorPrimary">@color/uni_medicines_primary</item>
+        <item name="colorAccent">@color/uni_medicines_accent</item>
+        <item name="colorPrimaryDark">@color/uni_medicines_dark</item>
     </style>
 
     <style name="Theme.UlmUniversityScience" parent="Theme.UlmUniversityMain">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#bd6005</item>
-        <item name="colorAccent">#d79f69</item>
-        <item name="colorPrimaryDark">#974c04</item>
+        <item name="colorPrimary">@color/uni_sciences_primary</item>
+        <item name="colorAccent">@color/uni_sciences_accent</item>
+        <item name="colorPrimaryDark">@color/uni_sciences_dark</item>
     </style>
 
     <style name="Theme.UlmUniversityInformatics" parent="Theme.UlmUniversityMain">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#a32638</item>
-        <item name="colorAccent">#c77c87</item>
-        <item name="colorPrimaryDark">#821e2c</item>
+        <item name="colorPrimary">@color/uni_informatics_primary</item>
+        <item name="colorAccent">@color/uni_informatics_accent</item>
+        <item name="colorPrimaryDark">@color/uni_informatics_dark</item>
     </style>
 
     <style name="Theme.UlmUniversityMathematics" parent="Theme.UlmUniversityMain">
         <!-- customize the color palette -->
-        <item name="colorPrimary">#56aa1c</item>
-        <item name="colorAccent">#99cc76</item>
-        <item name="colorPrimaryDark">#448816</item>
+        <item name="colorPrimary">@color/uni_mathematics_primary</item>
+        <item name="colorAccent">@color/uni_mathematics_accent</item>
+        <item name="colorPrimaryDark">@color/uni_mathematics_dark</item>
     </style>
 
     <!-- extend one of the Theme.AppCompat themes -->
     <style name="UlmUniversityAlertDialogMain" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">#888888</item>
+        <item name="colorAccent">@color/grey</item>
     </style>
 
     <style name="Theme.UlmUniversityMain.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>

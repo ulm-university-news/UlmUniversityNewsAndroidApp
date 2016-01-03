@@ -8,8 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.util.TextInputLabels;
 
 public class GroupAddActivity extends AppCompatActivity {
+
+    private TextInputLabels tilName;
+    private TextInputLabels tilDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,8 @@ public class GroupAddActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        initView();
     }
 
     @Override
@@ -35,5 +41,14 @@ public class GroupAddActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initView() {
+        tilName = (TextInputLabels) findViewById(R.id.activity_group_add_til_name);
+        tilDescription = (TextInputLabels) findViewById(R.id.activity_group_add_til_description);
+
+        tilName.setNameAndHint("Name");
+        tilDescription.setNameAndHint("Description");
+        tilDescription.showError("Enter text!");
     }
 }

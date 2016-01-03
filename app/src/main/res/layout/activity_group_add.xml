@@ -14,4 +14,21 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ulm.university.news.app.util.TextInputLabels
+            android:id="@+id/activity_group_add_til_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <ulm.university.news.app.util.TextInputLabels
+            android:id="@+id/activity_group_add_til_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

@@ -4,7 +4,7 @@
         <shape
             android:shape="oval">
             <solid
-                android:color="#7D9AAA"/>
+                android:color="@color/uni_main_primary"/>
             <size
                 android:width="48dp"
                 android:height="48dp"/>
@@ -14,7 +14,7 @@
         <shape
             android:shape="oval">
             <solid
-                android:color="#ffffff"/>
+                android:color="@color/white"/>
             <size
                 android:width="45dp"
                 android:height="45dp"/>
@@ -24,7 +24,7 @@
         <shape
             android:shape="oval">
             <solid
-                android:color="#7D9AAA"/>
+                android:color="@color/uni_main_primary"/>
             <size
                 android:width="43dp"
                 android:height="43dp"/>
