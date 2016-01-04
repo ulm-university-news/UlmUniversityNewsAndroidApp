@@ -73,6 +73,9 @@ public class GroupSearchActivity extends AppCompatActivity {
         groups = new ArrayList<>();
         initView();
 
+        // TODO How to restore state for already loaded channels? (e.g. after rotate or GroupDetailActivity)
+        // TODO Use EventBus?
+
         listAdapter = new GroupListAdapter(this, R.layout.group_list_item);
         lvGroups.setAdapter(listAdapter);
     }
@@ -197,7 +200,7 @@ public class GroupSearchActivity extends AppCompatActivity {
             }
         } else {
             // Validate group name.
-            if (input.matches(Constants.NAME_PATTERN)) {
+            if (input.matches(Constants.NAME_PATTERN_SHORT)) {
                 isInputValid = true;
             } else {
                 // Invalid group name.

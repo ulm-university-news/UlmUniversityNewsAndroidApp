@@ -11,6 +11,7 @@
     <string name="general_error_refresh">Can\'t refresh.</string>
     <string name="general_error_subscribe">Can\'t subscribe.</string>
     <string name="general_error_unsubscribe">Can\'t unsubscribe.</string>
+    <string name="general_year_format">YYYY</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="title_activity_start">StartActivity</string>
@@ -57,6 +58,7 @@
 
     <!-- GroupAddActivity ########################################################################################## -->
     <string name="activity_group_add_title">Add Group</string>
+    <string name="activity_group_add_group_type">Group Type</string>
 
     <!-- SettingsActivity ########################################################################################## -->
     <string name="activity_settings_title">Settings</string>
@@ -94,6 +96,8 @@
     <string name="channel_locations">Locations</string>
     <string name="channel_website">Website</string>
     <string name="channel_term">Term</string>
+    <string name="channel_term_summer">Summer</string>
+    <string name="channel_term_winter">Winter</string>
     <string name="channel_dates">Times</string>
     <string name="channel_type">Type</string>
     <string name="channel_type_lecture">Lecture</string>

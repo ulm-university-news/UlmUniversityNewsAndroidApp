@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -20,12 +21,16 @@ import ulm.university.news.app.R;
  * @author Matthias Mak
  */
 public class TextInputLabels extends LinearLayout {
+    /** This classes tag for logging. */
+    private static final String TAG = "TextInputLabels";
 
     private Context context;
 
     private TextView tvName;
     private TextView tvError;
     private EditText etText;
+
+    private int color;
 
     public TextInputLabels(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +51,7 @@ public class TextInputLabels extends LinearLayout {
         tvError = (TextView) view.findViewById(R.id.text_input_labels_tv_error);
         etText = (EditText) view.findViewById(R.id.text_input_labels_et_text);
 
+        color = etText.getHintTextColors().getDefaultColor();
         etText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -65,17 +71,30 @@ public class TextInputLabels extends LinearLayout {
         });
     }
 
+    public void setToPasswordField() {
+        etText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        etText.setTypeface(tvName.getTypeface());
+    }
+
+    public void setToNumberField() {
+        etText.setInputType(InputType.TYPE_NUMBER_FLAG_SIGNED);
+    }
+
     public void setName(String name) {
         tvName.setText(name);
     }
 
-    public void setHint(String hint){
+    public void setHint(String hint) {
         etText.setHint(hint);
     }
 
-    public void setNameAndHint(String nameAndHint){
+    public void setNameAndHint(String nameAndHint) {
         tvName.setText(nameAndHint);
         etText.setHint(nameAndHint);
+    }
+
+    public String getText() {
+        return etText.getText().toString().trim();
     }
 
     public void showError(String error) {
@@ -88,7 +107,7 @@ public class TextInputLabels extends LinearLayout {
     public void hideError() {
         tvError.setVisibility(GONE);
         tvName.setVisibility(VISIBLE);
-        // TODO Properly reset etText color.
+        // TODO Fix androids clearColorFilter() bug.
         etText.getBackground().clearColorFilter();
     }
 }

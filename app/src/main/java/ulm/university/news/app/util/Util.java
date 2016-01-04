@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.TypedValue;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
@@ -19,7 +22,7 @@ import ulm.university.news.app.manager.database.UserDatabaseManager;
  */
 public class Util {
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "Util";
+    private static final String TAG = "Util";
 
     /** The reference for the Util Singleton class. */
     private static Util _instance;
@@ -68,7 +71,7 @@ public class Util {
 
     public String getUserAccessToken() {
         if (userAccessToken == null) {
-            Log.d(LOG_TAG, "userAccessToken is null.");
+            Log.d(TAG, "userAccessToken is null.");
             LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
             if (localUser != null) {
                 userAccessToken = localUser.getServerAccessToken();
@@ -79,7 +82,7 @@ public class Util {
 
     public Integer getUserId() {
         if (userId == null) {
-            Log.d(LOG_TAG, "userId is null.");
+            Log.d(TAG, "userId is null.");
             LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
             if (localUser != null) {
                 userId = localUser.getId();
@@ -90,7 +93,7 @@ public class Util {
 
     public String getUserName() {
         if (userName == null) {
-            Log.d(LOG_TAG, "userName is null.");
+            Log.d(TAG, "userName is null.");
             LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
             if (localUser != null) {
                 userName = localUser.getName();
@@ -102,6 +105,37 @@ public class Util {
     public String getModeratorAccessToken() {
         // TODO
         return moderatorAccessToken;
+    }
+
+    /**
+     * Hashes the given password.
+     *
+     * @return The hashed password.
+     */
+    public String hashPassword(String password) {
+        String passwordHash = null;
+        try {
+            // Calculate hash on the given password.
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            byte[] hash = sha256.digest(password.getBytes());
+
+            // Transform the bytes (8 bit signed) into a hexadecimal format.
+            StringBuilder hashString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                /*
+                Format parameters: %[flags][width][conversion]
+                Flag '0' - The result will be zero padded.
+                Width '2' - The width is 2 as 1 byte is represented by two hex characters.
+                Conversion 'x' - Result is formatted as hexadecimal integer, uppercase.
+                 */
+                hashString.append(String.format("%02x", hash[i]));
+            }
+            passwordHash = hashString.toString();
+            Log.d(TAG, "Password hashed to " + passwordHash);
+        } catch (NoSuchAlgorithmException e) {
+            Log.d(TAG, "Couldn't hash password. The expected digest algorithm is not available.");
+        }
+        return passwordHash;
     }
 
 

@@ -22,7 +22,7 @@ import ulm.university.news.app.data.Group;
  *
  * @author Matthias Mak
  */
-public class GroupAPI extends MainAPI{
+public class GroupAPI extends MainAPI {
     /** This classes tag for logging. */
     private static final String TAG = "GroupAPI";
     /** The reference for the GroupAPI Singleton class. */
@@ -92,6 +92,30 @@ public class GroupAPI extends MainAPI{
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Creates a new group on the server. The data of the new group is provided within the group object. The
+     * generated group resource will be converted to a group object and will be passed to the controller.
+     *
+     * @param group The group object including the data of the new group.
+     */
+    public void createGroup(Group group) {
+        // Parse group object to JSON String.
+        String jsonGroup = gson.toJson(group, Group.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Group groupResponse = gson.fromJson(json, Group.class);
+                EventBus.getDefault().post(groupResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, serverAddressGroup);
+        rTask.setBody(jsonGroup);
         rTask.setAccessToken(accessToken);
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();

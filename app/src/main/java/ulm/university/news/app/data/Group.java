@@ -48,6 +48,14 @@ public class Group {
 
     }
 
+    public Group(String name, String description, GroupType groupType, String term, String password) {
+        this.name = name;
+        this.description = description;
+        this.groupType = groupType;
+        this.term = term;
+        this.password = password;
+    }
+
     /**
      * Creates an instance of the Group class.
      *

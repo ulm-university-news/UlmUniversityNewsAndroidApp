@@ -37,8 +37,11 @@ public class Constants {
     /** A pattern which describes the valid form of a user or moderator name. */
     public static final String ACCOUNT_NAME_PATTERN = "^[-_a-zA-Z0-9]{3,35}$";
 
-    /** A pattern which describes the valid form of a password hash. */
-    public static final String PASSWORD_HASH_PATTERN = "^[a-fA-F0-9]{64}$";
+    /** A pattern which describes the valid form of a password. */
+    public static final String PASSWORD_PATTERN = "^[a-fA-F0-9]{8,20}$";
+
+    /** A pattern which describes the valid form of a 20** year. */
+    public static final String YEAR_PATTERN = "^[2][0][1-9]{2}$";
 
     /** A pattern which describes the valid form of an user access token. */
     public static final String USER_TOKEN_PATTERN = "^[a-fA-F0-9]{56}$";
@@ -47,7 +50,10 @@ public class Constants {
     public static final String MODERATOR_TOKEN_PATTERN = "^[a-fA-F0-9]{64}$";
 
     /** A pattern which describes the valid form of a resource name or title. */
-    public static final String NAME_PATTERN = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{1,45}$";
+    public static final String NAME_PATTERN_SHORT = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{1,45}$";
+
+    /** A pattern which describes the valid form of a resource name or title. */
+    public static final String NAME_PATTERN = "^[!?_-öÖäÄüÜßa-zA-Z0-9\\p{Blank}]{3,45}$";
 
     /**
      * A pattern which describes the valid form of a term string. The term is always noted in the form WS or SS plus

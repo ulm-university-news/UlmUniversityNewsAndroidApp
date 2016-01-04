@@ -24,6 +24,12 @@
         <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
         <item name="android:textColorLink">@color/hyperlink</item>
         <item name="android:textColorHint">@color/light_grey</item>
+        <!--<item name="android:dropDownListViewStyle">@style/spinnerStyle</item>-->
+    </style>
+
+    <style name="spinnerStyle" parent="android:Widget.ListView.DropDown">
+        <item name="android:divider">?android:attr/listDivider</item>
+        <item name="android:dividerHeight">0.5dp</item>
     </style>
 
     <style name="Theme.UlmUniversityMedicines" parent="Theme.UlmUniversityMain">
