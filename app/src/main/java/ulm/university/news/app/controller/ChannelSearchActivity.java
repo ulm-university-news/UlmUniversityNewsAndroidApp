@@ -58,6 +58,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private ListView lvChannels;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SearchView searchView;
+    private TextView tvLoading;
 
     private String errorMessage;
     private Toast toast;
@@ -179,6 +180,10 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<List<Channel>> loader, List<Channel> data) {
+        if(data.size() > 0){
+            tvLoading.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
         channels = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();
@@ -195,6 +200,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private void initView() {
         lvChannels = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_channel_search_swipe_refresh_layout);
+        tvLoading = (TextView) findViewById(R.id.activity_channel_search_tv_loading);
 
         toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);

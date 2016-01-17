@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -58,6 +59,10 @@ public class CreateAccountActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_create_account_toolbar);
+        setSupportActionBar(toolbar);
+
         // Initialise GUI elements.
         initGUI();
         // Initialise the broadcast receiver.
@@ -209,6 +214,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         } else if (etUserName.getText().toString().trim().length() == 0) {
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(getString(R.string.activity_create_account_error_name_empty));
+        } else if (!etUserName.getText().toString().trim().matches(Constants.ACCOUNT_NAME_PATTERN)) {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText(getString(R.string.activity_create_account_error_name_invalid));
         } else {
             // Checks passed. Attempt to create user account.
             btnCreateAccount.setVisibility(View.GONE);

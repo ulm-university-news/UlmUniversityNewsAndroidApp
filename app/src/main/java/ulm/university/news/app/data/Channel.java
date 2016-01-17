@@ -48,6 +48,8 @@ public class Channel {
     List<User> subscribers;
     /** A counter which determine how many unread announcements the channel contains. */
     Integer numberOfUnreadAnnouncements;
+    /** Indicates weather the channel is delete on server or not. */
+    Boolean deleted;
 
     public Channel() {
     }
@@ -231,5 +233,13 @@ public class Channel {
 
     public void setSubscribers(List<User> subscribers) {
         this.subscribers = subscribers;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

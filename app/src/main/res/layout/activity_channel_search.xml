@@ -15,20 +15,27 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+    <TextView
+        android:id="@+id/activity_channel_search_tv_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="@string/activity_channel_search_updating"
+        android:visibility="visible"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_channel_search_swipe_refresh_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <ListView
             android:id="@+id/activity_channel_search_lv_channels"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"/>
+            android:layout_height="wrap_content"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
