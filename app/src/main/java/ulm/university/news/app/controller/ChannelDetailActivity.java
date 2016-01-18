@@ -25,7 +25,7 @@ public class ChannelDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(ChannelController.getHeaderText(this, channel));
+        getSupportActionBar().setTitle(channel.getName());
 
         // Add the fragment to the 'fragment_container' FrameLayout
         ChannelDetailFragment fragment = ChannelDetailFragment.newInstance(channelId);

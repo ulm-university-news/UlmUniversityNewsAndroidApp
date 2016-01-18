@@ -297,15 +297,19 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         Log.d(TAG, "EventBus: BusEvent");
         String action = busEvent.getAction();
         if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
-            channelDBM.subscribeChannel(channel.getId());
             // btnSubscribe.setVisibility(View.GONE);
             // btnUnsubscribe.setVisibility(View.VISIBLE);
+            channelDBM.subscribeChannel(channel.getId());
+            // TODO Load responsible moderators once and after push message MODERATOR_ADD?
+            ChannelAPI.getInstance(getContext()).getResponsibleModerators(channel.getId());
             Intent intent = new Intent(getActivity(), ChannelActivity.class);
             intent.putExtra("channelId", channel.getId());
             startActivity(intent);
             getActivity().finish();
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
+            // channelDBM.deleteAnnouncements(channel.getId());
+            // channelDBM.deleteChannel(channel.getId());
             // btnSubscribe.setVisibility(View.VISIBLE);
             // btnUnsubscribe.setVisibility(View.GONE);
             getActivity().finish();

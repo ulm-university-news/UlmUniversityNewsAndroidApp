@@ -1,6 +1,10 @@
 package ulm.university.news.app.api;
 
 import android.content.Context;
+import android.util.Log;
+
+import de.greenrobot.event.EventBus;
+import ulm.university.news.app.data.Moderator;
 
 /**
  * The ModeratorAPI is responsible for sending requests regarding the moderator resource. Required data is handed over
@@ -40,5 +44,34 @@ public class ModeratorAPI extends MainAPI {
     private ModeratorAPI(Context context) {
         super(context);
         serverAddressModerator = serverAddress + "/moderator";
+    }
+
+    /**
+     * Attempts to login as moderator. On success the moderator will be returned.
+     *
+     * @param name The moderators name.
+     * @param password The moderators password.
+     */
+    public void login(String name, String password) {
+        // Create url for login.
+        String url = serverAddressModerator + "/authentication";
+
+        // Parse name and password object to JSON String.
+        Moderator m = new Moderator();
+        m.setName(name);
+        m.setPassword(password);
+        String jsonModerator = gson.toJson(m, Moderator.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Moderator moderator = gson.fromJson(json, Moderator.class);
+                EventBus.getDefault().post(moderator);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setBody(jsonModerator);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
     }
 }

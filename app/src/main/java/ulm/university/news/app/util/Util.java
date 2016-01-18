@@ -102,8 +102,12 @@ public class Util {
         return userName;
     }
 
+    public String setModeratorAccessToken(String moderatorAccessToken) {
+        this.moderatorAccessToken = moderatorAccessToken;
+        return moderatorAccessToken;
+    }
+
     public String getModeratorAccessToken() {
-        // TODO
         return moderatorAccessToken;
     }
 

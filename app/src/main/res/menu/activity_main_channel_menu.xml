@@ -19,4 +19,10 @@
         android:icon="@drawable/ic_settings_black_36dp"
         android:title="@string/activity_main_channel_menu_settings"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_main_channel_menu_login"
+        android:icon="@drawable/ic_person_black_36dp"
+        android:title="@string/activity_main_channel_menu_login"
+        app:showAsAction="never"/>
 </menu>

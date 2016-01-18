@@ -38,7 +38,7 @@ public class Constants {
     public static final String ACCOUNT_NAME_PATTERN = "^[-_a-zA-Z0-9]{3,35}$";
 
     /** A pattern which describes the valid form of a password. */
-    public static final String PASSWORD_PATTERN = "^[a-fA-F0-9]{8,20}$";
+    public static final String PASSWORD_PATTERN = "^[a-zA-Z0-9]{8,20}$";
 
     /** A pattern which describes the valid form of a 20** year. */
     public static final String YEAR_PATTERN = "^[2][0][1-9]{2}$";

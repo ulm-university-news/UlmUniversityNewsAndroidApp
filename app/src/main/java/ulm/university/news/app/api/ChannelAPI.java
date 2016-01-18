@@ -12,6 +12,7 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
+import ulm.university.news.app.data.Moderator;
 
 /**
  * The ChannelAPI is responsible for sending requests regarding the channel resource. Required data is handed over from
@@ -37,6 +38,7 @@ public class ChannelAPI extends MainAPI {
     public static final String GET_CHANNELS = "getChannels";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
+    public static final String GET_RESPONSIBLE_MODERATORS = "getResponsibleModerators";
 
     /**
      * Get the instance of the ChannelAPI class.
@@ -154,6 +156,26 @@ public class ChannelAPI extends MainAPI {
                 }.getType();
                 List<Announcement> announcements = gson.fromJson(json, listType);
                 EventBus.getDefault().post(announcements);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(accessToken);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getResponsibleModerators(int channelId) {
+        // Create url to specific channel and point to moderator resource.
+        String url = serverAddressChannel + "/" + channelId + "/moderator";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of announcements as deserialization type.
+                Type listType = new TypeToken<List<Moderator>>() {
+                }.getType();
+                List<Moderator> moderators = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEvent(GET_RESPONSIBLE_MODERATORS ,moderators));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);

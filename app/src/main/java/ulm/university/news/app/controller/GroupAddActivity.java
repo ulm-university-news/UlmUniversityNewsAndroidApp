@@ -145,17 +145,11 @@ public class GroupAddActivity extends AppCompatActivity {
         String description = tilDescription.getText();
         String password = tilPassword.getText();
         String year = etYear.getText().toString().trim();
-        if (name.length() == 0) {
-            tilName.showError("Name is empty.");
-            valid = false;
-        } else if (!name.matches(Constants.NAME_PATTERN)) {
+        if (!name.matches(Constants.NAME_PATTERN)) {
             tilName.showError("Name is invalid.");
             valid = false;
         }
-        if (password.length() == 0) {
-            tilPassword.showError("Password is empty.");
-            valid = false;
-        } else if (!password.matches(Constants.PASSWORD_PATTERN)) {
+        if (!password.matches(Constants.PASSWORD_PATTERN)) {
             tilPassword.showError("Password is invalid.");
             valid = false;
         }
@@ -163,12 +157,7 @@ public class GroupAddActivity extends AppCompatActivity {
             tilDescription.showError("Description is to long.");
             valid = false;
         }
-        if (year.length() == 0) {
-            // TODO How to show error?
-            tvError.setText("Year is empty.");
-            tvError.setVisibility(View.VISIBLE);
-            valid = false;
-        } else if (!year.matches(Constants.YEAR_PATTERN)) {
+        if (!year.matches(Constants.YEAR_PATTERN)) {
             // TODO How to show error?
             tvError.setText("Year is invalid.");
             tvError.setVisibility(View.VISIBLE);
@@ -213,7 +202,7 @@ public class GroupAddActivity extends AppCompatActivity {
         Log.d(TAG, "EventBus: List<Group>");
         Log.d(TAG, group.toString());
         pgrSearching.setVisibility(View.GONE);
-        // TODO Save group in database. Then show created group.
+        // TODO Save group in database. Then show GroupActivity.
     }
 
     /**

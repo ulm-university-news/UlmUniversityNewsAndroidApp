@@ -14,13 +14,13 @@ import android.util.Log;
  */
 public class DatabaseManager extends SQLiteOpenHelper {
     /** This classes tag for logging. */
-    private static final String LOG_TAG = "DatabaseManager";
+    private static final String TAG = "DatabaseManager";
     /** The single instance of DatabaseManager. */
     private static DatabaseManager _instance;
     /** The name of the database. */
     private static final String DATABASE_NAME = "ulm_university_news.db";
     /** The version of the database. */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     /** SQL statement to enable foreign key support. */
     private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";
@@ -53,6 +53,22 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + USER_ID + " INTEGER PRIMARY KEY NOT NULL, "
             + USER_NAME + " TEXT NOT NULL, "
             + USER_OLD_NAME + " TEXT);";
+
+    // Columns of the LocalModerator table.
+    public static final String LOCAL_MODERATOR_TABLE = "LocalModerator";
+    public static final String LOCAL_MODERATOR_ID = "_id";
+    public static final String LOCAL_MODERATOR_NAME = "Name";
+    public static final String LOCAL_MODERATOR_FIRST_NAME = "FirstName";
+    public static final String LOCAL_MODERATOR_LAST_NAME = "LastName";
+    public static final String LOCAL_MODERATOR_EMAIL = "Email";
+
+    /** SQL statement to create the LocalModerator table. */
+    private static final String CREATE_TABLE_LOCAL_MODERATOR = "CREATE TABLE " + LOCAL_MODERATOR_TABLE + "("
+            + LOCAL_MODERATOR_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + LOCAL_MODERATOR_NAME + " TEXT NOT NULL, "
+            + LOCAL_MODERATOR_FIRST_NAME + " TEXT NOT NULL, "
+            + LOCAL_MODERATOR_LAST_NAME + " TEXT NOT NULL, "
+            + LOCAL_MODERATOR_EMAIL + " TEXT NOT NULL);";
 
     // Columns of the Moderator table.
     public static final String MODERATOR_TABLE = "Moderator";
@@ -104,7 +120,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /** SQL statement to create the SubscribedChannels table. */
     private static final String CREATE_TABLE_SUBSCRIBED_CHANNELS = "CREATE TABLE " + SUBSCRIBED_CHANNELS_TABLE + "("
             + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") "
+            + "ON DELETE CASCADE);";
 
     // Columns of the Lecture table.
     public static final String LECTURE_TABLE = "Lecture";
@@ -122,7 +139,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + LECTURE_END_DATE + " TEXT, "
             + LECTURE_LECTURER + " TEXT NOT NULL, "
             + LECTURE_ASSISTANT + " TEXT, "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE);";
 
     // Columns of the Event table.
     public static final String EVENT_TABLE = "Event";
@@ -134,7 +151,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
             + EVENT_COST + " TEXT, "
             + EVENT_ORGANIZER + " TEXT, "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE);";
 
     // Columns of the Sports table.
     public static final String SPORTS_TABLE = "Sports";
@@ -146,7 +163,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_ID_FOREIGN + " INTEGER PRIMARY KEY NOT NULL, "
             + SPORTS_COST + " TEXT, "
             + SPORTS_PARTICIPANTS + " TEXT, "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE);";
 
     // Columns of the Message table.
     public static final String MESSAGE_TABLE = "Message";
@@ -179,9 +196,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + ANNOUNCEMENT_AUTHOR + " INTEGER NOT NULL, "
             + MESSAGE_ID_FOREIGN + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + ANNOUNCEMENT_MESSAGE_NUMBER + ", " + CHANNEL_ID_FOREIGN + "), "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "), "
-            + "FOREIGN KEY(" + ANNOUNCEMENT_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
-            + "FOREIGN KEY(" + MESSAGE_ID_FOREIGN + ") REFERENCES " + MESSAGE_TABLE + "(" + MESSAGE_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE, "
+    //        + "FOREIGN KEY(" + ANNOUNCEMENT_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
+            + "FOREIGN KEY(" + MESSAGE_ID_FOREIGN + ") REFERENCES " + MESSAGE_TABLE + "(" + MESSAGE_ID + ") ON DELETE CASCADE);";
 
     // Columns of the Reminder table.
     public static final String REMINDER_TABLE = "Reminder";
@@ -211,7 +228,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + REMINDER_PRIORITY + " INTEGER NOT NULL, "
             + REMINDER_AUTHOR + " INTEGER NOT NULL, "
             + CHANNEL_ID_FOREIGN + " INTEGER NOT NULL, "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "), "
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE, "
             + "FOREIGN KEY(" + REMINDER_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "));";
 
     // Columns of the Group table.
@@ -347,7 +364,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + MODERATOR_CHANNEL_ACTIVE + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + MODERATOR_ID_FOREIGN + ", " + CHANNEL_ID_FOREIGN + "), "
             + "FOREIGN KEY(" + MODERATOR_ID_FOREIGN + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + "));";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE);";
 
     /**
      * Get the instance of the DatabaseManager class.
@@ -374,54 +391,53 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        Log.i(LOG_TAG, "Creating database " + DATABASE_NAME);
-        // Enable foreign key support.
-        Log.i(LOG_TAG, FOREIGN_KEYS_ON);
-        database.execSQL(FOREIGN_KEYS_ON);
+        Log.i(TAG, "Creating database " + DATABASE_NAME);
         // Create tables.
-        Log.i(LOG_TAG, CREATE_TABLE_LOCAL_USER);
+        Log.i(TAG, CREATE_TABLE_LOCAL_USER);
         database.execSQL(CREATE_TABLE_LOCAL_USER);
-        Log.i(LOG_TAG, CREATE_TABLE_USER);
+        Log.i(TAG, CREATE_TABLE_USER);
         database.execSQL(CREATE_TABLE_USER);
-        Log.i(LOG_TAG, CREATE_TABLE_MODERATOR);
+        Log.i(TAG, CREATE_TABLE_LOCAL_MODERATOR);
+        database.execSQL(CREATE_TABLE_LOCAL_MODERATOR);
+        Log.i(TAG, CREATE_TABLE_MODERATOR);
         database.execSQL(CREATE_TABLE_MODERATOR);
-        Log.i(LOG_TAG, CREATE_TABLE_CHANNEL);
+        Log.i(TAG, CREATE_TABLE_CHANNEL);
         database.execSQL(CREATE_TABLE_CHANNEL);
-        Log.i(LOG_TAG, CREATE_TABLE_LECTURE);
+        Log.i(TAG, CREATE_TABLE_LECTURE);
         database.execSQL(CREATE_TABLE_LECTURE);
-        Log.i(LOG_TAG, CREATE_TABLE_EVENT);
+        Log.i(TAG, CREATE_TABLE_EVENT);
         database.execSQL(CREATE_TABLE_EVENT);
-        Log.i(LOG_TAG, CREATE_TABLE_SPORTS);
+        Log.i(TAG, CREATE_TABLE_SPORTS);
         database.execSQL(CREATE_TABLE_SPORTS);
-        Log.i(LOG_TAG, CREATE_TABLE_MESSAGE);
+        Log.i(TAG, CREATE_TABLE_MESSAGE);
         database.execSQL(CREATE_TABLE_MESSAGE);
-        Log.i(LOG_TAG, CREATE_TABLE_ANNOUNCEMENT);
+        Log.i(TAG, CREATE_TABLE_ANNOUNCEMENT);
         database.execSQL(CREATE_TABLE_ANNOUNCEMENT);
-        Log.i(LOG_TAG, CREATE_TABLE_REMINDER);
+        Log.i(TAG, CREATE_TABLE_REMINDER);
         database.execSQL(CREATE_TABLE_REMINDER);
-        Log.i(LOG_TAG, CREATE_TABLE_GROUP);
+        Log.i(TAG, CREATE_TABLE_GROUP);
         database.execSQL(CREATE_TABLE_GROUP);
-        Log.i(LOG_TAG, CREATE_TABLE_CONVERSATION);
+        Log.i(TAG, CREATE_TABLE_CONVERSATION);
         database.execSQL(CREATE_TABLE_CONVERSATION);
-        Log.i(LOG_TAG, CREATE_TABLE_CONVERSATION_MESSAGE);
+        Log.i(TAG, CREATE_TABLE_CONVERSATION_MESSAGE);
         database.execSQL(CREATE_TABLE_CONVERSATION_MESSAGE);
-        Log.i(LOG_TAG, CREATE_TABLE_BALLOT);
+        Log.i(TAG, CREATE_TABLE_BALLOT);
         database.execSQL(CREATE_TABLE_BALLOT);
-        Log.i(LOG_TAG, CREATE_TABLE_OPTION);
+        Log.i(TAG, CREATE_TABLE_OPTION);
         database.execSQL(CREATE_TABLE_OPTION);
-        Log.i(LOG_TAG, CREATE_TABLE_USER_OPTION);
+        Log.i(TAG, CREATE_TABLE_USER_OPTION);
         database.execSQL(CREATE_TABLE_USER_OPTION);
-        Log.i(LOG_TAG, CREATE_TABLE_SUBSCRIBED_CHANNELS);
+        Log.i(TAG, CREATE_TABLE_SUBSCRIBED_CHANNELS);
         database.execSQL(CREATE_TABLE_SUBSCRIBED_CHANNELS);
-        Log.i(LOG_TAG, CREATE_TABLE_USER_GROUP);
+        Log.i(TAG, CREATE_TABLE_USER_GROUP);
         database.execSQL(CREATE_TABLE_USER_GROUP);
-        Log.i(LOG_TAG, CREATE_TABLE_MODERATOR_CHANNEL);
+        Log.i(TAG, CREATE_TABLE_MODERATOR_CHANNEL);
         database.execSQL(CREATE_TABLE_MODERATOR_CHANNEL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(DatabaseManager.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion
+        Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data.");
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
@@ -443,5 +459,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + USER_GROUP_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MODERATOR_CHANNEL_TABLE);
         onCreate(db);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        // Foreign keys must be activated every time the database is opened.
+        db.execSQL(FOREIGN_KEYS_ON);
     }
 }

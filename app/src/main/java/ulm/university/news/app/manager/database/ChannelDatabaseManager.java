@@ -235,6 +235,19 @@ public class ChannelDatabaseManager {
     }
 
     /**
+     * Deletes the channel identified by id. Deletes rows of other tables if linked to the channel.
+     *
+     * @param channelId The id of the channel.
+     */
+    public void deleteChannel(int channelId){
+        Log.d(TAG, "Delete channel with id " + channelId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+        String whereClause = CHANNEL_ID + "=?";
+        String[] whereArgs = new String[] { String.valueOf(channelId) };
+        db.delete(CHANNEL_TABLE, whereClause, whereArgs);
+    }
+
+    /**
      * Gets the channel identified by id. The returned channel object may be a subclass of channel.
      *
      * @param channelId The id of the channel.
@@ -583,10 +596,10 @@ public class ChannelDatabaseManager {
 
             // Announcement values.
             ContentValues announcementValues = new ContentValues();
-            announcementValues.put(ANNOUNCEMENT_MESSAGE_NUMBER, announcement.getMessageNumber());
             announcementValues.put(MESSAGE_ID_FOREIGN, announcement.getId());
             announcementValues.put(CHANNEL_ID_FOREIGN, announcement.getChannelId());
             announcementValues.put(ANNOUNCEMENT_TITLE, announcement.getTitle());
+            announcementValues.put(ANNOUNCEMENT_MESSAGE_NUMBER, announcement.getMessageNumber());
             announcementValues.put(ANNOUNCEMENT_AUTHOR, announcement.getAuthorModerator());
 
             // If there are two insert statements make sure that they are performed in one transaction.
@@ -594,7 +607,7 @@ public class ChannelDatabaseManager {
             db.insertOrThrow(MESSAGE_TABLE, null, messageValues);
             db.insertOrThrow(ANNOUNCEMENT_TABLE, null, announcementValues);
 
-            // Notify observers that database content has changed.
+            // Notify observers that specific database content has changed.
             Intent databaseChanged = new Intent(STORE_ANNOUNCEMENT);
             Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
 
@@ -724,5 +737,19 @@ public class ChannelDatabaseManager {
 
         Log.d(TAG, "End with unread announcements count " + count);
         return count;
+    }
+
+    /**
+     * Deletes all announcements of the channel identified by id. Deletes entries in the message table linked to the
+     * announcements of the channel.
+     *
+     * @param channelId The id of the channel.
+     */
+    public void deleteAnnouncements(int channelId){
+        Log.d(TAG, "Delete announcements of channel with id " + channelId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+        String whereClause = CHANNEL_ID_FOREIGN + "=?";
+        String[] whereArgs = new String[] { String.valueOf(channelId) };
+        db.delete(ANNOUNCEMENT_TABLE, whereClause, whereArgs);
     }
 }

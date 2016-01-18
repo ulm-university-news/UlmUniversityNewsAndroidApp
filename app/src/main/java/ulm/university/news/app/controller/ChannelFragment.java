@@ -116,6 +116,9 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
             case R.id.activity_main_channel_menu_settings:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
+            case R.id.activity_main_channel_menu_login:
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
