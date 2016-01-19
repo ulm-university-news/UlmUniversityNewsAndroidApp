@@ -28,8 +28,6 @@ public class TextInputLabels extends LinearLayout {
     private TextView tvError;
     private EditText etText;
 
-    private boolean isError;
-
     public TextInputLabels(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -43,7 +41,6 @@ public class TextInputLabels extends LinearLayout {
     }
 
     private void init() {
-        isError = false;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.text_input_labels, this, true);
         tvName = (TextView) view.findViewById(R.id.text_input_labels_tv_name);
@@ -61,9 +58,7 @@ public class TextInputLabels extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(isError){
-                    hideError();
-                }
+                hideError();
                 if (s.toString().length() == 0) {
                     tvName.setVisibility(INVISIBLE);
                 }
@@ -98,7 +93,6 @@ public class TextInputLabels extends LinearLayout {
     }
 
     public void showError(String error) {
-        isError = true;
         tvError.setText(error);
         tvError.setVisibility(VISIBLE);
         tvName.setVisibility(GONE);
@@ -108,7 +102,6 @@ public class TextInputLabels extends LinearLayout {
     }
 
     public void hideError() {
-        isError = false;
         tvError.setVisibility(GONE);
         tvName.setVisibility(VISIBLE);
     }

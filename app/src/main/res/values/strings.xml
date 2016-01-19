@@ -31,7 +31,8 @@
         sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>
     <string name="activity_create_account_name_hint">User name</string>
     <string name="activity_create_account_error_name_empty">You need to enter a user name.</string>
-    <string name="activity_create_account_error_name_invalid">Your user name is invalid.</string>
+    <string name="activity_create_account_error_name_invalid">Your user name is invalid. Only use english
+        characters and numbers.</string>
 
     <!-- LoginActivity ############################################################################################# -->
     <string name="activity_login_title">Moderator Login</string>

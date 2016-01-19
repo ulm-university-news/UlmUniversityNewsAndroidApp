@@ -9,9 +9,15 @@ import android.util.TypedValue;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.data.Channel;
+import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
@@ -142,6 +148,71 @@ public class Util {
         return passwordHash;
     }
 
+    /**
+     * Sorts the given channels alphabetically. Ignores channel type.
+     *
+     * @param channels The channel list.
+     */
+    private void sortChannelsName(List<Channel> channels) {
+        Collections.sort(channels, new Comparator<Channel>() {
+            public int compare(Channel c1, Channel c2) {
+                return c1.getName().compareToIgnoreCase(c2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given channels according to their channel type. Channels of the same type will be sorted
+     * alphabetically.
+     *
+     * @param channels The channel list.
+     */
+    private void sortChannelsTypeName(List<Channel> channels) {
+        Collections.sort(channels, new Comparator<Channel>() {
+            public int compare(Channel c1, Channel c2) {
+                int res = c1.getType().compareTo(c2.getType());
+                if (res != 0) {
+                    return res;
+                }
+                return c1.getName().compareToIgnoreCase(c2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given channels according to their channel type. Channels of the same type will be sorted
+     * alphabetically. Lectures will be sorted will be sorted according to their faculty. Lectures of the same
+     * faculty will be sorted alphabetically.
+     *
+     * @param channels The channel list.
+     */
+    private void sortChannelsTypeFaculty(List<Channel> channels) {
+        Collections.sort(channels, new Comparator<Channel>() {
+            public int compare(Channel c1, Channel c2) {
+                int res = c1.getType().compareTo(c2.getType());
+                if (res != 0) {
+                    return res;
+                }
+                if (c1.getType().equals(ChannelType.LECTURE)) {
+                    res = ((Lecture) c1).getFaculty().compareTo(((Lecture) c2).getFaculty());
+                    if (res != 0) {
+                        return res;
+                    }
+                }
+                return c1.getName().compareToIgnoreCase(c2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given channel list according to the channel settings.
+     *
+     * @param channels The channel list.
+     */
+    public void sortChannels(List<Channel> channels) {
+        // TODO Check settings for preferred channel order.
+        sortChannelsTypeFaculty(channels);
+    }
 
     public int fetchAccentColor() {
         TypedValue typedValue = new TypedValue();

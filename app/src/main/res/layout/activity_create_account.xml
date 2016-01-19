@@ -2,6 +2,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -29,8 +30,7 @@
             android:maxLines="10000"
             android:padding="10dp"
             android:scrollbars="vertical"
-            android:text="@string/activity_create_account_information"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:text="@string/activity_create_account_information"/>
 
         <CheckBox
             android:id="@+id/activity_create_account_chk_terms_of_use"
@@ -39,16 +39,11 @@
             android:layout_marginBottom="10dp"
             android:text="@string/activity_create_account_checkbox"/>
 
-        <EditText
-            android:id="@+id/activity_create_account_et_user_name"
+        <ulm.university.news.app.util.TextInputLabels
+            android:id="@+id/activity_create_account_til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:ems="10"
-            android:hint="@string/activity_create_account_name_hint"
-            android:inputType="textPersonName"
-            android:textColor="@color/black"
-            android:textColorHint="@color/dark_grey"/>
+            android:paddingBottom="8dp"/>
 
         <Button
             android:id="@+id/activity_create_account_btn_create_account"

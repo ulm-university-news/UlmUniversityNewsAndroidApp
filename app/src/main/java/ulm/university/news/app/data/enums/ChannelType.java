@@ -7,7 +7,7 @@ package ulm.university.news.app.data.enums;
  * @author Philipp Speidel
  */
 public enum ChannelType {
-    OTHER, LECTURE, EVENT, SPORTS, STUDENT_GROUP;
+    LECTURE, EVENT, SPORTS, STUDENT_GROUP, OTHER;
 
     public static final ChannelType values[] = values();
 }

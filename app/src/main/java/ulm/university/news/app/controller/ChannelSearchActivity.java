@@ -188,6 +188,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             tvLoading.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
+        Util.getInstance(this).sortChannels(data);
         channels = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

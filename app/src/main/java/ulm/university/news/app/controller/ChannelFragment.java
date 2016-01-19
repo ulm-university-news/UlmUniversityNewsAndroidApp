@@ -23,6 +23,7 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
+import ulm.university.news.app.util.Util;
 
 
 public class ChannelFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Channel>> {
@@ -152,6 +153,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(Loader<List<Channel>> loader, List<Channel> data) {
         // Update list.
+        Util.getInstance(getContext()).sortChannels(data);
         channels = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

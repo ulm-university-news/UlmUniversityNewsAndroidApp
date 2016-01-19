@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -28,6 +27,7 @@ import ulm.university.news.app.data.enums.Platform;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.manager.push.PushTokenGenerationService;
 import ulm.university.news.app.util.Constants;
+import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
@@ -52,7 +52,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private TextView tvError;
     private Button btnCreateAccount;
     private Button btnStart;
-    private EditText etUserName;
+    private TextInputLabels tilUserName;
     private CheckBox chkTermsOfUse;
 
     @Override
@@ -97,15 +97,17 @@ public class CreateAccountActivity extends AppCompatActivity {
         tvError = (TextView) findViewById(R.id.activity_create_account_tv_error);
         btnCreateAccount = (Button) findViewById(R.id.activity_create_account_btn_create_account);
         btnStart = (Button) findViewById(R.id.activity_create_account_btn_start);
-        etUserName = (EditText) findViewById(R.id.activity_create_account_et_user_name);
+        tilUserName = (TextInputLabels) findViewById(R.id.activity_create_account_til_name);
         chkTermsOfUse = (CheckBox) findViewById(R.id.activity_create_account_chk_terms_of_use);
+
+        tilUserName.setNameAndHint(getString(R.string.activity_create_account_name_hint));
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tvInfo.setVisibility(View.GONE);
                 tvError.setVisibility(View.GONE);
-                createPushToken();
+                createAccount();
             }
         });
 
@@ -174,7 +176,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Update view.
         tvWelcome.setVisibility(View.GONE);
         chkTermsOfUse.setVisibility(View.GONE);
-        etUserName.setVisibility(View.GONE);
+        tilUserName.setVisibility(View.GONE);
         pgrCreateAccount.setVisibility(View.GONE);
         btnCreateAccount.setVisibility(View.GONE);
         // Account successfully created. Show button to start main application.
@@ -189,7 +191,7 @@ public class CreateAccountActivity extends AppCompatActivity {
      * @param pushToken The generated push access token of the new user.
      */
     private void createLocalUser(String pushToken) {
-        String name = etUserName.getText().toString();
+        String name = tilUserName.getText();
         Platform platform = Platform.ANDROID;
 
         LocalUser localUser = new LocalUser(name, pushToken, platform);
@@ -201,7 +203,13 @@ public class CreateAccountActivity extends AppCompatActivity {
     /**
      * Validates user input, performs further checks and finally starts generation of a new push token for the new user.
      */
-    private void createPushToken() {
+    private void createAccount() {
+        boolean valid = true;
+        // Check if user name is valid.
+        if (!tilUserName.getText().matches(Constants.ACCOUNT_NAME_PATTERN)) {
+            tilUserName.showError(getString(R.string.activity_create_account_error_name_invalid));
+            valid = false;
+        }
         // Check if device is connected to the internet.
         if (!Util.getInstance(this).isOnline()) {
             tvError.setVisibility(View.VISIBLE);
@@ -210,14 +218,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         } else if (!chkTermsOfUse.isChecked()) {
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(getString(R.string.activity_create_account_error_checkbox));
-            // Check if user name is empty.
-        } else if (etUserName.getText().toString().trim().length() == 0) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_error_name_empty));
-        } else if (!etUserName.getText().toString().trim().matches(Constants.ACCOUNT_NAME_PATTERN)) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText(getString(R.string.activity_create_account_error_name_invalid));
-        } else {
+        } else if (valid) {
             // Checks passed. Attempt to create user account.
             btnCreateAccount.setVisibility(View.GONE);
             pgrCreateAccount.setVisibility(View.VISIBLE);
