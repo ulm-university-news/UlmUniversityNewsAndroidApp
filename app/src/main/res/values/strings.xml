@@ -36,8 +36,8 @@
     <!-- LoginActivity ############################################################################################# -->
     <string name="activity_login_title">Moderator Login</string>
     <string name="activity_login_info">Please use your moderator name and moderator password to login.\nIf you don\'t
-        have a moderator account or forgot your password, please visit the following website for further
-        information:\nwww.google.de</string>
+        have a moderator account, forgot your password or encounter other problems, please visit the following website
+        for further information:\nwww.google.de</string>
     <string name="activity_login_btn_login">Login</string>
     <string name="activity_login_til_name_hint">Moderator name</string>
     <string name="activity_login_til_password_hint">Moderator password</string>
@@ -88,7 +88,7 @@
     <string name="activity_main_group_list_loading">Loading group data...</string>
     <string name="activity_main_channel_menu_search">Search Channel</string>
     <string name="activity_main_channel_menu_settings">Settings</string>
-    <string name="activity_main_channel_menu_login">Login</string>
+    <string name="activity_main_channel_menu_login">Moderator Login</string>
     <string name="activity_main_group_menu_settings">Settings</string>
     <string name="activity_main_group_menu_search">Search Group</string>
     <string name="activity_main_group_menu_add">Add Group</string>

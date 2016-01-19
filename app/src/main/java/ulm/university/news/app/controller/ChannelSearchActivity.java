@@ -25,8 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -53,6 +55,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private AdapterView.OnItemClickListener itemClickListener;
     ChannelListAdapter listAdapter;
     private List<Channel> channels;
+    private List<Channel> channelsSelection;
 
     // GUI elements.
     private ListView lvChannels;
@@ -111,14 +114,15 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    Toast.makeText(ChannelSearchActivity.this, query, Toast.LENGTH_SHORT).show();
                     searchView.clearFocus();
+                    search(query);
                     return true;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
-                    return false;
+                    search(newText);
+                    return true;
                 }
             });
             searchView.setImeOptions(searchView.getImeOptions() | EditorInfo.IME_ACTION_SEARCH);
@@ -180,7 +184,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<List<Channel>> loader, List<Channel> data) {
-        if(data.size() > 0){
+        if (data.size() > 0) {
             tvLoading.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
@@ -226,6 +230,23 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 startActivity(intent);
             }
         };
+    }
+
+    /**
+     * Searches in the loaded channel list for matching channel names. The channel list will be updated accordingly.
+     * Called by the search widget.
+     *
+     * @param query - The given search string.
+     */
+    private void search(String query) {
+        channelsSelection = new ArrayList<>();
+        for (Channel c : channels) {
+            if (StringUtils.containsIgnoreCase(c.getName(), query)) {
+                channelsSelection.add(c);
+            }
+        }
+        listAdapter.setData(channelsSelection);
+        listAdapter.notifyDataSetChanged();
     }
 
     /**

@@ -239,11 +239,11 @@ public class ChannelDatabaseManager {
      *
      * @param channelId The id of the channel.
      */
-    public void deleteChannel(int channelId){
+    public void deleteChannel(int channelId) {
         Log.d(TAG, "Delete channel with id " + channelId);
         SQLiteDatabase db = dbm.getWritableDatabase();
         String whereClause = CHANNEL_ID + "=?";
-        String[] whereArgs = new String[] { String.valueOf(channelId) };
+        String[] whereArgs = new String[]{String.valueOf(channelId)};
         db.delete(CHANNEL_TABLE, whereClause, whereArgs);
     }
 
@@ -256,7 +256,7 @@ public class ChannelDatabaseManager {
     public Channel getChannel(int channelId) {
         SQLiteDatabase db = dbm.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + CHANNEL_TABLE + " WHERE " + CHANNEL_ID + "=?";
-        String[] args = {"" + channelId};
+        String[] args = {String.valueOf(channelId)};
         Log.d(TAG, selectQuery + " -> " + channelId);
 
         // Create channel fields.
@@ -367,7 +367,7 @@ public class ChannelDatabaseManager {
             modificationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
             dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
             website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
-            args[0] = "" + id;
+            args[0] = String.valueOf(id);
 
             // If necessary get additional channel data and create corresponding channel subclass.
             switch (type) {
@@ -458,7 +458,7 @@ public class ChannelDatabaseManager {
             modificationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
             dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
             website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
-            args[0] = "" + id;
+            args[0] = String.valueOf(id);
 
             // If necessary get additional channel data and create corresponding channel subclass.
             switch (type) {
@@ -544,7 +544,7 @@ public class ChannelDatabaseManager {
         SQLiteDatabase db = dbm.getWritableDatabase();
 
         String where = CHANNEL_ID_FOREIGN + "=?";
-        String[] args = {"" + channelId};
+        String[] args = {String.valueOf(channelId)};
         db.delete(SUBSCRIBED_CHANNELS_TABLE, where, args);
 
         // Notify observers that database content has changed.
@@ -563,7 +563,7 @@ public class ChannelDatabaseManager {
         boolean isSubscribedChannel = false;
 
         String selectQuery = "SELECT * FROM " + SUBSCRIBED_CHANNELS_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
-        String[] args = {"" + channelId};
+        String[] args = {String.valueOf(channelId)};
         Log.d(TAG, selectQuery + " -> " + channelId);
 
         Cursor c = db.rawQuery(selectQuery, args);
@@ -637,8 +637,7 @@ public class ChannelDatabaseManager {
                 " ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN + " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
         // "SELECT * FROM Message AS m JOIN Announcement AS a ON m.Id=a.Message_Id WHERE a.Channel_Id=? AND a" +
         //        ".MessageNumber>?;";
-        String[] args = new String[1];
-        args[0] = "" + channelId;
+        String[] args = {String.valueOf(channelId)};
         Log.d(TAG, announcementsQuery);
 
         // Create fields before while loop, not within every pass.
@@ -684,8 +683,9 @@ public class ChannelDatabaseManager {
 
         ContentValues values = new ContentValues();
         values.put(MESSAGE_READ, true);
-        String where = MESSAGE_ID + "=" + messageId;
-        db.update(MESSAGE_TABLE, values, where, null);
+        String where = MESSAGE_ID + "=?";
+        String[] args = {String.valueOf(messageId)};
+        db.update(MESSAGE_TABLE, values, where, args);
     }
 
     /**
@@ -699,8 +699,7 @@ public class ChannelDatabaseManager {
         String announcementsQuery = "SELECT MAX(a." + ANNOUNCEMENT_MESSAGE_NUMBER + ") FROM " + MESSAGE_TABLE +
                 " AS m JOIN " + ANNOUNCEMENT_TABLE + " AS a ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN +
                 " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
-        String[] args = new String[1];
-        args[0] = "" + channelId;
+        String[] args = {String.valueOf(channelId)};
         Log.d(TAG, announcementsQuery);
 
         // Get message data from database.
@@ -720,8 +719,7 @@ public class ChannelDatabaseManager {
         String announcementsQuery = "SELECT * FROM " + MESSAGE_TABLE +
                 " AS m JOIN " + ANNOUNCEMENT_TABLE + " AS a ON m." + MESSAGE_ID + "=a." + MESSAGE_ID_FOREIGN +
                 " WHERE a." + CHANNEL_ID_FOREIGN + "=?";
-        String[] args = new String[1];
-        args[0] = "" + channelId;
+        String[] args = {String.valueOf(channelId)};
         Log.d(TAG, announcementsQuery);
 
         // Count unread announcements in database.
@@ -745,11 +743,11 @@ public class ChannelDatabaseManager {
      *
      * @param channelId The id of the channel.
      */
-    public void deleteAnnouncements(int channelId){
+    public void deleteAnnouncements(int channelId) {
         Log.d(TAG, "Delete announcements of channel with id " + channelId);
         SQLiteDatabase db = dbm.getWritableDatabase();
         String whereClause = CHANNEL_ID_FOREIGN + "=?";
-        String[] whereArgs = new String[] { String.valueOf(channelId) };
+        String[] whereArgs = {String.valueOf(channelId)};
         db.delete(ANNOUNCEMENT_TABLE, whereClause, whereArgs);
     }
 }

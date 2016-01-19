@@ -117,8 +117,10 @@ public class LoginActivity extends AppCompatActivity {
         Util.getInstance(this).setModeratorAccessToken(moderator.getServerAccessToken());
         ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
 
-        // TODO Check if already stored.
-        moderatorDBM.storeLocalModerator(moderator);
+        // Check if already stored.
+        if(moderatorDBM.getLocalModerator() != null){
+            moderatorDBM.storeLocalModerator(moderator);
+        }
 
         // TODO Go to moderator view.
         Intent intent = new Intent(this, MainActivity.class);

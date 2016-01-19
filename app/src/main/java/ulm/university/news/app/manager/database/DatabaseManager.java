@@ -20,7 +20,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /** The name of the database. */
     private static final String DATABASE_NAME = "ulm_university_news.db";
     /** The version of the database. */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
 
     /** SQL statement to enable foreign key support. */
     private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";

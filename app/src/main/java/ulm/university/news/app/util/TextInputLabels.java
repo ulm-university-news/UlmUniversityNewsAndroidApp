@@ -1,8 +1,6 @@
 package ulm.university.news.app.util;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -30,7 +28,7 @@ public class TextInputLabels extends LinearLayout {
     private TextView tvError;
     private EditText etText;
 
-    private int color;
+    private boolean isError;
 
     public TextInputLabels(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,13 +43,13 @@ public class TextInputLabels extends LinearLayout {
     }
 
     private void init() {
+        isError = false;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.text_input_labels, this, true);
         tvName = (TextView) view.findViewById(R.id.text_input_labels_tv_name);
         tvError = (TextView) view.findViewById(R.id.text_input_labels_tv_error);
         etText = (EditText) view.findViewById(R.id.text_input_labels_et_text);
 
-        color = etText.getHintTextColors().getDefaultColor();
         etText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -63,7 +61,9 @@ public class TextInputLabels extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                hideError();
+                if(isError){
+                    hideError();
+                }
                 if (s.toString().length() == 0) {
                     tvName.setVisibility(INVISIBLE);
                 }
@@ -98,16 +98,18 @@ public class TextInputLabels extends LinearLayout {
     }
 
     public void showError(String error) {
+        isError = true;
         tvError.setText(error);
         tvError.setVisibility(VISIBLE);
         tvName.setVisibility(GONE);
-        etText.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.error), PorterDuff.Mode.SRC_ATOP);
+        // Android bugs in color filter. Wait for fixed version update.
+        // etText.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.error), PorterDuff.Mode
+        // .SRC_ATOP);
     }
 
     public void hideError() {
+        isError = false;
         tvError.setVisibility(GONE);
         tvName.setVisibility(VISIBLE);
-        // TODO Fix androids clearColorFilter() bug.
-        etText.getBackground().clearColorFilter();
     }
 }

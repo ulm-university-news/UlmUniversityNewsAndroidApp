@@ -65,8 +65,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:indeterminateTint="@color/uni_main_primary"
-            android:indeterminateTintMode="src_in"
             android:visibility="gone"/>
 
         <TextView
