@@ -63,12 +63,12 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login();
+                attemptToLogin();
             }
         });
     }
 
-    private void login() {
+    private void attemptToLogin() {
         boolean valid = true;
         String name = tilName.getText();
         String password = tilPassword.getText();
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (valid) {
-            // All checks passed. Attempt to login.
+            // All checks passed. Attempt to attemptToLogin.
             tvError.setVisibility(View.GONE);
             pgrLogin.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
@@ -112,18 +112,28 @@ public class LoginActivity extends AppCompatActivity {
     public void onEventMainThread(Moderator moderator) {
         Log.d(TAG, "EventBus: Moderator");
         Log.d(TAG, moderator.toString());
+        login(moderator);
+    }
 
-        // Cache the moderators server access token.
-        Util.getInstance(this).setModeratorAccessToken(moderator.getServerAccessToken());
+    private void login(Moderator moderator) {
         ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
 
-        // Check if already stored.
-        if(moderatorDBM.getLocalModerator() != null){
+        // Check if already stored in database.
+        if (moderatorDBM.getLocalModerator() != null) {
             moderatorDBM.storeLocalModerator(moderator);
         }
 
-        // TODO Go to moderator view.
-        Intent intent = new Intent(this, MainActivity.class);
+        // Cache the moderators server access token.
+        Util.getInstance(this).setModeratorAccessToken(moderator.getServerAccessToken());
+
+        // Tell MainActivity to finish.
+        Intent intent = new Intent("finish_activity");
+        sendBroadcast(intent);
+
+        // Go to moderator view.
+        intent = new Intent(this, ModeratorMainActivity.class);
+        // Prevent back navigation to logged out state.
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }

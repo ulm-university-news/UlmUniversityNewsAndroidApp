@@ -31,12 +31,14 @@ public class StartActivity extends Activity {
         overridePendingTransition(0, 0);
         Intent intent;
 
-        // Check if a local user account already exists.
-        if (Util.getInstance(this).getUserAccessToken() != null) {
-            // Push token was already created and sent to the server.
+        if (Util.getInstance(this).getModeratorAccessToken() != null) {
+            // User is logged in as local moderator.
+            intent = new Intent(this, ModeratorMainActivity.class);
+        } else if (Util.getInstance(this).getUserAccessToken() != null) {
+            // A local user account already exists.
             intent = new Intent(this, MainActivity.class);
         } else {
-            // Create a new user account with push token.
+            // No account exists. Create a new user account with push token.
             intent = new Intent(this, CreateAccountActivity.class);
         }
 

@@ -14,7 +14,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_blue"
         android:label="@string/app_name"
         android:theme="@style/Theme.UlmUniversityMain">
         <activity
@@ -117,8 +117,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.MainActivity"/>
         </activity>
-        <activity android:name=".controller.LoginActivity"
+        <activity
+            android:name=".controller.LoginActivity"
             android:label="@string/activity_login_title">
+        </activity>
+        <activity
+            android:name=".controller.ModeratorMainActivity"
+            android:label="@string/title_activity_moderator_main"
+            android:theme="@style/Theme.UlmUniversityMain">
         </activity>
     </application>
 

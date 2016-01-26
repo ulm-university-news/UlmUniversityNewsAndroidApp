@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/activity_main_nav_settings"
+            android:icon="@drawable/ic_tune_black_36dp"
+            android:title="@string/activity_main_nav_settings"/>
+
+        <item
+            android:id="@+id/activity_main_nav_about"
+            android:icon="@drawable/ic_info_black_36dp"
+            android:title="@string/activity_main_nav_about"/>
+        <!-- for stuff like contact: ulm.university.news@gmail.com -->
+    </group>
+
+    <item android:title="@string/activity_main_nav_moderator">
+        <menu>
+            <item
+                android:id="@+id/activity_main_nav_login"
+                android:icon="@drawable/ic_person_black_36dp"
+                android:title="@string/activity_main_nav_login"/>
+        </menu>
+    </item>
+</menu>
