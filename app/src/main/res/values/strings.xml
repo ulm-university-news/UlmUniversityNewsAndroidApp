@@ -103,8 +103,8 @@
     <string name="activity_moderator_main_title">My Channels</string>
     <string name="activity_moderator_main_menu_add_channel">Add Channel</string>
 
-    <!-- ChannelAddActivity ######################################################################################## -->
-    <string name="activity_channel_add_title">Add Channel</string>
+    <!-- ModeratorChannelAddActivity ############################################################################### -->
+    <string name="activity_moderator_channel_add_title">Add Channel</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>

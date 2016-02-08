@@ -78,7 +78,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_announcement, container, false);
-        TextView tvInfo = (TextView) view.findViewById(R.id.fragment_announcement_tv_info);
+        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_announcement_tv_list_empty);
         lvAnnouncements = (ListView) view.findViewById(R.id.fragment_announcement_lv_announcements);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_announcement_swipe_refresh_layout);
 
@@ -96,7 +96,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
         if (v != null) v.setGravity(Gravity.CENTER);
 
         lvAnnouncements.setAdapter(listAdapter);
-        lvAnnouncements.setEmptyView(tvInfo);
+        lvAnnouncements.setEmptyView(tvListEmpty);
         return view;
     }
 

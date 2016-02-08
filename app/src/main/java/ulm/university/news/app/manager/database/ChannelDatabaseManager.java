@@ -517,6 +517,16 @@ public class ChannelDatabaseManager {
     }
 
     /**
+     * Gets all channels for which the local moderator is responsible from the database. The returned channel objects
+     * may be a subclasses of channel.
+     *
+     * @return A list of channel objects.
+     */
+    public List<Channel> getResponsibleChannels() {
+        return null;
+    }
+
+    /**
      * Subscribes the local user to the channel identified by id.
      *
      * @param channelId The id of the channel that should be subscribed.

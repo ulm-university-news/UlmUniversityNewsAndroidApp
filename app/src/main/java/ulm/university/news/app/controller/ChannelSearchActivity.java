@@ -33,7 +33,6 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
-import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
@@ -53,7 +52,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private DatabaseLoader<List<Channel>> databaseLoader;
 
     private AdapterView.OnItemClickListener itemClickListener;
-    ChannelListAdapter listAdapter;
+    private ChannelListAdapter listAdapter;
     private List<Channel> channels;
     private List<Channel> channelsSelection;
 
@@ -88,9 +87,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
         // Initialise GUI elements.
         initView();
-
-        listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item);
-        lvChannels.setAdapter(listAdapter);
 
         refreshChannels();
     }
@@ -229,6 +225,9 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 startActivity(intent);
             }
         };
+
+        listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item);
+        lvChannels.setAdapter(listAdapter);
     }
 
     /**
@@ -296,6 +295,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      *
      * @param busEvent The busEvent which includes an object.
      */
+    /*
     public void onEventMainThread(BusEvent busEvent) {
         Log.d(TAG, "EventBus: BusEvent");
         String action = busEvent.getAction();
@@ -309,7 +309,13 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             Log.d(TAG, action);
         }
     }
+    */
 
+    /**
+     * Saves a new channel or updates an existing one.
+     *
+     * @param channels The channel list to process.
+     */
     public void processChannelData(List<Channel> channels) {
         // Store or update channels in the database and update local channel list.
         Integer localChannelListId = null;
@@ -353,6 +359,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         isAutoRefresh = true;
     }
 
+    /*
     private void getChannel(Channel channel) {
         Log.d(TAG, "getChannel(): " + channel.toString());
     }
@@ -360,6 +367,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private void updateChannel(Channel channel) {
         Log.d(TAG, "updateChannel(): " + channel.toString());
     }
+    */
 
     /**
      * This method will be called when a server error is posted to the EventBus.
