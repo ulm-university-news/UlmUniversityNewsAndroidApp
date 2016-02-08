@@ -101,6 +101,10 @@
     <string name="activity_moderator_main_nav_moderator">Moderator</string>
     <string name="activity_moderator_main_nav_logout">Logout</string>
     <string name="activity_moderator_main_title">My Channels</string>
+    <string name="activity_moderator_main_menu_add_channel">Add Channel</string>
+
+    <!-- ChannelAddActivity ######################################################################################## -->
+    <string name="activity_channel_add_title">Add Channel</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
@@ -180,6 +184,4 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
 </resources>
