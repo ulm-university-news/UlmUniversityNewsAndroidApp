@@ -60,7 +60,6 @@ public class GroupFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.activity_main_group_menu_search_text:
             case R.id.activity_main_group_menu_search:
                 startActivity(new Intent(getActivity(), GroupSearchActivity.class));
                 return true;

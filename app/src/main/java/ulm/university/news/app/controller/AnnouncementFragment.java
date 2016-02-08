@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +21,13 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ChannelAPI;
+import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
+import ulm.university.news.app.util.Util;
+
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
 public class AnnouncementFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Announcement>> {
     /** This classes tag for logging. */
@@ -29,10 +36,15 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     private AnnouncementListAdapter listAdapter;
     private DatabaseLoader<List<Announcement>> databaseLoader;
     private List<Announcement> announcements;
-    private int channelId;
 
     private ListView lvAnnouncements;
-    private TextView tvInfo;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private int channelId;
+    private Toast toast;
+    private String errorMessage;
+    private boolean isAutoRefresh = true;
 
     /** The loader's id. This id is specific to the ChannelFragment's LoaderManager. */
     private static final int LOADER_ID = 3;
@@ -57,25 +69,58 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
 
         announcements = new ArrayList<>();
         listAdapter = new AnnouncementListAdapter(getActivity(), R.layout.announcement_list_item, announcements);
-
         channelId = getArguments().getInt("channelId");
-        int messageNumber = databaseLoader.getChannelDBM().getMaxMessageNumberAnnouncement(channelId);
-        ChannelAPI.getInstance(getActivity()).getAnnouncements(channelId, messageNumber);
+
+        // Check for new announcement data.
+        refreshAnnouncements();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_announcement, container, false);
+        TextView tvInfo = (TextView) view.findViewById(R.id.fragment_announcement_tv_info);
         lvAnnouncements = (ListView) view.findViewById(R.id.fragment_announcement_lv_announcements);
-        tvInfo = (TextView) view.findViewById(R.id.fragment_announcement_tv_info);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_announcement_swipe_refresh_layout);
+
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isAutoRefresh = false;
+                refreshAnnouncements();
+            }
+        });
+
+        toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
 
         lvAnnouncements.setAdapter(listAdapter);
-
-        if (announcements != null && !announcements.isEmpty()) {
-            tvInfo.setVisibility(View.GONE);
-            lvAnnouncements.setVisibility(View.VISIBLE);
-        }
+        lvAnnouncements.setEmptyView(tvInfo);
         return view;
+    }
+
+    private void refreshAnnouncements() {
+        // Refreshing is only possible if there is an internet connection.
+        if (Util.getInstance(getContext()).isOnline()) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Get announcement data. Request new messages only.
+            int messageNumber = databaseLoader.getChannelDBM().getMaxMessageNumberAnnouncement(channelId);
+            ChannelAPI.getInstance(getActivity()).getAnnouncements(channelId, messageNumber);
+        } else {
+            if (!isAutoRefresh) {
+                errorMessage = getString(R.string.general_error_no_connection);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Only show error message if refreshing was triggered manually.
+                toast.setText(errorMessage);
+                toast.show();
+                // Reset the auto refresh flag.
+                isAutoRefresh = true;
+                // Can't refresh. Hide loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
     }
 
     @Override
@@ -99,6 +144,57 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "EventBus: List<Announcement>");
         Log.d(TAG, announcements.toString());
         ChannelController.storeAnnouncements(getActivity(), announcements);
+        // Channels were refreshed. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        if (!announcements.isEmpty()) {
+            // If announcement data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.announcement_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
+                // Only show up to date message if a manual refresh was triggered.
+                String message = getString(R.string.announcement_info_up_to_date);
+                toast.setText(message);
+                toast.show();
+            }
+        }
+    }
+
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        Log.d(TAG, "EventBus: ServerError");
+        handleServerError(serverError);
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void handleServerError(ServerError serverError) {
+        Log.d(TAG, serverError.toString());
+        // Can't refresh. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        // Show appropriate error message.
+        switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                if (!isAutoRefresh) {
+                    // Only show error message if refreshing was triggered manually.
+                    toast.setText(errorMessage);
+                    toast.show();
+                }
+                break;
+        }
+
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
     }
 
     @Override
@@ -130,16 +226,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
         announcements = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();
-        // Update view.
-        if (announcements.isEmpty()) {
-            lvAnnouncements.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.fragment_announcement_list_empty));
-            tvInfo.setVisibility(View.VISIBLE);
-        } else {
-            lvAnnouncements.setVisibility(View.VISIBLE);
-            tvInfo.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.fragment_announcement_list_loading));
-        }
+
         // Mark loaded and unread announcements as read after displaying.
         for (Announcement announcement : announcements) {
             if (!announcement.isRead()) {

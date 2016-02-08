@@ -6,8 +6,8 @@
     <!-- General ################################################################################################### -->
     <string name="general_error_something">Something went wrong. Please try again.</string>
     <string name="general_error_database">Database failure. Please try again.</string>
-    <string name="general_error_connection_failed">Connection to server failed.\n</string>
-    <string name="general_error_no_connection">No internet connection.\n</string>
+    <string name="general_error_connection_failed">Connection to server failed.</string>
+    <string name="general_error_no_connection">No internet connection.</string>
     <string name="general_error_refresh">Can\'t refresh.</string>
     <string name="general_error_subscribe">Can\'t subscribe.</string>
     <string name="general_error_unsubscribe">Can\'t unsubscribe.</string>
@@ -89,7 +89,6 @@
     <string name="activity_main_group_list_loading">Loading group data...</string>
     <string name="activity_main_channel_menu_search">Search Channel</string>
     <string name="activity_main_channel_menu_settings">Settings</string>
-    <string name="activity_main_channel_menu_login">Moderator Login</string>
     <string name="activity_main_group_menu_settings">Settings</string>
     <string name="activity_main_group_menu_search">Search Group</string>
     <string name="activity_main_group_menu_add">Add Group</string>
@@ -101,6 +100,7 @@
     <!-- ModeratorMainActivity ##################################################################################### -->
     <string name="activity_moderator_main_nav_moderator">Moderator</string>
     <string name="activity_moderator_main_nav_logout">Logout</string>
+    <string name="activity_moderator_main_title">My Channels</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
@@ -165,16 +165,18 @@
     <!-- Other ##################################################################################################### -->
     <string name="other_symbol">O</string>
 
+    <!-- Announcement ############################################################################################## -->
+    <string name="announcement_info_updated">New announcements loaded.</string>
+    <string name="announcement_info_up_to_date">No new announcements.</string>
+
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>
-    <string name="fragment_announcement_list_loading">Loading announcement data...</string>
 
     <!-- Group ##################################################################################################### -->
     <string name="group_tutorial_symbol">T</string>
     <string name="group_working_symbol">W</string>
     <string name="group_tutorial_name">Tutorial Group</string>
     <string name="group_working_name">Working Group</string>
-    <string name="title_activity_moderator_main">ModeratorMainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

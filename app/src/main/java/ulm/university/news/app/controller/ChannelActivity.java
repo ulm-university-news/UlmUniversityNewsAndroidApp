@@ -62,11 +62,17 @@ public class ChannelActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = NavUtils.getParentActivityIntent(this);
+                intent = NavUtils.getParentActivityIntent(this);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 NavUtils.navigateUpTo(this, intent);
+                return true;
+            case R.id.activity_channel_menu_settings:
+                intent = new Intent(this, ChannelSettingsActivity.class);
+                intent.putExtra("channelId", getIntent().getIntExtra("channelId", 0));
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

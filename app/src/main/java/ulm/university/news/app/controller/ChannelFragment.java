@@ -110,15 +110,8 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.activity_main_channel_menu_search_text:
             case R.id.activity_main_channel_menu_search:
                 startActivity(new Intent(getActivity(), ChannelSearchActivity.class));
-                return true;
-            case R.id.activity_main_channel_menu_settings:
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            case R.id.activity_main_channel_menu_login:
-                startActivity(new Intent(getActivity(), LoginActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -13,11 +13,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.lang.reflect.Method;
 
 import ulm.university.news.app.R;
 
@@ -25,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /** This classes tag for logging. */
     private static final String TAG = "MainActivity";
 
-    private BroadcastReceiver reciever;
+    private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout.setupWithViewPager(viewPager);
 
         // Finish MainActivity on successful moderator login.
-        reciever = new BroadcastReceiver() {
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent intent) {
                 String action = intent.getAction();
@@ -63,18 +60,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         };
-        registerReceiver(reciever, new IntentFilter("finish_activity"));
+        registerReceiver(receiver, new IntentFilter("finish_activity"));
     }
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(reciever);
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
 
     @Override
     public boolean onMenuOpened(int featureId, Menu menu) {
         // Show icons in overflow menu in toolbar.
+        /*
         if (menu != null) {
             if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
                 try {
@@ -88,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
+        */
         return super.onMenuOpened(featureId, menu);
     }
 
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.activity_main_nav_settings) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.activity_main_nav_about) {
             startActivity(new Intent(this, LoginActivity.class));
         } else if (id == R.id.activity_main_nav_login) {

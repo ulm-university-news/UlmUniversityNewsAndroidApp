@@ -72,6 +72,11 @@ public class LoginActivity extends AppCompatActivity {
         boolean valid = true;
         String name = tilName.getText();
         String password = tilPassword.getText();
+        if (!Util.getInstance(this).isOnline()) {
+            tvError.setText(getString(R.string.general_error_no_connection));
+            tvError.setVisibility(View.VISIBLE);
+            valid = false;
+        }
         if (!name.matches(Constants.NAME_PATTERN)) {
             tilName.showError(getString(R.string.activity_login_til_name_invalid));
             valid = false;

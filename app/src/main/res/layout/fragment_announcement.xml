@@ -4,17 +4,24 @@
              android:layout_height="match_parent"
              tools:context="ulm.university.news.app.controller.AnnouncementFragment">
 
-    <ListView
-        android:id="@+id/fragment_announcement_lv_announcements"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_announcement_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/fragment_announcement_lv_announcements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/fragment_announcement_tv_info"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/fragment_announcement_list_empty"/>
+        android:text="@string/fragment_announcement_list_empty"
+        android:visibility="gone"/>
 
 </FrameLayout>

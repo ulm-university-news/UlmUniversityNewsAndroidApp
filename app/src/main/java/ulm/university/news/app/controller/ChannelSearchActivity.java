@@ -65,7 +65,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     private String errorMessage;
     private Toast toast;
-
     private boolean isAutoRefresh = true;
 
     @Override
@@ -227,7 +226,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
                 Channel channel = (Channel) lvChannels.getItemAtPosition(position);
                 Intent intent = new Intent(arg0.getContext(), ChannelDetailActivity.class);
                 intent.putExtra("channelId", channel.getId());
-                // EventBus.getDefault().postSticky(channel);
                 startActivity(intent);
             }
         };
