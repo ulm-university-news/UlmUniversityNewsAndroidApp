@@ -57,7 +57,7 @@ public class PushTokenGenerationService extends IntentService {
         // TODO Check if user account already exists. Do check via local database.
         // TODO If account exists just update push token in local and server database.
         // TODO Otherwise proceed like below: Create user account.
-        if (Util.getInstance(this.getApplicationContext()).getUserAccessToken() != null) {
+        if (Util.getInstance(this.getApplicationContext()).getLocalUser() != null) {
             updatePushToken(token);
         } else {
             // Notify UI that registration has completed, so the progress indicator can be hidden.

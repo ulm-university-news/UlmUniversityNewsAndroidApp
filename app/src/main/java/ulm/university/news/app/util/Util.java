@@ -23,7 +23,7 @@ import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
  * The Util class provides useful methods which are often use in several parts of the application. As a Singleton the
- * instance is kept in memory which allows fast access of often used fields like the users access token.
+ * instance is kept in memory which allows fast access to often used fields like the users access token.
  *
  * @author Matthias Mak
  */
@@ -37,17 +37,14 @@ public class Util {
     /** The application context. */
     private Context context;
 
-    /** The local users server access token. */
-    private String userAccessToken = null;
-
-    /** The local users id. */
-    private Integer userId = null;
-
-    /** The local users name. */
-    private String userName = null;
+    /** The local user. */
+    private LocalUser localUser = null;
 
     /** The logged in moderator. */
     private Moderator loggedInModerator = null;
+
+    /** The server access token either of the local user or the logged in moderator. */
+    private String accessToken;
 
     /**
      * Get the instance of the Util class.
@@ -63,6 +60,39 @@ public class Util {
 
     private Util(Context context) {
         this.context = context.getApplicationContext();
+        setCurrentAccessToken();
+    }
+
+    /**
+     * Sets the access token of the logged in moderator if available (logged in). Otherwise, the access token of the
+     * local user is set as the current access token.
+     */
+    public void setCurrentAccessToken() {
+        String userAccessToken = null;
+        String moderatorAccessToken = null;
+        // Get tokens of local user and logged in moderator if existing.
+        localUser = getLocalUser();
+        if (localUser != null) {
+            userAccessToken = localUser.getServerAccessToken();
+        }
+        if (loggedInModerator != null) {
+            moderatorAccessToken = loggedInModerator.getServerAccessToken();
+        }
+        // Use the access token of the local moderator if available (logged in).
+        accessToken = moderatorAccessToken;
+        if (accessToken == null) {
+            // Otherwise, use the access token of the local user.
+            accessToken = userAccessToken;
+        }
+    }
+
+    /**
+     * Gets the access token of the local user or the logged in moderator.
+     *
+     * @return The current server access token.
+     */
+    public String getAccessToken() {
+        return accessToken;
     }
 
     /**
@@ -76,44 +106,23 @@ public class Util {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public String getUserAccessToken() {
-        if (userAccessToken == null) {
-            Log.d(TAG, "userAccessToken is null.");
-            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
-            if (localUser != null) {
-                userAccessToken = localUser.getServerAccessToken();
-            }
+    public LocalUser getLocalUser() {
+        if (localUser == null) {
+            Log.d(TAG, "localUser is null.");
+            this.localUser = new UserDatabaseManager(context).getLocalUser();
         }
-        return userAccessToken;
+        return localUser;
     }
 
-    public Integer getUserId() {
-        if (userId == null) {
-            Log.d(TAG, "userId is null.");
-            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
-            if (localUser != null) {
-                userId = localUser.getId();
-            }
-        }
-        return userId;
+    public void setLocalUser(LocalUser localUser) {
+        this.localUser = localUser;
     }
 
-    public String getUserName() {
-        if (userName == null) {
-            Log.d(TAG, "userName is null.");
-            LocalUser localUser = new UserDatabaseManager(context).getLocalUser();
-            if (localUser != null) {
-                userName = localUser.getName();
-            }
-        }
-        return userName;
-    }
-
-    public void setLoggedInModerator(Moderator loggedInModerator){
+    public void setLoggedInModerator(Moderator loggedInModerator) {
         this.loggedInModerator = loggedInModerator;
     }
 
-    public Moderator getLoggedInModerator(){
+    public Moderator getLoggedInModerator() {
         return loggedInModerator;
     }
 

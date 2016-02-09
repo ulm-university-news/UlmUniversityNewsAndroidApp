@@ -176,6 +176,7 @@ public class ModeratorMainActivity extends AppCompatActivity
     private void logout() {
         // To logout, just invalidate moderator access token and go to user main screen.
         Util.getInstance(this).setLoggedInModerator(null);
+        Util.getInstance(this).setCurrentAccessToken();
         Intent intent = new Intent(this, MainActivity.class);
         // Prevent back navigation to logged in state.
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

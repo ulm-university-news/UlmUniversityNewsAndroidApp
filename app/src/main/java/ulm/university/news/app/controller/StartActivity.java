@@ -39,13 +39,13 @@ public class StartActivity extends Activity {
         loggedInModerator.setName("mmak");
         loggedInModerator.setFirstName("Matthias");
         loggedInModerator.setLastName("Mak");
-        Util.getInstance(this).setLoggedInModerator(loggedInModerator);
+        // Util.getInstance(this).setLoggedInModerator(loggedInModerator);
         // TODO Remove this code later. Used for development to auto login as moderator.
 
         if (Util.getInstance(this).getLoggedInModerator() != null) {
             // User is logged in as local moderator.
             intent = new Intent(this, ModeratorMainActivity.class);
-        } else if (Util.getInstance(this).getUserAccessToken() != null) {
+        } else if (Util.getInstance(this).getLocalUser() != null) {
             // A local user account already exists.
             intent = new Intent(this, MainActivity.class);
         } else {

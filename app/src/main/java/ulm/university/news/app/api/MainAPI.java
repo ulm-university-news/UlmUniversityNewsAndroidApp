@@ -17,9 +17,7 @@ import java.util.Properties;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.util.Constants;
-import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -35,12 +33,6 @@ public abstract class MainAPI implements ErrorCallback {
     protected Gson gson;
     /** The REST servers internet root address. */
     protected String serverAddress;
-    /** The local users server access token. */
-    protected String userAccessToken = null;
-    /** The local moderators server access token. */
-    protected String moderatorAccessToken = null;
-    /** The server access token either of the local user or the local moderator. */
-    protected String accessToken;
     /** The http method GET. */
     protected final static String METHOD_GET = "GET";
     /** The http method POST. */
@@ -57,17 +49,6 @@ public abstract class MainAPI implements ErrorCallback {
         // Make sure, dates are (de)serialized properly.
         gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd).create();
         initServerAddress();
-        userAccessToken = Util.getInstance(context).getUserAccessToken();
-        Moderator moderator = Util.getInstance(context).getLoggedInModerator();
-        if(moderator != null){
-            moderatorAccessToken = moderator.getServerAccessToken();
-        }
-        // Use the access token of the local moderator if available (logged in).
-        accessToken = moderatorAccessToken;
-        if (accessToken == null) {
-            // Otherwise, use the access token of the local user.
-            accessToken = userAccessToken;
-        }
     }
 
     /**

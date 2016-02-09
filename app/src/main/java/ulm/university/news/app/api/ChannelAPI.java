@@ -13,6 +13,7 @@ import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Moderator;
+import ulm.university.news.app.util.Util;
 
 /**
  * The ChannelAPI is responsible for sending requests regarding the channel resource. Required data is handed over from
@@ -74,7 +75,7 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -101,7 +102,7 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -117,7 +118,7 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -133,7 +134,7 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -159,7 +160,7 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -175,11 +176,11 @@ public class ChannelAPI extends MainAPI {
                 Type listType = new TypeToken<List<Moderator>>() {
                 }.getType();
                 List<Moderator> moderators = gson.fromJson(json, listType);
-                EventBus.getDefault().post(new BusEvent(GET_RESPONSIBLE_MODERATORS ,moderators));
+                EventBus.getDefault().post(new BusEvent(GET_RESPONSIBLE_MODERATORS, moderators));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }

@@ -68,7 +68,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         // Initialise the broadcast receiver.
         initReceiver();
         // Display correct view elements.
-        if (Util.getInstance(this).getUserAccessToken() != null) {
+        if (Util.getInstance(this).getLocalUser() != null) {
             showCreatedView();
         }
     }
@@ -167,6 +167,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     public void onEventMainThread(LocalUser localUser) {
         // Store localUser in database.
         new UserDatabaseManager(this).storeLocalUser(localUser);
+        Util.getInstance(this).setCurrentAccessToken();
 
         // Update view.
         showCreatedView();

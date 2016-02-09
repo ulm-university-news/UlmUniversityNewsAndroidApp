@@ -126,12 +126,13 @@ public class LoginActivity extends AppCompatActivity {
         // Check if already stored in database.
         if (moderatorDBM.getModerator(moderator.getId()) == null) {
             moderatorDBM.storeModerator(moderator);
-        }else {
+        } else {
             moderatorDBM.updateModerator(moderator);
         }
 
         // Cache the logged in moderator.
         Util.getInstance(this).setLoggedInModerator(moderator);
+        Util.getInstance(this).setCurrentAccessToken();
 
         // Tell MainActivity to finish.
         Intent intent = new Intent("finish_activity");

@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.util.Util;
 
 /**
  * The GroupAPI is responsible for sending requests regarding the group resource. Required data is handed over from
@@ -65,7 +66,7 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -92,7 +93,7 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
@@ -116,7 +117,7 @@ public class GroupAPI extends MainAPI {
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, serverAddressGroup);
         rTask.setBody(jsonGroup);
-        rTask.setAccessToken(accessToken);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
