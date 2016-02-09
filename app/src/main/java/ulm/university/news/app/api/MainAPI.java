@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Channel;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.Util;
 
@@ -57,7 +58,10 @@ public abstract class MainAPI implements ErrorCallback {
         gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd).create();
         initServerAddress();
         userAccessToken = Util.getInstance(context).getUserAccessToken();
-        moderatorAccessToken = Util.getInstance(context).getModeratorAccessToken();
+        Moderator moderator = Util.getInstance(context).getLoggedInModerator();
+        if(moderator != null){
+            moderatorAccessToken = moderator.getServerAccessToken();
+        }
         // Use the access token of the local moderator if available (logged in).
         accessToken = moderatorAccessToken;
         if (accessToken == null) {

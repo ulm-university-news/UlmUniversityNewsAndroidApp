@@ -22,7 +22,6 @@ import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
-import ulm.university.news.app.util.Util;
 
 public class ModeratorChannelActivity extends AppCompatActivity {
     /** This classes tag for logging. */
@@ -111,23 +110,18 @@ public class ModeratorChannelActivity extends AppCompatActivity {
         // Store or update channels in the database and update local channel list.
         Integer moderatorDBId = null;
         for (Moderator moderator : moderators) {
-            // If moderator is the local moderator, update it.
-            if (moderator.getId() == Util.getInstance(this).getModeratorId()) {
-                moderatorDBM.updateLocalModerator(moderator);
+            // Store new moderators and update existing ones.
+            for (int i = 0; i < moderatorsDB.size(); i++) {
+                if (moderatorsDB.get(i).getId() == moderator.getId()) {
+                    moderatorDBId = i;
+                    break;
+                }
+            }
+            if (moderatorDBId == null) {
+                moderatorDBM.storeModerator(moderator);
             } else {
-                // Store new moderators and update existing ones.
-                for (int i = 0; i < moderatorsDB.size(); i++) {
-                    if (moderatorsDB.get(i).getId() == moderator.getId()) {
-                        moderatorDBId = i;
-                        break;
-                    }
-                }
-                if (moderatorDBId == null) {
-                    moderatorDBM.storeModerator(moderator);
-                } else {
-                    moderatorDBM.updateModerator(moderator);
-                    moderatorDBId = null;
-                }
+                moderatorDBM.updateModerator(moderator);
+                moderatorDBId = null;
             }
         }
     }

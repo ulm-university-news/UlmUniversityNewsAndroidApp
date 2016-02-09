@@ -19,7 +19,6 @@ import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.data.enums.ChannelType;
-import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
@@ -47,11 +46,8 @@ public class Util {
     /** The local users name. */
     private String userName = null;
 
-    /** The local moderators server access token. */
-    private String moderatorAccessToken = null;
-
-    /** The local moderators id. */
-    private Integer moderatorId = null;
+    /** The logged in moderator. */
+    private Moderator loggedInModerator = null;
 
     /**
      * Get the instance of the Util class.
@@ -113,24 +109,12 @@ public class Util {
         return userName;
     }
 
-    public String setModeratorAccessToken(String moderatorAccessToken) {
-        this.moderatorAccessToken = moderatorAccessToken;
-        return moderatorAccessToken;
+    public void setLoggedInModerator(Moderator loggedInModerator){
+        this.loggedInModerator = loggedInModerator;
     }
 
-    public String getModeratorAccessToken() {
-        return moderatorAccessToken;
-    }
-
-    public Integer getModeratorId() {
-        if (moderatorId == null) {
-            Log.d(TAG, "moderatorId is null.");
-            Moderator moderator = new ModeratorDatabaseManager(context).getLocalModerator();
-            if (moderator != null) {
-                moderatorId = moderator.getId();
-            }
-        }
-        return moderatorId;
+    public Moderator getLoggedInModerator(){
+        return loggedInModerator;
     }
 
     /**

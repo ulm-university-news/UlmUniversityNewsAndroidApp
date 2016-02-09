@@ -11,12 +11,6 @@ import java.util.List;
 
 import ulm.university.news.app.data.Moderator;
 
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_EMAIL;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_FIRST_NAME;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_ID;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_LAST_NAME;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_NAME;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_MODERATOR_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_EMAIL;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_FIRST_NAME;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID;
@@ -41,41 +35,6 @@ public class ModeratorDatabaseManager {
     public ModeratorDatabaseManager(Context context) {
         dbm = DatabaseManager.getInstance(context);
         appContext = context.getApplicationContext();
-    }
-
-    /**
-     * Stores the local moderator in the database.
-     *
-     * @param moderator The local moderator.
-     */
-    public void storeLocalModerator(Moderator moderator) {
-        Log.d(TAG, "Store local " + moderator);
-        SQLiteDatabase db = dbm.getWritableDatabase();
-
-        ContentValues moderatorValues = new ContentValues();
-        moderatorValues.put(LOCAL_MODERATOR_ID, moderator.getId());
-        moderatorValues.put(LOCAL_MODERATOR_NAME, moderator.getName());
-        moderatorValues.put(LOCAL_MODERATOR_FIRST_NAME, moderator.getFirstName());
-        moderatorValues.put(LOCAL_MODERATOR_LAST_NAME, moderator.getLastName());
-        moderatorValues.put(LOCAL_MODERATOR_EMAIL, moderator.getEmail());
-        db.insert(LOCAL_MODERATOR_TABLE, null, moderatorValues);
-    }
-
-    /**
-     * Updates the local moderator in the database. The moderators name and id can't be updated.
-     *
-     * @param moderator The updated local moderator of the app.
-     */
-    public void updateLocalModerator(Moderator moderator) {
-        Log.d(TAG, "Update " + moderator);
-        SQLiteDatabase db = dbm.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(LOCAL_MODERATOR_FIRST_NAME, moderator.getFirstName());
-        values.put(LOCAL_MODERATOR_LAST_NAME, moderator.getLastName());
-        values.put(LOCAL_MODERATOR_EMAIL, moderator.getEmail());
-
-        db.update(LOCAL_MODERATOR_TABLE, values, null, null);
     }
 
     /**
@@ -113,34 +72,6 @@ public class ModeratorDatabaseManager {
         String[] whereArgs = new String[]{String.valueOf(moderator.getId())};
 
         db.update(MODERATOR_TABLE, values, where, whereArgs);
-    }
-
-    /**
-     * Retrieves the local moderator from the database.
-     *
-     * @return The local moderator.
-     */
-    public Moderator getLocalModerator() {
-        Moderator moderator = null;
-        SQLiteDatabase db = dbm.getReadableDatabase();
-
-        String selectQuery = "SELECT * FROM " + LOCAL_MODERATOR_TABLE;
-        Log.d(TAG, selectQuery);
-
-        Cursor c = db.rawQuery(selectQuery, null);
-        if (c != null) {
-            if (c.moveToFirst()) {
-                moderator = new Moderator();
-                moderator.setId(c.getInt(c.getColumnIndex(LOCAL_MODERATOR_ID)));
-                moderator.setName((c.getString(c.getColumnIndex(LOCAL_MODERATOR_NAME))));
-                moderator.setFirstName(c.getString(c.getColumnIndex(LOCAL_MODERATOR_FIRST_NAME)));
-                moderator.setLastName(c.getString(c.getColumnIndex(LOCAL_MODERATOR_LAST_NAME)));
-                moderator.setEmail(c.getString(c.getColumnIndex(LOCAL_MODERATOR_EMAIL)));
-            }
-            c.close();
-        }
-        Log.d(TAG, "End with " + moderator);
-        return moderator;
     }
 
     /**

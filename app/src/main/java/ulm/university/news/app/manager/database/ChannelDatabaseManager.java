@@ -536,7 +536,7 @@ public class ChannelDatabaseManager {
                 + " AS mc ON c." + CHANNEL_ID + "=mc." + CHANNEL_ID_FOREIGN
                 + " WHERE mc." + MODERATOR_ID_FOREIGN + "=?";
         String[] args = new String[1];
-        args[0] = String.valueOf(Util.getInstance(appContext).getModeratorId());
+        args[0] = String.valueOf(Util.getInstance(appContext).getLoggedInModerator().getId());
         Log.d(TAG, selectQuery);
 
         // Create fields before while loop, not within every pass.

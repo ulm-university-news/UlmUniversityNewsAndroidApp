@@ -175,7 +175,7 @@ public class ModeratorMainActivity extends AppCompatActivity
 
     private void logout() {
         // To logout, just invalidate moderator access token and go to user main screen.
-        Util.getInstance(this).setModeratorAccessToken(null);
+        Util.getInstance(this).setLoggedInModerator(null);
         Intent intent = new Intent(this, MainActivity.class);
         // Prevent back navigation to logged in state.
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -207,7 +207,7 @@ public class ModeratorMainActivity extends AppCompatActivity
 
     private void refreshResponsibleChannels() {
         // Update responsible channels when activity is created. Request new data only.
-        ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getModeratorId(), null);
+        ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getLoggedInModerator().getId(), null);
     }
 
     /**
@@ -244,7 +244,8 @@ public class ModeratorMainActivity extends AppCompatActivity
                 localChannelListId = null;
             }
             // Mark local moderator as responsible for this channel.
-            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), Util.getInstance(this).getModeratorId());
+            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), Util.getInstance(this)
+                    .getLoggedInModerator().getId());
         }
     }
 
