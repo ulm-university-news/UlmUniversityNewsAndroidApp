@@ -317,7 +317,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      * @param channels The channel list to process.
      */
     public void processChannelData(List<Channel> channels) {
-        // Store or update channels in the database and update local channel list.
+        // Store or update channels in the database.
         Integer localChannelListId = null;
         for (Channel channel : channels) {
             for (int i = 0; i < this.channels.size(); i++) {

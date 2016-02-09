@@ -33,7 +33,7 @@ import ulm.university.news.app.util.Util;
 public class ModeratorMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<List<Channel>> {
     /** This classes tag for logging. */
-    private static final String TAG = "ModeratorChannelAct";
+    private static final String TAG = "ModeratorMainActivity";
 
     private AdapterView.OnItemClickListener itemClickListener;
     private List<Channel> channels;
@@ -65,19 +65,10 @@ public class ModeratorMainActivity extends AppCompatActivity
         // Initialize a Loader with id '1'. If the Loader with this id already
         // exists, then the LoaderManager will reuse the existing Loader.
         databaseLoader = (DatabaseLoader) getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-        // Load initial channel data directly, don't use async database loader.
-        channels = databaseLoader.getChannelDBM().getChannels();
+        databaseLoader.onContentChanged();
 
         initView();
-
-        // TODO
-        // Update channels when activity is created. Request new data only.
-        // ChannelAPI.getInstance(this).getChannels(null, latestUpdated.toString());
-
-        // Update responsible moderators when activity is created.
-        // TODO For which channels? Only my own? Maybe I got a new one?
-        ChannelAPI.getInstance(this).getResponsibleModerators(0);
+        refreshResponsibleChannels();
     }
 
     @Override
@@ -86,8 +77,7 @@ public class ModeratorMainActivity extends AppCompatActivity
                 .DatabaseLoaderCallbacks<List<Channel>>() {
             @Override
             public List<Channel> onLoadInBackground() {
-                // TODO Implement: databaseLoader.getChannelDBM().getResponsibleChannels();
-                return databaseLoader.getChannelDBM().getSubscribedChannels();
+                return databaseLoader.getChannelDBM().getResponsibleChannels();
             }
 
             @Override
@@ -96,6 +86,7 @@ public class ModeratorMainActivity extends AppCompatActivity
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(ChannelDatabaseManager.STORE_CHANNEL);
                 filter.addAction(ChannelDatabaseManager.UPDATE_CHANNEL);
+                filter.addAction(ChannelDatabaseManager.MODERATE_CHANNEL);
                 return filter;
             }
         });
@@ -214,6 +205,11 @@ public class ModeratorMainActivity extends AppCompatActivity
         lvChannels.setEmptyView(tvListEmpty);
     }
 
+    private void refreshResponsibleChannels() {
+        // Update responsible channels when activity is created. Request new data only.
+        ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getModeratorId(), null);
+    }
+
     /**
      * This method will be called when a list of channels is posted to the EventBus.
      *
@@ -225,17 +221,17 @@ public class ModeratorMainActivity extends AppCompatActivity
     }
 
     /**
-     * Saves a new channel or updates an existing one.
+     * Saves new channels and updates existing ones.
      *
      * @param channels The channel list to process.
      */
     public void processChannelData(List<Channel> channels) {
-        /*
         // Store or update channels in the database and update local channel list.
         Integer localChannelListId = null;
+        List<Channel> channelsDB = databaseLoader.getChannelDBM().getChannels();
         for (Channel channel : channels) {
-            for (int i = 0; i < this.channels.size(); i++) {
-                if (this.channels.get(i).getId() == channel.getId()) {
+            for (int i = 0; i < channelsDB.size(); i++) {
+                if (channelsDB.get(i).getId() == channel.getId()) {
                     localChannelListId = i;
                     break;
                 }
@@ -244,10 +240,12 @@ public class ModeratorMainActivity extends AppCompatActivity
                 databaseLoader.getChannelDBM().storeChannel(channel);
             } else {
                 databaseLoader.getChannelDBM().updateChannel(channel);
+                channelsDB.remove(localChannelListId.intValue());
                 localChannelListId = null;
             }
+            // Mark local moderator as responsible for this channel.
+            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), Util.getInstance(this).getModeratorId());
         }
-        */
     }
 
     /**

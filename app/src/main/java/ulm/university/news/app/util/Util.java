@@ -17,7 +17,9 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.data.enums.ChannelType;
+import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
@@ -47,6 +49,9 @@ public class Util {
 
     /** The local moderators server access token. */
     private String moderatorAccessToken = null;
+
+    /** The local moderators id. */
+    private Integer moderatorId = null;
 
     /**
      * Get the instance of the Util class.
@@ -115,6 +120,17 @@ public class Util {
 
     public String getModeratorAccessToken() {
         return moderatorAccessToken;
+    }
+
+    public Integer getModeratorId() {
+        if (moderatorId == null) {
+            Log.d(TAG, "moderatorId is null.");
+            Moderator moderator = new ModeratorDatabaseManager(context).getLocalModerator();
+            if (moderator != null) {
+                moderatorId = moderator.getId();
+            }
+        }
+        return moderatorId;
     }
 
     /**
@@ -210,8 +226,10 @@ public class Util {
      * @param channels The channel list.
      */
     public void sortChannels(List<Channel> channels) {
-        // TODO Check settings for preferred channel order.
-        sortChannelsTypeFaculty(channels);
+        if (channels != null) {
+            // TODO Check settings for preferred channel order.
+            sortChannelsTypeFaculty(channels);
+        }
     }
 
     public int fetchAccentColor() {

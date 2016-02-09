@@ -21,6 +21,7 @@ import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.data.enums.Faculty;
 import ulm.university.news.app.data.enums.Priority;
+import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_AUTHOR;
 import static ulm.university.news.app.manager.database.DatabaseManager.ANNOUNCEMENT_MESSAGE_NUMBER;
@@ -55,6 +56,9 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_P
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_READ;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_ACTIVE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_COST;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_PARTICIPANTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_TABLE;
@@ -80,6 +84,7 @@ public class ChannelDatabaseManager {
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
+    public static final String MODERATE_CHANNEL = "moderateChannel";
 
     /** Creates a new instance of ChannelDatabaseManager. */
     public ChannelDatabaseManager(Context context) {
@@ -182,11 +187,13 @@ public class ChannelDatabaseManager {
             channelValues.put(CHANNEL_MODIFICATION_DATE, channel.getModificationDate().getMillis());
             channelValues.put(CHANNEL_DATES, channel.getDates());
             channelValues.put(CHANNEL_WEBSITE, channel.getWebsite());
-            String where = CHANNEL_ID + "=" + channel.getId();
+
+            String where = CHANNEL_ID + "=?";
+            String[] whereArgs = new String[]{String.valueOf(channel.getId())};
 
             // If there are two update statements make sure that they are performed in one transaction.
             db.beginTransaction();
-            db.update(CHANNEL_TABLE, channelValues, where, null);
+            db.update(CHANNEL_TABLE, channelValues, where, whereArgs);
 
             // Check if there is a subclass of channel which has to be updated in another table.
             ContentValues subClassValues = new ContentValues();
@@ -523,7 +530,95 @@ public class ChannelDatabaseManager {
      * @return A list of channel objects.
      */
     public List<Channel> getResponsibleChannels() {
-        return null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        List<Channel> channels = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + CHANNEL_TABLE + " AS c INNER JOIN " + MODERATOR_CHANNEL_TABLE
+                + " AS mc ON c." + CHANNEL_ID + "=mc." + CHANNEL_ID_FOREIGN
+                + " WHERE mc." + MODERATOR_ID_FOREIGN + "=?";
+        String[] args = new String[1];
+        args[0] = String.valueOf(Util.getInstance(appContext).getModeratorId());
+        Log.d(TAG, selectQuery);
+
+        // Create fields before while loop, not within every pass.
+        Channel channel = null;
+        String name, description, term, locations, dates, contacts, website, startDate, endDate, lecturer,
+                assistant, cost, organizer, participants;
+        DateTime creationDate, modificationDate;
+        ChannelType type;
+        Faculty faculty;
+        int id;
+
+        // Get channel data from database.
+        Cursor cSub;
+        Cursor cSup = db.rawQuery(selectQuery, args);
+        while (cSup != null && cSup.moveToNext()) {
+            id = cSup.getInt(cSup.getColumnIndex(CHANNEL_ID));
+            name = cSup.getString(cSup.getColumnIndex(CHANNEL_NAME));
+            description = cSup.getString(cSup.getColumnIndex(CHANNEL_DESCRIPTION));
+            type = ChannelType.values[(cSup.getInt(cSup.getColumnIndex(CHANNEL_TYPE)))];
+            term = cSup.getString(cSup.getColumnIndex(CHANNEL_TERM));
+            locations = cSup.getString(cSup.getColumnIndex(CHANNEL_LOCATIONS));
+            contacts = cSup.getString(cSup.getColumnIndex(CHANNEL_CONTACTS));
+            creationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(cSup.getLong(cSup.getColumnIndex(CHANNEL_MODIFICATION_DATE)), TIME_ZONE);
+            dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
+            website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
+            args[0] = String.valueOf(id);
+
+            // If necessary get additional channel data and create corresponding channel subclass.
+            switch (type) {
+                case LECTURE:
+                    selectQuery = "SELECT * FROM " + LECTURE_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        faculty = Faculty.values[cSub.getInt(cSub.getColumnIndex(LECTURE_FACULTY))];
+                        startDate = cSub.getString(cSub.getColumnIndex(LECTURE_START_DATE));
+                        endDate = cSub.getString(cSub.getColumnIndex(LECTURE_END_DATE));
+                        lecturer = cSub.getString(cSub.getColumnIndex(LECTURE_LECTURER));
+                        assistant = cSub.getString(cSub.getColumnIndex(LECTURE_ASSISTANT));
+                        channel = new Lecture(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, faculty, startDate, endDate, lecturer, assistant);
+                        cSub.close();
+                    }
+                    break;
+                case EVENT:
+                    selectQuery = "SELECT * FROM " + EVENT_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        cost = cSub.getString(cSub.getColumnIndex(EVENT_COST));
+                        organizer = cSub.getString(cSub.getColumnIndex(EVENT_ORGANIZER));
+                        channel = new Event(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, cost, organizer);
+                        cSub.close();
+                    }
+                    break;
+                case SPORTS:
+                    selectQuery = "SELECT * FROM " + SPORTS_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+                    cSub = db.rawQuery(selectQuery, args);
+                    if (cSub != null && cSub.moveToFirst()) {
+                        cost = cSub.getString(cSub.getColumnIndex(SPORTS_COST));
+                        participants = cSub.getString(cSub.getColumnIndex(SPORTS_PARTICIPANTS));
+                        channel = new Sports(id, name, description, type, creationDate, modificationDate, term,
+                                locations, dates, contacts, website, cost, participants);
+                        cSub.close();
+                    }
+                    break;
+                default:
+                    channel = new Channel(id, name, description, type, creationDate, modificationDate, term,
+                            locations, dates, contacts, website);
+            }
+            // Add count of unread announcements to the channel.
+            if (channel != null) {
+                channel.setNumberOfUnreadAnnouncements(getNumberOfUnreadAnnouncements(id));
+            }
+            // Add created channel to the channel list.
+            channels.add(channel);
+        }
+        if (cSup != null) {
+            cSup.close();
+        }
+        Log.d(TAG, "End with " + channels);
+        return channels;
     }
 
     /**
@@ -583,6 +678,27 @@ public class ChannelDatabaseManager {
         }
         Log.d(TAG, "End with " + isSubscribedChannel);
         return isSubscribedChannel;
+    }
+
+    /**
+     * Adds the moderator with given id as responsible moderator to the channel with given id.
+     *
+     * @param channelId The channel id.
+     * @param moderatorId The moderator id.
+     */
+    public void moderateChannel(int channelId, int moderatorId) {
+        Log.d(TAG, "Moderate channel " + channelId + " by moderator " + moderatorId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CHANNEL_ID_FOREIGN, channelId);
+        values.put(MODERATOR_ID_FOREIGN, moderatorId);
+        values.put(MODERATOR_CHANNEL_ACTIVE, true);
+        db.insert(MODERATOR_CHANNEL_TABLE, null, values);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(MODERATE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
     /**

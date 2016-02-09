@@ -92,7 +92,7 @@ public class UserDatabaseManager {
         // values.put(LOCAL_USER_SERVER_ACCESS_TOKEN, localUser.getServerAccessToken());
         values.put(LOCAL_USER_PUSH_ACCESS_TOKEN, localUser.getPushAccessToken());
         // values.put(LOCAL_USER_PLATFORM, localUser.getPlatform().ordinal());
-        String where = LOCAL_USER_ID + "=" + localUser.getId();
-        db.update(LOCAL_USER_TABLE, values, where, null);
+
+        db.update(LOCAL_USER_TABLE, values, null, null);
     }
 }

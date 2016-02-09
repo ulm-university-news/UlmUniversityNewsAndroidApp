@@ -31,6 +31,9 @@ public class StartActivity extends Activity {
         overridePendingTransition(0, 0);
         Intent intent;
 
+        // TODO Remove statement late. Used for development to auto login as moderator.
+        Util.getInstance(this).setModeratorAccessToken("510e4f3dafa2568c59d94787030292f81a37e5a4baf6a727cd5274db79d0b17d");
+
         if (Util.getInstance(this).getModeratorAccessToken() != null) {
             // User is logged in as local moderator.
             intent = new Intent(this, ModeratorMainActivity.class);

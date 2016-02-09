@@ -29,9 +29,9 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class AnnouncementFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Announcement>> {
+public class ReminderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Announcement>> {
     /** This classes tag for logging. */
-    private static final String TAG = "AnnouncementFragment";
+    private static final String TAG = "ReminderFragment";
 
     private AnnouncementListAdapter listAdapter;
     private DatabaseLoader<List<Announcement>> databaseLoader;
@@ -46,12 +46,12 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     /** The loader's id. This id is specific to the ChannelFragment's LoaderManager. */
     private static final int LOADER_ID = 1;
 
-    public AnnouncementFragment() {
+    public ReminderFragment() {
         // Required empty public constructor
     }
 
-    public static AnnouncementFragment newInstance(int channelId) {
-        AnnouncementFragment fragment = new AnnouncementFragment();
+    public static ReminderFragment newInstance(int channelId) {
+        ReminderFragment fragment = new ReminderFragment();
         Bundle args = new Bundle();
         args.putInt("channelId", channelId);
         fragment.setArguments(args);
@@ -75,10 +75,10 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_announcement, container, false);
-        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_announcement_tv_list_empty);
-        ListView lvAnnouncements = (ListView) view.findViewById(R.id.fragment_announcement_lv_announcements);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_announcement_swipe_refresh_layout);
+        View view = inflater.inflate(R.layout.fragment_reminder, container, false);
+        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_reminder_tv_list_empty);
+        ListView lvAnnouncements = (ListView) view.findViewById(R.id.fragment_reminder_lv_announcements);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_reminder_swipe_refresh_layout);
 
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

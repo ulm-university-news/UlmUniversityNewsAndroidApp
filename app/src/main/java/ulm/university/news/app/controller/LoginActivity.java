@@ -124,9 +124,14 @@ public class LoginActivity extends AppCompatActivity {
         ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
 
         // Check if already stored in database.
-        if (moderatorDBM.getLocalModerator() != null) {
+        if (moderatorDBM.getLocalModerator() == null) {
             moderatorDBM.storeLocalModerator(moderator);
+            moderatorDBM.storeModerator(moderator);
         }
+
+        // TODO Login as another moderator? Just delete local moderator on logout?
+        // TODO Do I have to store the local moderator in database? Just in cache sufficient!?
+        // TODO ==> Simply don't allow multiple different moderators to login. Only support one!
 
         // Cache the moderators server access token.
         Util.getInstance(this).setModeratorAccessToken(moderator.getServerAccessToken());
