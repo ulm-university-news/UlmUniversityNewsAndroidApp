@@ -24,10 +24,16 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-        <ListView
-            android:id="@+id/activity_moderator_main_lv_channels"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/activity_moderator_main_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/activity_moderator_main_lv_channels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/activity_moderator_main_tv_list_empty"

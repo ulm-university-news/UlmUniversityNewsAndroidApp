@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ulm.university.news.app.R;
@@ -34,13 +33,11 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int LOADER_ID = 2;
 
     private AdapterView.OnItemClickListener itemClickListener;
+    private DatabaseLoader<List<Channel>> databaseLoader;
 
     private ChannelListAdapter listAdapter;
     private List<Channel> channels;
     private ListView lvChannels;
-    private TextView tvInfo;
-
-    private DatabaseLoader<List<Channel>> databaseLoader;
 
     public static ChannelFragment newInstance() {
         return new ChannelFragment();
@@ -59,19 +56,18 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        channels = new ArrayList<>();
-
         // Initialize or reuse an existing database loader.
         databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader.onContentChanged();
 
-        listAdapter = new ChannelListAdapter(getActivity(), R.layout.channel_list_item, channels);
+        listAdapter = new ChannelListAdapter(getActivity(), R.layout.channel_list_item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel, container, false);
         lvChannels = (ListView) view.findViewById(R.id.fragment_channel_lv_channels);
-        tvInfo = (TextView) view.findViewById(R.id.fragment_channel_tv_info);
+        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_channel_tv_list_empty);
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -85,11 +81,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
 
         lvChannels.setAdapter(listAdapter);
         lvChannels.setOnItemClickListener(itemClickListener);
-
-        if (channels != null && !channels.isEmpty()) {
-            tvInfo.setVisibility(View.GONE);
-            lvChannels.setVisibility(View.VISIBLE);
-        }
+        lvChannels.setEmptyView(tvListEmpty);
 
         return view;
     }
@@ -150,16 +142,6 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
         channels = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();
-        // Update view.
-        if (channels.isEmpty()) {
-            lvChannels.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.activity_main_channel_list_empty));
-            tvInfo.setVisibility(View.VISIBLE);
-        } else {
-            lvChannels.setVisibility(View.VISIBLE);
-            tvInfo.setVisibility(View.GONE);
-            tvInfo.setText(getText(R.string.activity_main_channel_list_loading));
-        }
     }
 
     @Override

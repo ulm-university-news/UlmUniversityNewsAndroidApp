@@ -6,11 +6,11 @@
     <!-- General ################################################################################################### -->
     <string name="general_error_something">Something went wrong. Please try again.</string>
     <string name="general_error_database">Database failure. Please try again.</string>
-    <string name="general_error_connection_failed">Connection to server failed. </string>
-    <string name="general_error_no_connection">No internet connection. </string>
-    <string name="general_error_refresh">Can\'t refresh.</string>
-    <string name="general_error_subscribe">Can\'t subscribe.</string>
-    <string name="general_error_unsubscribe">Can\'t unsubscribe.</string>
+    <string name="general_error_connection_failed">Connection to server failed.</string>
+    <string name="general_error_no_connection">No internet connection.</string>
+    <string name="general_error_refresh"> Can\'t refresh.</string>
+    <string name="general_error_subscribe"> Can\'t subscribe.</string>
+    <string name="general_error_unsubscribe"> Can\'t unsubscribe.</string>
     <string name="general_year_format">YYYY</string>
 
     <!-- StartActivity ############################################################################################# -->
@@ -52,7 +52,7 @@
     <!-- ChannelSearchActivity ##################################################################################### -->
     <string name="activity_channel_search_title">Search Channel</string>
     <string name="activity_channel_search_hint">Channel name</string>
-    <string name="activity_channel_search_updating">Updating channel data...</string>
+    <string name="activity_channel_search_updating">No channel data found. Swipe down to refresh.</string>
 
     <!-- GroupSearchActivity ####################################################################################### -->
     <string name="activity_group_search_title">Search Group</string>

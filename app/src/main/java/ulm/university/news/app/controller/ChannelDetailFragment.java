@@ -3,6 +3,7 @@ package ulm.university.news.app.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,10 +44,13 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     private ChannelDatabaseManager channelDBM;
     private Channel channel;
     private List<ChannelDetail> channelDetails;
+    ChannelDetailListAdapter listAdapter;
 
     private ListView lvChannelDetails;
     private Button btnSubscribe;
     private Button btnUnsubscribe;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private String errorMessage;
     private Toast toast;
 
@@ -74,20 +78,29 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_channel_detail, container, false);
         initView(v);
-        initChannel();
         return v;
     }
 
     private void initView(View v) {
         lvChannelDetails = (ListView) v.findViewById(R.id.fragment_channel_detail_lv_channel_details);
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.fragment_channel_detail_swipe_refresh_layout);
+        TextView tvListEmpty = (TextView) v.findViewById(R.id.fragment_channel_detail_tv_list_empty);
         btnSubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_subscribe);
         btnUnsubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_unsubscribe);
+
+        lvChannelDetails.setEmptyView(tvListEmpty);
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshChannel();
+            }
+        });
+
         toast = Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT);
         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
         if (tv != null) tv.setGravity(Gravity.CENTER);
-    }
 
-    private void initChannel() {
         btnSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +150,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         }
 
         setChannelDetails();
-        ChannelDetailListAdapter listAdapter = new ChannelDetailListAdapter();
+        listAdapter = new ChannelDetailListAdapter();
         listAdapter.setChannelDetails(channelDetails);
         lvChannelDetails.setAdapter(listAdapter);
     }
@@ -282,6 +295,27 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         channelDetails.add(modificationDate);
     }
 
+    /**
+     * Sends a request to the server to get all new channel data.
+     */
+    private void refreshChannel() {
+        // Channel refresh is only possible if there is an internet connection.
+        if (Util.getInstance(getContext()).isOnline()) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Update channel on swipe down.
+            ChannelAPI.getInstance(getContext()).getChannel(channel.getId());
+        } else {
+            errorMessage = getString(R.string.general_error_no_connection);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Only show error message if refreshing was triggered manually.
+            toast.setText(errorMessage);
+            toast.show();
+            // Can't refresh. Hide loading animation.
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -292,6 +326,48 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
+    }
+
+    /**
+     * This method will be called when a channel is posted to the EventBus.
+     *
+     * @param channel The bus event containing a channel object.
+     */
+    public void onEventMainThread(Channel channel) {
+        Log.d(TAG, "BusEvent: " + channel.toString());
+        processChannelData(channel);
+    }
+
+    /**
+     * Updates the channel in the database if it was updated on the server.
+     *
+     * @param channel The channel to process.
+     */
+    public void processChannelData(Channel channel) {
+        // Update channel in the database and channel detail view if necessary.
+        boolean hasChannelChanged = this.channel.getModificationDate().isBefore(channel.getModificationDate());
+        if (hasChannelChanged) {
+            channelDBM.updateChannel(channel);
+            this.channel = channel;
+            setChannelDetails();
+            listAdapter.setChannelDetails(channelDetails);
+            listAdapter.notifyDataSetChanged();
+        }
+
+        // Channels were refreshed. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        if (hasChannelChanged) {
+            // If channel data was updated show updated message.
+            String message = getString(R.string.channel_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            // Only show up to date message if a manual refresh was triggered.
+            String message = getString(R.string.channel_info_up_to_date);
+            toast.setText(message);
+            toast.show();
+        }
     }
 
     /**

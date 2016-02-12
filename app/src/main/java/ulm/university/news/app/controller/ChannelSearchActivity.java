@@ -55,13 +55,11 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private AdapterView.OnItemClickListener itemClickListener;
     private ChannelListAdapter listAdapter;
     private List<Channel> channels;
-    private List<Channel> channelsSelection;
 
     // GUI elements.
     private ListView lvChannels;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SearchView searchView;
-    private TextView tvLoading;
 
     private String errorMessage;
     private Toast toast;
@@ -89,6 +87,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         // Initialise GUI elements.
         initView();
 
+        // Update channel data.
         refreshChannels();
     }
 
@@ -180,10 +179,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<List<Channel>> loader, List<Channel> data) {
-        if (data.size() > 0) {
-            tvLoading.setVisibility(View.GONE);
-            swipeRefreshLayout.setVisibility(View.VISIBLE);
-        }
         Util.getInstance(this).sortChannels(data);
         channels = data;
         listAdapter.setData(data);
@@ -201,7 +196,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     private void initView() {
         lvChannels = (ListView) findViewById(R.id.activity_channel_search_lv_channels);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_channel_search_swipe_refresh_layout);
-        tvLoading = (TextView) findViewById(R.id.activity_channel_search_tv_loading);
+        TextView tvListEmpty = (TextView) findViewById(R.id.activity_channel_search_tv_list_empty);
 
         toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -229,6 +224,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
 
         listAdapter = new ChannelListAdapter(this, R.layout.channel_list_item);
         lvChannels.setAdapter(listAdapter);
+        lvChannels.setEmptyView(tvListEmpty);
     }
 
     /**
@@ -238,7 +234,7 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
      * @param query - The given search string.
      */
     private void search(String query) {
-        channelsSelection = new ArrayList<>();
+        List<Channel> channelsSelection = new ArrayList<>();
         for (Channel c : channels) {
             if (StringUtils.containsIgnoreCase(c.getName(), query)) {
                 channelsSelection.add(c);
@@ -317,8 +313,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
             }
         }
 
-        // Update view.
-        lvChannels.setVisibility(View.VISIBLE);
         // Channels were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
@@ -338,16 +332,6 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         // Reset the auto refresh flag.
         isAutoRefresh = true;
     }
-
-    /*
-    private void getChannel(Channel channel) {
-        Log.d(TAG, "getChannel(): " + channel.toString());
-    }
-
-    private void updateChannel(Channel channel) {
-        Log.d(TAG, "updateChannel(): " + channel.toString());
-    }
-    */
 
     /**
      * This method will be called when a server error is posted to the EventBus.

@@ -8,11 +8,26 @@
     android:orientation="vertical"
     tools:context="ulm.university.news.app.controller.ChannelDetailActivity">
 
-    <ListView
-        android:id="@+id/fragment_channel_detail_lv_channel_details"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_channel_detail_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/fragment_channel_detail_lv_channel_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/fragment_channel_detail_tv_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/activity_channel_search_updating"
+        android:visibility="gone"/>
 
     <View
         android:layout_width="match_parent"

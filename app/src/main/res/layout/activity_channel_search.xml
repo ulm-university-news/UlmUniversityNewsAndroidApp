@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#ffffff"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -15,22 +15,10 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <TextView
-        android:id="@+id/activity_channel_search_tv_loading"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:text="@string/activity_channel_search_updating"
-        android:visibility="visible"/>
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_channel_search_swipe_refresh_layout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:layout_height="wrap_content">
 
         <ListView
             android:id="@+id/activity_channel_search_lv_channels"
@@ -38,4 +26,12 @@
             android:layout_height="wrap_content"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <TextView
+        android:id="@+id/activity_channel_search_tv_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/activity_channel_search_updating"
+        android:visibility="gone"/>
 </LinearLayout>

@@ -8,16 +8,19 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -31,6 +34,8 @@ import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+
 public class ModeratorMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<List<Channel>> {
     /** This classes tag for logging. */
@@ -40,12 +45,17 @@ public class ModeratorMainActivity extends AppCompatActivity
     private List<Channel> channels;
     private ChannelListAdapter listAdapter;
 
-    /** The loader's id. This id is specific to the ChannelSearchActivity's LoaderManager. */
+    /** The loader's id. This id is specific to the ModeratorMainActivity's LoaderManager. */
     private static final int LOADER_ID = 1;
     private DatabaseLoader<List<Channel>> databaseLoader;
 
     // GUI elements.
     private ListView lvChannels;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private String errorMessage;
+    private Toast toast;
+    private boolean isAutoRefresh = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +201,20 @@ public class ModeratorMainActivity extends AppCompatActivity
     private void initView() {
         lvChannels = (ListView) findViewById(R.id.activity_moderator_main_lv_channels);
         TextView tvListEmpty = (TextView) findViewById(R.id.activity_moderator_main_tv_list_empty);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_moderator_main_swipe_refresh_layout);
+
+        toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
+
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isAutoRefresh = false;
+                refreshResponsibleChannels();
+            }
+        });
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -208,8 +232,25 @@ public class ModeratorMainActivity extends AppCompatActivity
     }
 
     private void refreshResponsibleChannels() {
-        // Update responsible channels when activity is created. Request new data only.
-        ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getLoggedInModerator().getId(), null);
+        // Channel refresh is only possible if there is an internet connection.
+        if (Util.getInstance(this).isOnline()) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Update responsible channels when activity is created.
+            ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getLoggedInModerator().getId(), null);
+        } else {
+            if (!isAutoRefresh) {
+                errorMessage = getString(R.string.general_error_no_connection);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Only show error message if refreshing was triggered manually.
+                toast.setText(errorMessage);
+                toast.show();
+                // Reset the auto refresh flag.
+                isAutoRefresh = true;
+                // Can't refresh. Hide loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
     }
 
     /**
@@ -231,6 +272,7 @@ public class ModeratorMainActivity extends AppCompatActivity
     public void processChannelData(List<Channel> channels) {
         // Store or update channels in the database and update local channel list.
         Integer localChannelListId = null;
+        boolean newChannels = false;
         List<Channel> channelsDB = databaseLoader.getChannelDBM().getChannels();
         for (Channel channel : channels) {
             for (int i = 0; i < channelsDB.size(); i++) {
@@ -241,6 +283,7 @@ public class ModeratorMainActivity extends AppCompatActivity
             }
             if (localChannelListId == null) {
                 databaseLoader.getChannelDBM().storeChannel(channel);
+                newChannels = true;
             } else {
                 databaseLoader.getChannelDBM().updateChannel(channel);
                 channelsDB.remove(localChannelListId.intValue());
@@ -250,6 +293,25 @@ public class ModeratorMainActivity extends AppCompatActivity
             databaseLoader.getChannelDBM().moderateChannel(channel.getId(), Util.getInstance(this)
                     .getLoggedInModerator().getId());
         }
+
+        // Channels were refreshed. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        if (newChannels) {
+            // If channel data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.channel_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
+                // Only show up to date message if a manual refresh was triggered.
+                String message = getString(R.string.channel_info_up_to_date);
+                toast.setText(message);
+                toast.show();
+            }
+        }
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
     }
 
     /**
@@ -269,5 +331,21 @@ public class ModeratorMainActivity extends AppCompatActivity
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
+        // Can't refresh. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        // Show appropriate error message.
+        switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                if (!isAutoRefresh) {
+                    // Only show error message if refreshing was triggered manually.
+                    toast.setText(errorMessage);
+                    toast.show();
+                }
+                break;
+        }
+
+        // Reset the auto refresh flag.
+        isAutoRefresh = true;
     }
 }
