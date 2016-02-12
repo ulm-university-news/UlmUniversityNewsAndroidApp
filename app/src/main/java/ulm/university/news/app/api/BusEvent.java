@@ -20,6 +20,14 @@ public class BusEvent {
         this.object = object;
     }
 
+    @Override
+    public String toString() {
+        return "BusEvent{" +
+                "action='" + action + '\'' +
+                ", object=" + object +
+                '}';
+    }
+
     public String getAction() {
         return action;
     }

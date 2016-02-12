@@ -10,12 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
-import ulm.university.news.app.api.BusEvent;
+import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
@@ -85,17 +84,14 @@ public class ModeratorChannelActivity extends AppCompatActivity {
     }
 
     /**
-     * This method will be called when a BusEvent is posted to the EventBus.
+     * This method will be called when a list of moderators is posted to the EventBus.
      *
-     * @param busEvent The BusEvent object.
+     * @param event The bus event containing a list of moderator objects.
      */
-    public void onEvent(BusEvent busEvent) {
-        Log.d(TAG, "EventBus: BusEvent");
-        Log.d(TAG, busEvent.toString());
-
-        if (ChannelAPI.GET_RESPONSIBLE_MODERATORS.equals(busEvent.getAction())) {
-            processModeratorData((ArrayList<Moderator>) busEvent.getObject());
-        }
+    public void onEventMainThread(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        List<Moderator> moderators = event.getModerators();
+        processModeratorData(moderators);
     }
 
     /**

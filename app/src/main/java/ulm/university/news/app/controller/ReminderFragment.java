@@ -20,22 +20,23 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventReminders;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
-import ulm.university.news.app.data.Announcement;
+import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class ReminderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Announcement>> {
+public class ReminderFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Reminder>> {
     /** This classes tag for logging. */
     private static final String TAG = "ReminderFragment";
 
-    private AnnouncementListAdapter listAdapter;
-    private DatabaseLoader<List<Announcement>> databaseLoader;
-    private List<Announcement> announcements;
+    private ReminderListAdapter listAdapter;
+    private DatabaseLoader<List<Reminder>> databaseLoader;
+    private List<Reminder> reminders;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private int channelId;
@@ -43,8 +44,8 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     private String errorMessage;
     private boolean isAutoRefresh = true;
 
-    /** The loader's id. This id is specific to the ChannelFragment's LoaderManager. */
-    private static final int LOADER_ID = 1;
+    /** The loader's id. This id is specific to TODO ?. */
+    private static final int LOADER_ID = 2;
 
     public ReminderFragment() {
         // Required empty public constructor
@@ -65,19 +66,19 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
         databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         databaseLoader.onContentChanged();
 
-        announcements = new ArrayList<>();
-        listAdapter = new AnnouncementListAdapter(getActivity(), R.layout.announcement_list_item, announcements);
+        reminders = new ArrayList<>();
+        listAdapter = new ReminderListAdapter(getActivity(), R.layout.reminder_list_item, reminders);
         channelId = getArguments().getInt("channelId");
 
-        // Check for new announcement data.
-        refreshAnnouncements();
+        // Check for new reminder data.
+        refreshReminders();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reminder, container, false);
         TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_reminder_tv_list_empty);
-        ListView lvAnnouncements = (ListView) view.findViewById(R.id.fragment_reminder_lv_announcements);
+        ListView lvReminders = (ListView) view.findViewById(R.id.fragment_reminder_lv_reminders);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_reminder_swipe_refresh_layout);
 
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
@@ -85,7 +86,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onRefresh() {
                 isAutoRefresh = false;
-                refreshAnnouncements();
+                refreshReminders();
             }
         });
 
@@ -93,19 +94,18 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
-        lvAnnouncements.setAdapter(listAdapter);
-        lvAnnouncements.setEmptyView(tvListEmpty);
+        lvReminders.setAdapter(listAdapter);
+        lvReminders.setEmptyView(tvListEmpty);
         return view;
     }
 
-    private void refreshAnnouncements() {
+    private void refreshReminders() {
         // Refreshing is only possible if there is an internet connection.
         if (Util.getInstance(getContext()).isOnline()) {
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
-            // Get announcement data. Request new messages only.
-            int messageNumber = databaseLoader.getChannelDBM().getMaxMessageNumberAnnouncement(channelId);
-            ChannelAPI.getInstance(getActivity()).getAnnouncements(channelId, messageNumber);
+            // Get reminder data.
+            ChannelAPI.getInstance(getActivity()).getReminders(channelId);
         } else {
             if (!isAutoRefresh) {
                 errorMessage = getString(R.string.general_error_no_connection);
@@ -134,26 +134,26 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     /**
-     * This method will be called when a list of announcements is posted to the EventBus.
+     * This method will be called when a list of reminders is posted to the EventBus.
      *
-     * @param announcements The list containing announcement objects.
+     * @param event The bus event containing a list of reminder objects.
      */
-    public void onEventMainThread(List<Announcement> announcements) {
-        Log.d(TAG, "EventBus: List<Announcement>");
-        Log.d(TAG, announcements.toString());
-        ChannelController.storeAnnouncements(getActivity(), announcements);
-        // Channels were refreshed. Hide loading animation.
+    public void onEventMainThread(BusEventReminders event) {
+        Log.d(TAG, event.toString());
+        List<Reminder> reminders = event.getReminders();
+        boolean newReminders = ChannelController.storeReminders(getActivity(), reminders);
+        // Reminders were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
-        if (!announcements.isEmpty()) {
-            // If announcement data was updated show message no matter if it was a manual or auto refresh.
-            String message = getString(R.string.announcement_info_updated);
+        if (newReminders) {
+            // If reminder data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.reminder_info_updated);
             toast.setText(message);
             toast.show();
         } else {
             if (!isAutoRefresh) {
                 // Only show up to date message if a manual refresh was triggered.
-                String message = getString(R.string.announcement_info_up_to_date);
+                String message = getString(R.string.reminder_info_up_to_date);
                 toast.setText(message);
                 toast.show();
             }
@@ -196,20 +196,21 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public Loader<List<Announcement>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<Reminder>> onCreateLoader(int id, Bundle args) {
         databaseLoader = new DatabaseLoader<>(getActivity(), new DatabaseLoader
-                .DatabaseLoaderCallbacks<List<Announcement>>() {
+                .DatabaseLoaderCallbacks<List<Reminder>>() {
             @Override
-            public List<Announcement> onLoadInBackground() {
-                // Load all announcements of a specific channels.
-                return databaseLoader.getChannelDBM().getAnnouncements(channelId);
+            public List<Reminder> onLoadInBackground() {
+                // Load all reminders of a specific channels.
+                return databaseLoader.getChannelDBM().getReminders(channelId);
             }
 
             @Override
             public IntentFilter observerFilter() {
-                // Listen to database changes on channel subscriptions.
+                // Listen to database changes on reminder events.
                 IntentFilter filter = new IntentFilter();
-                filter.addAction(ChannelDatabaseManager.STORE_ANNOUNCEMENT);
+                filter.addAction(ChannelDatabaseManager.STORE_REMINDER);
+                filter.addAction(ChannelDatabaseManager.UPDATE_REMINDER);
                 return filter;
             }
         });
@@ -219,22 +220,15 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Announcement>> loader, List<Announcement> data) {
+    public void onLoadFinished(Loader<List<Reminder>> loader, List<Reminder> data) {
         // Update list.
-        announcements = data;
+        reminders = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();
-
-        // Mark loaded and unread announcements as read after displaying.
-        for (Announcement announcement : announcements) {
-            if (!announcement.isRead()) {
-                databaseLoader.getChannelDBM().setMessageToRead(announcement.getId());
-            }
-        }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Announcement>> loader) {
+    public void onLoaderReset(Loader<List<Reminder>> loader) {
         // Clear adapter data.
         listAdapter.setData(null);
     }

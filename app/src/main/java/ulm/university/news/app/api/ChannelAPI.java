@@ -13,6 +13,7 @@ import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Moderator;
+import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.util.Util;
 
 /**
@@ -36,10 +37,11 @@ public class ChannelAPI extends MainAPI {
     // Constants.
     public static final String GET_CHANNEL = "getChannel";
     public static final String UPDATE_CHANNEL = "updateChannel";
-    public static final String GET_CHANNELS = "getChannels";
+    public static final String GET_CHANNELS = "getGroups";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String GET_RESPONSIBLE_MODERATORS = "getResponsibleModerators";
+    public static final String GET_REMINDERS = "getAnnouncements";
 
     /**
      * Get the instance of the ChannelAPI class.
@@ -70,8 +72,7 @@ public class ChannelAPI extends MainAPI {
             @Override
             public void onResponse(String json) {
                 Channel channel = gson.fromJson(json, Channel.class);
-                // Use BusEvent to add an action which identifies this method.
-                EventBus.getDefault().post(new BusEvent(GET_CHANNEL, channel));
+                EventBus.getDefault().post(channel);
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
@@ -98,7 +99,7 @@ public class ChannelAPI extends MainAPI {
                 Type listType = new TypeToken<List<Channel>>() {
                 }.getType();
                 List<Channel> channels = gson.fromJson(json, listType);
-                EventBus.getDefault().post(channels);
+                EventBus.getDefault().post(new BusEventChannels(channels));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
@@ -156,7 +157,7 @@ public class ChannelAPI extends MainAPI {
                 Type listType = new TypeToken<List<Announcement>>() {
                 }.getType();
                 List<Announcement> announcements = gson.fromJson(json, listType);
-                EventBus.getDefault().post(announcements);
+                EventBus.getDefault().post(new BusEventAnnouncements(announcements));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
@@ -176,7 +177,27 @@ public class ChannelAPI extends MainAPI {
                 Type listType = new TypeToken<List<Moderator>>() {
                 }.getType();
                 List<Moderator> moderators = gson.fromJson(json, listType);
-                EventBus.getDefault().post(new BusEvent(GET_RESPONSIBLE_MODERATORS, moderators));
+                EventBus.getDefault().post(new BusEventModerators(moderators));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getReminders(int channelId) {
+        // Create url to specific channel and point to reminder resource.
+        String url = serverAddressChannel + "/" + channelId + "/reminder";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of reminders as deserialization type.
+                Type listType = new TypeToken<List<Reminder>>() {
+                }.getType();
+                List<Reminder> reminders = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventReminders(reminders));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);

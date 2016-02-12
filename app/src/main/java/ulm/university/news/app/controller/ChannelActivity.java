@@ -12,12 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
-import ulm.university.news.app.api.BusEvent;
-import ulm.university.news.app.api.ChannelAPI;
+import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
@@ -92,20 +91,17 @@ public class ChannelActivity extends AppCompatActivity {
     }
 
     /**
-     * This method will be called when a BusEvent is posted to the EventBus.
+     * This method will be called when a list of moderators is posted to the EventBus.
      *
-     * @param busEvent The BusEvent object.
+     * @param event The bus event containing a list of moderator objects.
      */
-    public void onEvent(BusEvent busEvent) {
-        Log.d(TAG, "EventBus: BusEvent");
-        Log.d(TAG, busEvent.toString());
+    public void onEvent(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        List<Moderator> moderators = event.getModerators();
 
-        if (ChannelAPI.GET_RESPONSIBLE_MODERATORS.equals(busEvent.getAction())) {
-            ArrayList<Moderator> moderators = (ArrayList<Moderator>) busEvent.getObject();
-            ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
-            for (Moderator m : moderators) {
-                moderatorDBM.storeModerator(m);
-            }
+        ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
+        for (Moderator m : moderators) {
+            moderatorDBM.storeModerator(m);
         }
     }
 }

@@ -6,8 +6,8 @@
     <!-- General ################################################################################################### -->
     <string name="general_error_something">Something went wrong. Please try again.</string>
     <string name="general_error_database">Database failure. Please try again.</string>
-    <string name="general_error_connection_failed">Connection to server failed.</string>
-    <string name="general_error_no_connection">No internet connection.</string>
+    <string name="general_error_connection_failed">Connection to server failed. </string>
+    <string name="general_error_no_connection">No internet connection. </string>
     <string name="general_error_refresh">Can\'t refresh.</string>
     <string name="general_error_subscribe">Can\'t subscribe.</string>
     <string name="general_error_unsubscribe">Can\'t unsubscribe.</string>
@@ -176,6 +176,10 @@
     <!-- Announcement ############################################################################################## -->
     <string name="announcement_info_updated">New announcements loaded.</string>
     <string name="announcement_info_up_to_date">No new announcements.</string>
+
+    <!-- Reminder ################################################################################################## -->
+    <string name="reminder_info_updated">Reminders updated.</string>
+    <string name="reminder_info_up_to_date">Reminders already up to date.</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

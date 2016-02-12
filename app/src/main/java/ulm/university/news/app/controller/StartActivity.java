@@ -24,7 +24,7 @@ public class StartActivity extends Activity {
             public void run() {
                 startAppropriateActivity();
             }
-        }, 1500);
+        }, 1000);
     }
 
     private void startAppropriateActivity() {
@@ -39,7 +39,8 @@ public class StartActivity extends Activity {
         loggedInModerator.setName("mmak");
         loggedInModerator.setFirstName("Matthias");
         loggedInModerator.setLastName("Mak");
-        // Util.getInstance(this).setLoggedInModerator(loggedInModerator);
+        Util.getInstance(this).setLoggedInModerator(loggedInModerator);
+        Util.getInstance(this).setCurrentAccessToken();
         // TODO Remove this code later. Used for development to auto login as moderator.
 
         if (Util.getInstance(this).getLoggedInModerator() != null) {

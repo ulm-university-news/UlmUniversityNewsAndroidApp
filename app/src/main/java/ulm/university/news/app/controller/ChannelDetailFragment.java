@@ -42,7 +42,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
 
     private ChannelDatabaseManager channelDBM;
     private Channel channel;
-    List<ChannelDetail> channelDetails;
+    private List<ChannelDetail> channelDetails;
 
     private ListView lvChannelDetails;
     private Button btnSubscribe;
@@ -130,6 +130,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             btnUnsubscribe.setVisibility(View.GONE);
         }
 
+        // Hide subscribe and unsubscribe buttons in moderator view.
+        if (getActivity() instanceof ModeratorChannelActivity) {
+            btnSubscribe.setVisibility(View.GONE);
+            btnUnsubscribe.setVisibility(View.GONE);
+        }
+
         setChannelDetails();
         ChannelDetailListAdapter listAdapter = new ChannelDetailListAdapter();
         listAdapter.setChannelDetails(channelDetails);
@@ -140,6 +146,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
      * Adds all existing channel detail data to the details list. The details are adde in a specific order.
      */
     private void setChannelDetails() {
+        channelDetails.clear();
         ChannelDetail name = new ChannelDetail(getString(R.string.channel_name), channel.getName(),
                 R.drawable.ic_info_black_36dp);
         String typeName;

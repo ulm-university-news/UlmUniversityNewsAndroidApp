@@ -33,6 +33,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventChannels;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
@@ -282,34 +283,13 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
     /**
      * This method will be called when a list of channels is posted to the EventBus.
      *
-     * @param channels The list containing channel objects.
+     * @param event The bus event containing a list of channel objects.
      */
-    public void onEventMainThread(List<Channel> channels) {
-        Log.d(TAG, "EventBus: List<Channel>");
+    public void onEventMainThread(BusEventChannels event) {
+        Log.d(TAG, event.toString());
+        List<Channel> channels = event.getChannels();
         processChannelData(channels);
     }
-
-    /**
-     * This method will be called when a BusEvent is posted to the EventBus. The action value determines of which
-     * type the included object is.
-     *
-     * @param busEvent The busEvent which includes an object.
-     */
-    /*
-    public void onEventMainThread(BusEvent busEvent) {
-        Log.d(TAG, "EventBus: BusEvent");
-        String action = busEvent.getAction();
-        if (ChannelAPI.GET_CHANNEL.equals(action)) {
-            Channel channel = (Channel) busEvent.getObject();
-            getChannel(channel);
-        } else if (ChannelAPI.UPDATE_CHANNEL.equals(action)) {
-            Channel channel = (Channel) busEvent.getObject();
-            updateChannel(channel);
-        } else if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
-            Log.d(TAG, action);
-        }
-    }
-    */
 
     /**
      * Saves a new channel or updates an existing one.

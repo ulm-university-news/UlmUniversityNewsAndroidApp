@@ -17,6 +17,7 @@ import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.data.enums.Faculty;
@@ -59,6 +60,18 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_T
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_AUTHOR;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_CREATION_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_END_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_IGNORE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_INTERVAL;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_MODIFICATION_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_PRIORITY;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_START_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TEXT;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TITLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_COST;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_PARTICIPANTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_TABLE;
@@ -84,6 +97,8 @@ public class ChannelDatabaseManager {
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
+    public static final String STORE_REMINDER = "storeReminder";
+    public static final String UPDATE_REMINDER = "updateReminder";
     public static final String MODERATE_CHANNEL = "moderateChannel";
 
     /** Creates a new instance of ChannelDatabaseManager. */
@@ -694,7 +709,18 @@ public class ChannelDatabaseManager {
         values.put(CHANNEL_ID_FOREIGN, channelId);
         values.put(MODERATOR_ID_FOREIGN, moderatorId);
         values.put(MODERATOR_CHANNEL_ACTIVE, true);
-        db.insert(MODERATOR_CHANNEL_TABLE, null, values);
+
+        try {
+            db.insertOrThrow(MODERATOR_CHANNEL_TABLE, null, values);
+        } catch (Exception e) {
+            if (e.getMessage().contains("UNIQUE constraint failed")) {
+                // Database entry already exists. Doesn't matter, so do nothing.
+                Log.i(TAG, "Moderator " + moderatorId + " already moderates channel " + channelId);
+            } else {
+                // Print other errors.
+                e.printStackTrace();
+            }
+        }
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(MODERATE_CHANNEL);
@@ -875,5 +901,115 @@ public class ChannelDatabaseManager {
         String whereClause = CHANNEL_ID_FOREIGN + "=?";
         String[] whereArgs = {String.valueOf(channelId)};
         db.delete(ANNOUNCEMENT_TABLE, whereClause, whereArgs);
+    }
+
+    /**
+     * Stores the given reminder in the database.
+     *
+     * @param reminder The reminder which should be stored.
+     */
+    public void storeReminder(Reminder reminder) {
+        Log.d(TAG, "Store " + reminder);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Message values.
+        ContentValues reminderValues = new ContentValues();
+        reminderValues.put(REMINDER_ID, reminder.getId());
+        reminderValues.put(REMINDER_TEXT, reminder.getText());
+        reminderValues.put(REMINDER_TITLE, reminder.getTitle());
+        reminderValues.put(REMINDER_CREATION_DATE, reminder.getCreationDate().getMillis());
+        reminderValues.put(REMINDER_MODIFICATION_DATE, reminder.getModificationDate().getMillis());
+        reminderValues.put(REMINDER_START_DATE, reminder.getStartDate().getMillis());
+        reminderValues.put(REMINDER_END_DATE, reminder.getEndDate().getMillis());
+        reminderValues.put(REMINDER_PRIORITY, reminder.getPriority().ordinal());
+        reminderValues.put(REMINDER_IGNORE, reminder.isIgnore());
+        reminderValues.put(REMINDER_INTERVAL, reminder.getInterval());
+        reminderValues.put(REMINDER_AUTHOR, reminder.getAuthorModerator());
+        reminderValues.put(CHANNEL_ID_FOREIGN, reminder.getChannelId());
+        db.insert(REMINDER_TABLE, null, reminderValues);
+
+        // Notify observers that specific database content has changed.
+        Intent databaseChanged = new Intent(STORE_REMINDER);
+        Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+        Log.d(TAG, "End. Reminder stored successfully.");
+    }
+
+    /**
+     * Updates the given reminder in the database.
+     *
+     * @param reminder The reminder which should be updated.
+     */
+    public void updateReminder(Reminder reminder) {
+        Log.d(TAG, "Update reminder with id " + reminder.getId());
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues reminderValues = new ContentValues();
+        reminderValues.put(REMINDER_TEXT, reminder.getText());
+        reminderValues.put(REMINDER_TITLE, reminder.getTitle());
+        reminderValues.put(REMINDER_CREATION_DATE, reminder.getCreationDate().getMillis());
+        reminderValues.put(REMINDER_MODIFICATION_DATE, reminder.getModificationDate().getMillis());
+        reminderValues.put(REMINDER_START_DATE, reminder.getStartDate().getMillis());
+        reminderValues.put(REMINDER_END_DATE, reminder.getEndDate().getMillis());
+        reminderValues.put(REMINDER_PRIORITY, reminder.getPriority().ordinal());
+        reminderValues.put(REMINDER_IGNORE, reminder.isIgnore());
+        reminderValues.put(REMINDER_INTERVAL, reminder.getInterval());
+        reminderValues.put(REMINDER_AUTHOR, reminder.getAuthorModerator());
+        String where = REMINDER_ID + "=?";
+        String[] args = {String.valueOf(reminder.getId())};
+        db.update(REMINDER_TABLE, reminderValues, where, args);
+
+        // Notify observers that specific database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_REMINDER);
+        Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+        Log.d(TAG, "End. Reminder updated successfully.");
+    }
+
+    /**
+     * Gets all reminders of a specific channel from the database.
+     *
+     * @param channelId The id of the channel.
+     * @return A list of reminder objects.
+     */
+    public List<Reminder> getReminders(int channelId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        List<Reminder> reminders = new ArrayList<>();
+        String remindersQuery = "SELECT * FROM " + REMINDER_TABLE + " WHERE " + CHANNEL_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(channelId)};
+        Log.d(TAG, remindersQuery);
+
+        // Create fields before while loop, not within every pass.
+        Reminder reminder;
+        String text, title;
+        int id, author, interval;
+        boolean ignore;
+        Priority priority;
+        DateTime creationDate, modificationDate, startDate, endDate;
+
+        // Get message data from database.
+        Cursor cReminder = db.rawQuery(remindersQuery, args);
+        while (cReminder != null && cReminder.moveToNext()) {
+            id = cReminder.getInt(cReminder.getColumnIndex(REMINDER_ID));
+            interval = cReminder.getInt(cReminder.getColumnIndex(REMINDER_INTERVAL));
+            text = cReminder.getString(cReminder.getColumnIndex(REMINDER_TEXT));
+            title = cReminder.getString(cReminder.getColumnIndex(REMINDER_TITLE));
+            priority = Priority.values[(cReminder.getInt(cReminder.getColumnIndex(REMINDER_PRIORITY)))];
+            ignore = cReminder.getInt(cReminder.getColumnIndex(REMINDER_IGNORE)) != 0;
+            author = cReminder.getInt(cReminder.getColumnIndex(REMINDER_AUTHOR));
+            creationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_MODIFICATION_DATE)),
+                    TIME_ZONE);
+            startDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_START_DATE)), TIME_ZONE);
+            endDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_END_DATE)), TIME_ZONE);
+
+            // Add new reminder to the reminder list.
+            reminder = new Reminder(id, creationDate, modificationDate, startDate, endDate, interval, ignore,
+                    channelId, author, title, text, priority);
+            reminders.add(reminder);
+        }
+        if (cReminder != null) {
+            cReminder.close();
+        }
+        Log.d(TAG, "End with " + reminders);
+        return reminders;
     }
 }

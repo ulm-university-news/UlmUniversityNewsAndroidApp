@@ -23,6 +23,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventChannels;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
@@ -214,10 +215,11 @@ public class ModeratorMainActivity extends AppCompatActivity
     /**
      * This method will be called when a list of channels is posted to the EventBus.
      *
-     * @param channels The list containing channel objects.
+     * @param event The bus event containing a list of channel objects.
      */
-    public void onEventMainThread(List<Channel> channels) {
-        Log.d(TAG, "EventBus: List<Channel>");
+    public void onEventMainThread(BusEventChannels event) {
+        Log.d(TAG, event.toString());
+        List<Channel> channels = event.getChannels();
         processChannelData(channels);
     }
 

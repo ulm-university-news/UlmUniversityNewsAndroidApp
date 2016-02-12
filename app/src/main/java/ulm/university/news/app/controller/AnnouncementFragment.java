@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventAnnouncements;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Announcement;
@@ -43,8 +44,8 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     private String errorMessage;
     private boolean isAutoRefresh = true;
 
-    /** The loader's id. This id is specific to the ChannelFragment's LoaderManager. */
-    private static final int LOADER_ID = 1;
+    /** The loader's id. This id is specific to the AnnouncementFragment's LoaderManager. */
+    private static final int LOADER_ID = 3;
 
     public AnnouncementFragment() {
         // Required empty public constructor
@@ -136,13 +137,13 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     /**
      * This method will be called when a list of announcements is posted to the EventBus.
      *
-     * @param announcements The list containing announcement objects.
+     * @param event The bus event containing a list of announcement objects.
      */
-    public void onEventMainThread(List<Announcement> announcements) {
-        Log.d(TAG, "EventBus: List<Announcement>");
-        Log.d(TAG, announcements.toString());
+    public void onEventMainThread(BusEventAnnouncements event) {
+        Log.d(TAG, event.toString());
+        List<Announcement> announcements = event.getAnnouncements();
         ChannelController.storeAnnouncements(getActivity(), announcements);
-        // Channels were refreshed. Hide loading animation.
+        // Announcements were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
         if (!announcements.isEmpty()) {
@@ -207,7 +208,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
 
             @Override
             public IntentFilter observerFilter() {
-                // Listen to database changes on channel subscriptions.
+                // Listen to database changes on announcement events.
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(ChannelDatabaseManager.STORE_ANNOUNCEMENT);
                 return filter;

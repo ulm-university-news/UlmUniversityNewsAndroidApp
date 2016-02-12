@@ -16,6 +16,7 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 
@@ -105,14 +106,52 @@ public class ChannelController {
         }
     }
 
-    public static String getFormattedDateShort(DateTime date){
+    public static boolean storeReminders(Context context, List<Reminder> reminders) {
+        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
+        HashSet<Integer> authorIds = new HashSet<>();
+
+        boolean newReminders = false;
+
+        if (!reminders.isEmpty()) {
+            List<Reminder> remindersDB = channelDBM.getReminders(reminders.get(0).getChannelId());
+
+            boolean alreadyStored;
+
+            // Store new reminders and update existing ones.
+            for (Reminder reminder : reminders) {
+                alreadyStored = false;
+                for (Reminder reminderDB : remindersDB) {
+                    if (reminderDB.getId() == reminder.getId()) {
+                        channelDBM.updateReminder(reminder);
+                        alreadyStored = true;
+                        break;
+                    }
+                }
+                if(!alreadyStored){
+                    channelDBM.storeReminder(reminder);
+                    authorIds.add(reminder.getAuthorModerator());
+                    newReminders = true;
+                }
+            }
+
+            // Load and store new moderators.
+            for (Integer authorId : authorIds) {
+                Log.d(TAG, "authorId:" + authorId);
+                // TODO Check moderator existence, load and store if necessary.
+            }
+        }
+
+        return newReminders;
+    }
+
+    public static String getFormattedDateShort(DateTime date) {
         // Format the date for output.
         // TODO Language dependency.
         DateTimeFormatter dtfOut = DateTimeFormat.forPattern("HH:mm MM/dd/yy");
         return dtfOut.print(date);
     }
 
-    public static String getFormattedDateLong(DateTime date){
+    public static String getFormattedDateLong(DateTime date) {
         // Format the date for output.
         // TODO Language dependency.
         DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
