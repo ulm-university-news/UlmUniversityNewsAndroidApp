@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="group_types">
+        <item>@string/group_working_name</item>
+        <item>@string/group_tutorial_name</item>
+    </string-array>
+
+    <string-array name="priority">
+        <item>@string/message_priority_high</item>
+        <item>@string/message_priority_normal</item>
+    </string-array>
+
+    <string-array name="terms">
+        <item>@string/channel_term_summer</item>
+        <item>@string/channel_term_winter</item>
+    </string-array>
+</resources>

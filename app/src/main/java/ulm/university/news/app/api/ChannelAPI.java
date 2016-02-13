@@ -205,4 +205,22 @@ public class ChannelAPI extends MainAPI {
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }
+
+    public void createAnnouncement(int channelId, Announcement announcement) {
+        // Add channel id to url and point to announcement resource.
+        String url = serverAddressChannel + "/" + channelId + "/announcement";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Announcement a = gson.fromJson(json, Announcement.class);
+                EventBus.getDefault().post(a);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        rTask.setBody(gson.toJson(announcement, Announcement.class));
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
 }
