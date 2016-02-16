@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialogFragment;
 
 import ulm.university.news.app.R;
 
@@ -14,7 +14,7 @@ import ulm.university.news.app.R;
  *
  * @author Matthias Mak
  */
-public class UnsubscribeDialogFragment extends DialogFragment {
+public class UnsubscribeDialogFragment extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

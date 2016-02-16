@@ -2,26 +2,35 @@ package ulm.university.news.app.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import ulm.university.news.app.R;
 
-public class ModeratorChannelAddActivity extends AppCompatActivity {
+public class ChannelAddActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_moderator_channel_add);
+        setContentView(R.layout.activity_channel_add);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_moderator_channel_add_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_channel_add_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+
+        DialogFragment fragment = new DatePickerFragment();
+        fragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     @Override
@@ -35,5 +44,15 @@ public class ModeratorChannelAddActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDateSet(String tag, DatePicker view, int year, int month, int day) {
+        // TODO
+    }
+
+    @Override
+    public void onTimeSet(String tag, TimePicker view, int hourOfDay, int minute) {
+        // TODO
     }
 }

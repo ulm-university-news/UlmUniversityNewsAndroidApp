@@ -15,59 +15,79 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- extend one of the Theme.AppCompat themes -->
-    <style name="Theme.UlmUniversityMain" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="UlmUniversity.Main" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_main_primary</item>
         <item name="colorAccent">@color/uni_main_accent</item>
         <item name="colorPrimaryDark">@color/uni_main_dark</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="alertDialogTheme">@style/UlmUniversityAlertDialogMain</item>
         <item name="android:textColorLink">@color/hyperlink</item>
         <item name="android:textColorHint">@color/light_grey</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Main.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Main.Dialog</item>
         <!--<item name="android:dropDownListViewStyle">@style/spinnerStyle</item>-->
+    </style>
+
+    <style name="UlmUniversity.Medicines" parent="UlmUniversity.Main">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/uni_medicines_primary</item>
+        <item name="colorAccent">@color/uni_medicines_accent</item>
+        <item name="colorPrimaryDark">@color/uni_medicines_dark</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Medicines.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Medicines.Dialog</item>
+    </style>
+
+    <style name="UlmUniversity.Science" parent="UlmUniversity.Main">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/uni_sciences_primary</item>
+        <item name="colorAccent">@color/uni_sciences_accent</item>
+        <item name="colorPrimaryDark">@color/uni_sciences_dark</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Science.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Science.Dialog</item>
+    </style>
+
+    <style name="UlmUniversity.Informatics" parent="UlmUniversity.Main">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/uni_informatics_primary</item>
+        <item name="colorAccent">@color/uni_informatics_accent</item>
+        <item name="colorPrimaryDark">@color/uni_informatics_dark</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Informatics.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Informatics.Dialog</item>
+    </style>
+
+    <style name="UlmUniversity.Mathematics" parent="UlmUniversity.Main">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/uni_mathematics_primary</item>
+        <item name="colorAccent">@color/uni_mathematics_accent</item>
+        <item name="colorPrimaryDark">@color/uni_mathematics_dark</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Mathematics.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Mathematics.Dialog</item>
+    </style>
+
+    <!-- extend one of the Theme.AppCompat themes -->
+    <style name="UlmUniversity.Main.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_main_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Medicines.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_medicines_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Science.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_sciences_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Informatics.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_informatics_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Mathematics.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_mathematics_primary</item>
     </style>
 
     <style name="spinnerStyle" parent="android:Widget.ListView.DropDown">
         <item name="android:divider">?android:attr/listDivider</item>
         <item name="android:dividerHeight">0.5dp</item>
     </style>
-
-    <style name="Theme.UlmUniversityMedicines" parent="Theme.UlmUniversityMain">
-        <!-- customize the color palette -->
-        <item name="colorPrimary">@color/uni_medicines_primary</item>
-        <item name="colorAccent">@color/uni_medicines_accent</item>
-        <item name="colorPrimaryDark">@color/uni_medicines_dark</item>
-    </style>
-
-    <style name="Theme.UlmUniversityScience" parent="Theme.UlmUniversityMain">
-        <!-- customize the color palette -->
-        <item name="colorPrimary">@color/uni_sciences_primary</item>
-        <item name="colorAccent">@color/uni_sciences_accent</item>
-        <item name="colorPrimaryDark">@color/uni_sciences_dark</item>
-    </style>
-
-    <style name="Theme.UlmUniversityInformatics" parent="Theme.UlmUniversityMain">
-        <!-- customize the color palette -->
-        <item name="colorPrimary">@color/uni_informatics_primary</item>
-        <item name="colorAccent">@color/uni_informatics_accent</item>
-        <item name="colorPrimaryDark">@color/uni_informatics_dark</item>
-    </style>
-
-    <style name="Theme.UlmUniversityMathematics" parent="Theme.UlmUniversityMain">
-        <!-- customize the color palette -->
-        <item name="colorPrimary">@color/uni_mathematics_primary</item>
-        <item name="colorAccent">@color/uni_mathematics_accent</item>
-        <item name="colorPrimaryDark">@color/uni_mathematics_dark</item>
-    </style>
-
-    <!-- extend one of the Theme.AppCompat themes -->
-    <style name="UlmUniversityAlertDialogMain" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/grey</item>
-    </style>
-
-    <style name="Theme.UlmUniversityMain.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
-    <style name="Theme.UlmUniversityMain.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
 
 </resources>

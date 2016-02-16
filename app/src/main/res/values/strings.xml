@@ -108,8 +108,8 @@
     <string name="activity_moderator_main_menu_add_reminder">Add Reminder</string>
     <string name="activity_moderator_main_channel_list_empty">You\'re currently not moderating any channel.</string>
 
-    <!-- ModeratorChannelAddActivity ############################################################################### -->
-    <string name="activity_moderator_channel_add_title">Add Channel</string>
+    <!-- ChannelAddActivity ############################################################################### -->
+    <string name="activity_channel_add_title">Add Channel</string>
 
     <!-- AnnouncementAddActivity ################################################################################### -->
     <string name="activity_announcement_add_title">Add Announcement</string>

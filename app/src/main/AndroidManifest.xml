@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_blue"
         android:label="@string/app_name"
-        android:theme="@style/Theme.UlmUniversityMain">
+        android:theme="@style/UlmUniversity.Main">
         <activity
             android:name=".controller.MainActivity"
             android:label="@string/app_name">
@@ -124,7 +124,7 @@
         <activity
             android:name=".controller.ModeratorMainActivity"
             android:label="@string/activity_moderator_main_title"
-            android:theme="@style/Theme.UlmUniversityMain">
+            android:theme="@style/UlmUniversity.Main">
         </activity>
         <activity android:name=".controller.ChannelSettingsActivity">
             <meta-data
@@ -132,8 +132,8 @@
                 android:value="ulm.university.news.app.controller.ChannelActivity"/>
         </activity>
         <activity
-            android:name=".controller.ModeratorChannelAddActivity"
-            android:label="@string/activity_moderator_channel_add_title">
+            android:name=".controller.ChannelAddActivity"
+            android:label="@string/activity_channel_add_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorMainActivity"/>

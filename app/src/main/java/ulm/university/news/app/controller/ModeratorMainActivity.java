@@ -158,7 +158,7 @@ public class ModeratorMainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.activity_moderator_main_menu_add_channel) {
-            Intent intent = new Intent(this, ModeratorChannelAddActivity.class);
+            Intent intent = new Intent(this, ChannelAddActivity.class);
             startActivity(intent);
             return true;
         }

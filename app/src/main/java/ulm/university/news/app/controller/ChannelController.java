@@ -2,7 +2,6 @@ package ulm.university.news.app.controller;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.Html;
 import android.util.Log;
 
 import org.joda.time.DateTime;
@@ -41,52 +40,22 @@ public class ChannelController {
             // Set appropriate faculty color.
             switch (lecture.getFaculty()) {
                 case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
-                    activity.setTheme(R.style.Theme_UlmUniversityInformatics);
+                    activity.setTheme(R.style.UlmUniversity_Informatics);
                     break;
                 case MATHEMATICS_ECONOMICS:
-                    activity.setTheme(R.style.Theme_UlmUniversityMathematics);
+                    activity.setTheme(R.style.UlmUniversity_Mathematics);
                     break;
                 case MEDICINES:
-                    activity.setTheme(R.style.Theme_UlmUniversityMedicines);
+                    activity.setTheme(R.style.UlmUniversity_Medicines);
                     break;
                 case NATURAL_SCIENCES:
-                    activity.setTheme(R.style.Theme_UlmUniversityScience);
+                    activity.setTheme(R.style.UlmUniversity_Science);
                     break;
             }
         } else {
             // Use main color for other channels.
-            activity.setTheme(R.style.Theme_UlmUniversityMain);
+            activity.setTheme(R.style.UlmUniversity_Main);
         }
-    }
-
-    /**
-     * Returns a text which consists of the channels symbol letter, a separator and the channels name.
-     *
-     * @param activity The activity from which this method is called.
-     * @param channel The channel from which the header text should be created.
-     * @return The header text.
-     */
-    public static String getHeaderText(Activity activity, Channel channel) {
-        String headerText = "";
-        switch (channel.getType()) {
-            case LECTURE:
-                headerText = activity.getString(R.string.lecture_symbol);
-                break;
-            case EVENT:
-                headerText = activity.getString(R.string.event_symbol);
-                break;
-            case SPORTS:
-                headerText = activity.getString(R.string.sports_symbol);
-                break;
-            case STUDENT_GROUP:
-                headerText = activity.getString(R.string.student_group_symbol);
-                break;
-            case OTHER:
-                headerText = activity.getString(R.string.other_symbol);
-                break;
-        }
-        headerText += " " + Html.fromHtml("&#448; ") + channel.getName();
-        return headerText;
     }
 
     public static void storeAnnouncements(Context context, List<Announcement> announcements) {
