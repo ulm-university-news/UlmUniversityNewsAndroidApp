@@ -5,6 +5,21 @@
         <item>@string/group_tutorial_name</item>
     </string-array>
 
+    <string-array name="channel_types">
+        <item>@string/channel_type_lecture</item>
+        <item>@string/channel_type_event</item>
+        <item>@string/channel_type_sports</item>
+        <item>@string/channel_type_student_group</item>
+        <item>@string/channel_type_other</item>
+    </string-array>
+
+    <string-array name="faculties">
+        <item>@string/lecture_faculty_informatics</item>
+        <item>@string/lecture_faculty_mathematics</item>
+        <item>@string/lecture_faculty_medicines</item>
+        <item>@string/lecture_faculty_sciences</item>
+    </string-array>
+
     <string-array name="priority">
         <item>@string/message_priority_high</item>
         <item>@string/message_priority_normal</item>

@@ -157,9 +157,15 @@ public class GroupAddActivity extends AppCompatActivity {
             tilDescription.showError("Description is to long.");
             valid = false;
         }
-        if (!year.matches(Constants.YEAR_PATTERN)) {
-            // TODO How to show error?
-            tvError.setText("Year is invalid.");
+        try {
+            int y = Integer.parseInt(year);
+            if(y < 2016){
+                tvError.setText(getString(R.string.channel_term_year_error));
+                tvError.setVisibility(View.VISIBLE);
+                valid = false;
+            }
+        } catch (NumberFormatException e) {
+            tvError.setText(getString(R.string.channel_term_year_error));
             tvError.setVisibility(View.VISIBLE);
             valid = false;
         }
@@ -172,10 +178,10 @@ public class GroupAddActivity extends AppCompatActivity {
             String term;
             if (spTerm.getSelectedItemPosition() == 0) {
                 term = "SS";
-                // term = getString(R.string.channel_term_summer);
+                // term = getString(R.string.channel_term_summer_short);
             } else {
                 term = "WS";
-                // term = getString(R.string.channel_term_winter);
+                // term = getString(R.string.channel_term_winter_short);
             }
             term += year;
 

@@ -104,7 +104,9 @@ public class AnnouncementAddActivity extends AppCompatActivity {
         btnCreate = (Button) findViewById(R.id.activity_announcement_add_btn_create);
 
         tilTitle.setNameAndHint(getString(R.string.announcement_title));
+        tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
         tilText.setNameAndHint(getString(R.string.message_text));
+        tilText.setLength(1, Constants.MESSAGE_MAX_LENGTH);
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -129,14 +131,10 @@ public class AnnouncementAddActivity extends AppCompatActivity {
 
     private void addAnnouncement() {
         boolean valid = true;
-        String title = tilTitle.getText();
-        String text = tilText.getText();
-        if (title.isEmpty() || title.length() > Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH) {
-            tilTitle.showError(getString(R.string.announcement_title_invalid));
+        if (!tilTitle.isValid()) {
             valid = false;
         }
-        if (text.isEmpty() || text.length() > Constants.MESSAGE_MAX_LENGTH) {
-            tilText.showError(getString(R.string.message_text_invalid));
+        if (!tilText.isValid()) {
             valid = false;
         }
         if (!Util.getInstance(this).isOnline()) {
@@ -160,9 +158,11 @@ public class AnnouncementAddActivity extends AppCompatActivity {
             }
 
             Announcement announcement = new Announcement();
-            announcement.setTitle(title);
-            announcement.setText(text);
+            announcement.setTitle(tilTitle.getText());
+            announcement.setText(tilText.getText());
             announcement.setPriority(priority);
+
+            // Send announcement data to the server.
             ChannelAPI.getInstance(this).createAnnouncement(channelId, announcement);
         }
     }

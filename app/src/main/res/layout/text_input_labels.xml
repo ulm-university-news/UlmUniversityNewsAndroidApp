@@ -2,22 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="6dp">
 
-    <TextView
-        android:id="@+id/text_input_labels_tv_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingStart="4dp"
-        android:textSize="12sp"
-        android:visibility="invisible"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_input_labels_tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:paddingLeft="4dp"
+            android:paddingStart="4dp"
+            android:textSize="12sp"
+            android:visibility="invisible"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/text_input_labels_tv_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingRight="4dp"
+            android:paddingEnd="4dp"
+            android:textSize="12sp"
+            android:visibility="invisible"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/text_input_labels_et_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="6dp"
+        android:paddingTop="4dp"
         android:textColor="#222222"
         android:textColorHint="#555555"
         android:textSize="16sp"/>

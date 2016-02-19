@@ -40,9 +40,6 @@ public class Constants {
     /** A pattern which describes the valid form of a password. */
     public static final String PASSWORD_PATTERN = "^[a-zA-Z0-9]{8,20}$";
 
-    /** A pattern which describes the valid form of a 20** year. */
-    public static final String YEAR_PATTERN = "^[2][0][1-9]{2}$";
-
     /** A pattern which describes the valid form of an user access token. */
     public static final String USER_TOKEN_PATTERN = "^[a-fA-F0-9]{56}$";
 
