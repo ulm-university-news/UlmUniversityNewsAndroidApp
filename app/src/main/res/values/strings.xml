@@ -13,6 +13,7 @@
     <string name="general_error_unsubscribe"> Can\'t unsubscribe.</string>
     <string name="general_year_format">YYYY</string>
     <string name="general_create">Create</string>
+    <string name="general_edit">Edit</string>
     <string name="general_error_create"> Can\'t create.</string>
     <string name="general_error_input">Invalid field(s) found.</string>
     <string name="general_error_input_field_invalid">is invalid.</string>
@@ -107,20 +108,26 @@
     <string name="activity_moderator_main_nav_logout">Logout</string>
     <string name="activity_moderator_main_title">My Channels</string>
     <string name="activity_moderator_main_menu_add_channel">Add Channel</string>
-    <string name="activity_moderator_main_menu_add_announcement">Add Announcement</string>
-    <string name="activity_moderator_main_menu_add_reminder">Add Reminder</string>
     <string name="activity_moderator_main_channel_list_empty">You\'re currently not moderating any channel.</string>
 
-    <!-- ChannelAddActivity ############################################################################### -->
+    <!-- ChannelAddActivity ######################################################################################## -->
     <string name="activity_channel_add_title">Add Channel</string>
-    <string name="activity_channel_add_info">The channel type defines which fields are shown. All shown fields
+    <string name="activity_channel_add_info">The channel type defines which fields are shown. All shown fields with *
         are mandatory. Some special characters are not allowed.</string>
+
+    <!-- ChannelEditActivity ####################################################################################### -->
+    <string name="activity_channel_edit_title">Edit Channel</string>
+    <string name="activity_channel_edit_info">Edit the channel details below. All shown fields with * are mandatory.
+        Some special characters are not allowed.</string>
 
     <!-- AnnouncementAddActivity ################################################################################### -->
     <string name="activity_announcement_add_title">Add Announcement</string>
 
     <!-- ModeratorChannelActivity ################################################################################## -->
     <string name="activity_moderator_channel_reminder_tab">Reminders</string>
+    <string name="activity_moderator_channel_menu_add_announcement">Add Announcement</string>
+    <string name="activity_moderator_channel_menu_add_reminder">Add Reminder</string>
+    <string name="activity_moderator_channel_menu_edit_details">Edit Details</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
@@ -162,6 +169,7 @@
     <string name="channel_unsubscribe_dialog_text">This channels data will be deleted. You won\'t be able to receive
         or read announcements of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
+    <string name="channel_edited">Channel edited successfully.</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>
@@ -216,6 +224,9 @@
     <string name="fragment_reminder_list_empty">There are no reminders yet.</string>
 
     <!-- Group ##################################################################################################### -->
+    <string name="group_name">Name</string>
+    <string name="group_description">Description</string>
+    <string name="group_password">Password</string>
     <string name="group_tutorial_symbol">T</string>
     <string name="group_working_symbol">W</string>
     <string name="group_tutorial_name">Tutorial Group</string>

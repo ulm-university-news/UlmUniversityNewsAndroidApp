@@ -101,6 +101,8 @@ public class CreateAccountActivity extends AppCompatActivity {
         chkTermsOfUse = (CheckBox) findViewById(R.id.activity_create_account_chk_terms_of_use);
 
         tilUserName.setNameAndHint(getString(R.string.activity_create_account_name_hint));
+        tilUserName.setLength(3, 35);
+        tilUserName.setPattern(Constants.ACCOUNT_NAME_PATTERN);
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,8 +209,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void createAccount() {
         boolean valid = true;
         // Check if user name is valid.
-        if (!tilUserName.getText().matches(Constants.ACCOUNT_NAME_PATTERN)) {
-            tilUserName.showError(getString(R.string.activity_create_account_error_name_invalid));
+        if (!tilUserName.isValid()) {
             valid = false;
         }
         // Check if device is connected to the internet.

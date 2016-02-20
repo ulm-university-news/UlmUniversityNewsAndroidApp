@@ -83,6 +83,15 @@ public class ModeratorMainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Update channel list to make changes like added channels visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
+    }
+
+    @Override
     public Loader<List<Channel>> onCreateLoader(int id, Bundle args) {
         databaseLoader = new DatabaseLoader<>(this, new DatabaseLoader
                 .DatabaseLoaderCallbacks<List<Channel>>() {

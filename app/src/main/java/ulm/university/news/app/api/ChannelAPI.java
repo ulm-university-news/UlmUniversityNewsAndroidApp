@@ -228,6 +228,7 @@ public class ChannelAPI extends MainAPI {
     }
 
     public void createChannel(Channel channel) {
+        // Parse channel to json.
         String channelJson;
         switch (channel.getType()) {
             case LECTURE:
@@ -250,6 +251,38 @@ public class ChannelAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, serverAddressChannel);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        rTask.setBody(channelJson);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void changeChannel(Channel channel) {
+        // Add channel id to url.
+        String url = serverAddressChannel + "/" +channel.getId();
+        // Parse channel to json.
+        String channelJson;
+        switch (channel.getType()) {
+            case LECTURE:
+                channelJson = gson.toJson(channel, Lecture.class);
+                break;
+            case SPORTS:
+                channelJson = gson.toJson(channel, Sports.class);
+                break;
+            case EVENT:
+                channelJson = gson.toJson(channel, Event.class);
+                break;
+            default:
+                channelJson = gson.toJson(channel, Channel.class);
+        }
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Channel c = gson.fromJson(json, Channel.class);
+                EventBus.getDefault().post(c);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         rTask.setBody(channelJson);
         Log.d(TAG, rTask.toString());

@@ -24,11 +24,13 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
-import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.ACCOUNT_NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
+import static ulm.university.news.app.util.Constants.PASSWORD_PATTERN;
 
 public class GroupAddActivity extends AppCompatActivity {
     /** This classes tag for logging. */
@@ -103,11 +105,17 @@ public class GroupAddActivity extends AppCompatActivity {
         tvError = (TextView) findViewById(R.id.activity_group_add_tv_error);
         pgrSearching = (ProgressBar) findViewById(R.id.activity_group_add_pgr_adding);
 
-        tilName.setNameAndHint("Name");
-        tilDescription.setNameAndHint("Description");
-        tilPassword.setNameAndHint("Password");
+        tilName.setNameAndHint(getString(R.string.group_name));
+        tilName.setLength(3, 35);
+        tilName.setPattern(ACCOUNT_NAME_PATTERN);
+
+        tilDescription.setNameAndHint(getString(R.string.group_description));
+        tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
+
+        tilPassword.setNameAndHint(getString(R.string.group_password));
+        tilPassword.setLength(8, 20);
+        tilPassword.setPattern(PASSWORD_PATTERN);
         tilPassword.setToPasswordField();
-        // tilDescription.showError("Enter text!");
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -141,20 +149,14 @@ public class GroupAddActivity extends AppCompatActivity {
 
     private void addGroup() {
         boolean valid = true;
-        String name = tilName.getText();
-        String description = tilDescription.getText();
-        String password = tilPassword.getText();
         String year = etYear.getText().toString().trim();
-        if (!name.matches(Constants.NAME_PATTERN)) {
-            tilName.showError("Name is invalid.");
+        if (!tilName.isValid()) {
             valid = false;
         }
-        if (!password.matches(Constants.PASSWORD_PATTERN)) {
-            tilPassword.showError("Password is invalid.");
+        if (!tilPassword.isValid()) {
             valid = false;
         }
-        if (description.length() > Constants.DESCRIPTION_MAX_LENGTH) {
-            tilDescription.showError("Description is to long.");
+        if (tilDescription.isValid()) {
             valid = false;
         }
         try {
@@ -177,11 +179,9 @@ public class GroupAddActivity extends AppCompatActivity {
 
             String term;
             if (spTerm.getSelectedItemPosition() == 0) {
-                term = "SS";
-                // term = getString(R.string.channel_term_summer_short);
+                term = getString(R.string.channel_term_summer_short);
             } else {
-                term = "WS";
-                // term = getString(R.string.channel_term_winter_short);
+                term = getString(R.string.channel_term_winter_short);
             }
             term += year;
 
@@ -192,9 +192,10 @@ public class GroupAddActivity extends AppCompatActivity {
                 groupType = GroupType.TUTORIAL;
             }
 
+            String password = tilPassword.getText();
             password = Util.getInstance(this).hashPassword(password);
 
-            Group group = new Group(name, description, groupType, term, password);
+            Group group = new Group(tilName.getText(), tilDescription.getText(), groupType, term, password);
             GroupAPI.getInstance(this).createGroup(group);
         }
     }

@@ -7,6 +7,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -53,6 +56,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
 
     private String errorMessage;
     private Toast toast;
+    private int channelId;
 
     public ChannelDetailFragment() {
     }
@@ -68,10 +72,20 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int channelId = getArguments().getInt("channelId");
+        channelId = getArguments().getInt("channelId");
         channel = new ChannelDatabaseManager(getActivity()).getChannel(channelId);
         channelDBM = new ChannelDatabaseManager(getActivity());
         channelDetails = new ArrayList<>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update channel in case it was edited.
+        channel = channelDBM.getChannel(channelId);
+        setChannelDetails();
+        listAdapter.setChannelDetails(channelDetails);
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -79,6 +93,34 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         View v = inflater.inflate(R.layout.fragment_channel_detail, container, false);
         initView(v);
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() instanceof ModeratorChannelActivity) {
+            setHasOptionsMenu(true);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.activity_moderator_channel_detail_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection.
+        switch (item.getItemId()) {
+            case R.id.activity_moderator_channel_details_edit:
+                Intent intent = new Intent(getActivity(), ChannelEditActivity.class);
+                intent.putExtra("channelId", channelId);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initView(View v) {
@@ -189,9 +231,9 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         channelDetails.add(term);
 
         // Check nullable fields.
-        if (channel.getDescription() != null) {
-            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description), channel.getDescription(),
-                    R.drawable.ic_info_outline_black_36dp);
+        if (channel.getDescription() != null && !channel.getDescription().isEmpty()) {
+            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description), channel
+                    .getDescription(), R.drawable.ic_info_outline_black_36dp);
             channelDetails.add(description);
         }
 
@@ -221,17 +263,17 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 channelDetails.add(lecturer);
 
                 // Check nullable fields.
-                if (lecture.getAssistant() != null) {
+                if (lecture.getAssistant() != null && !lecture.getAssistant().isEmpty()) {
                     ChannelDetail assistant = new ChannelDetail(getString(R.string.lecture_assistant),
                             lecture.getAssistant(), R.drawable.ic_person_outline_black_36dp);
                     channelDetails.add(assistant);
                 }
-                if (lecture.getStartDate() != null) {
+                if (lecture.getStartDate() != null && !lecture.getStartDate().isEmpty()) {
                     ChannelDetail startDate = new ChannelDetail(getString(R.string.lecture_start_date),
                             lecture.getStartDate(), R.drawable.ic_today_black_36dp);
                     channelDetails.add(startDate);
                 }
-                if (lecture.getEndDate() != null) {
+                if (lecture.getEndDate() != null && !lecture.getEndDate().isEmpty()) {
                     ChannelDetail endDate = new ChannelDetail(getString(R.string.lecture_end_date),
                             lecture.getEndDate(), R.drawable.ic_event_black_36dp);
                     channelDetails.add(endDate);
@@ -240,12 +282,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             case EVENT:
                 Event event = (Event) channel;
                 // Check nullable fields.
-                if (event.getCost() != null) {
+                if (event.getCost() != null && !event.getCost().isEmpty()) {
                     ChannelDetail cost = new ChannelDetail(getString(R.string.event_cost),
                             event.getCost(), R.drawable.ic_attach_money_black_36dp);
                     channelDetails.add(cost);
                 }
-                if (event.getOrganizer() != null) {
+                if (event.getOrganizer() != null &&!event.getOrganizer().isEmpty()) {
                     ChannelDetail organizer = new ChannelDetail(getString(R.string.event_organizer),
                             event.getOrganizer(), R.drawable.ic_person_black_36dp);
                     channelDetails.add(organizer);
@@ -254,12 +296,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             case SPORTS:
                 Sports sports = (Sports) channel;
                 // Check nullable fields.
-                if (sports.getCost() != null) {
+                if (sports.getCost() != null && !sports.getCost().isEmpty()) {
                     ChannelDetail cost = new ChannelDetail(getString(R.string.sports_cost),
                             sports.getCost(), R.drawable.ic_attach_money_black_36dp);
                     channelDetails.add(cost);
                 }
-                if (sports.getNumberOfParticipants() != null) {
+                if (sports.getNumberOfParticipants() != null && !sports.getNumberOfParticipants().isEmpty()) {
                     ChannelDetail participants = new ChannelDetail(getString(R.string.sports_participants),
                             sports.getNumberOfParticipants(), R.drawable.ic_group_black_36dp);
                     channelDetails.add(participants);
@@ -268,17 +310,17 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         }
 
         // Check nullable fields.
-        if (channel.getDates() != null) {
+        if (channel.getDates() != null && !channel.getDates().isEmpty()) {
             ChannelDetail dates = new ChannelDetail(getString(R.string.channel_dates), channel.getDates(),
                     R.drawable.ic_schedule_black_36dp);
             channelDetails.add(dates);
         }
-        if (channel.getLocations() != null) {
+        if (channel.getLocations() != null && !channel.getLocations().isEmpty()) {
             ChannelDetail locations = new ChannelDetail(getString(R.string.channel_locations), channel.getLocations(),
                     R.drawable.ic_room_black_36dp);
             channelDetails.add(locations);
         }
-        if (channel.getWebsite() != null) {
+        if (channel.getWebsite() != null && !channel.getWebsite().isEmpty()) {
             ChannelDetail website = new ChannelDetail(getString(R.string.channel_website), channel.getWebsite(),
                     R.drawable.ic_public_black_36dp);
             channelDetails.add(website);
@@ -416,6 +458,8 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
+        // Hide loading animation on server response.
+        swipeRefreshLayout.setRefreshing(false);
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:

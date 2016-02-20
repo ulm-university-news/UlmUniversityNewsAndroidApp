@@ -104,6 +104,10 @@ public class TextInputLabels extends LinearLayout {
         return etText.getText().toString().trim();
     }
 
+    public void setText(String text) {
+        etText.setText(text);
+    }
+
     public void setError(String error) {
         tvError.setText(error);
         this.error = error;
@@ -164,12 +168,5 @@ public class TextInputLabels extends LinearLayout {
         // Android bugs in color filter. Wait for fixed version update.
         // etText.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.error), PorterDuff.Mode
         // .SRC_ATOP);
-    }
-
-    public void showError(String error) {
-        tvError.setText(error);
-        tvError.setVisibility(VISIBLE);
-        tvName.setVisibility(GONE);
-        tvLength.setVisibility(GONE);
     }
 }

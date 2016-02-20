@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ffffff"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_channel_edit_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border_info"
+                android:padding="10dp"
+                android:text="@string/activity_channel_add_info"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_channel_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/channel_type"
+                android:textSize="12sp"/>
+
+            <Spinner
+                android:id="@+id/activity_channel_add_sp_channel_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_term"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/channel_term"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/activity_channel_add_sp_term"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:id="@+id/activity_channel_add_et_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:hint="@string/general_year_format"
+                    android:inputType="numberSigned"
+                    android:maxLength="4"
+                    android:textColor="#222222"
+                    android:textColorHint="#555555"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_channel_faculty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/lecture_faculty"
+                android:textSize="12sp"/>
+
+            <Spinner
+                android:id="@+id/activity_channel_add_sp_channel_faculty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="6dp"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_lecturer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_assistant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_dates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_locations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_contacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_participants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_channel_add_til_organizer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_error"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_error"
+                android:padding="10dp"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/activity_channel_add_pgr_adding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/activity_channel_add_btn_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="@string/general_create"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

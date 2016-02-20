@@ -16,15 +16,16 @@ import ulm.university.news.app.api.ModeratorAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
-import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.ACCOUNT_NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.MODERATOR_DELETED;
 import static ulm.university.news.app.util.Constants.MODERATOR_LOCKED;
 import static ulm.university.news.app.util.Constants.MODERATOR_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.MODERATOR_UNAUTHORIZED;
+import static ulm.university.news.app.util.Constants.PASSWORD_PATTERN;
 
 public class LoginActivity extends AppCompatActivity {
     /** This classes tag for logging. */
@@ -57,7 +58,11 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.activity_login_btn_login);
 
         tilName.setNameAndHint(getString(R.string.activity_login_til_name_hint));
+        tilName.setLength(3, 35);
+        tilName.setPattern(ACCOUNT_NAME_PATTERN);
         tilPassword.setNameAndHint(getString(R.string.activity_login_til_password_hint));
+        tilPassword.setLength(8, 20);
+        tilPassword.setPattern(PASSWORD_PATTERN);
         tilPassword.setToPasswordField();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -70,19 +75,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attemptToLogin() {
         boolean valid = true;
-        String name = tilName.getText();
-        String password = tilPassword.getText();
         if (!Util.getInstance(this).isOnline()) {
             tvError.setText(getString(R.string.general_error_no_connection));
             tvError.setVisibility(View.VISIBLE);
             valid = false;
         }
-        if (!name.matches(Constants.NAME_PATTERN)) {
-            tilName.showError(getString(R.string.activity_login_til_name_invalid));
+        if (!tilName.isValid()) {
             valid = false;
         }
-        if (!password.matches(Constants.PASSWORD_PATTERN)) {
-            tilPassword.showError(getString(R.string.activity_login_til_password_invalid));
+        if (!tilPassword.isValid()) {
             valid = false;
         }
 
@@ -92,8 +93,9 @@ public class LoginActivity extends AppCompatActivity {
             pgrLogin.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
 
+            String password = tilPassword.getText();
             password = Util.getInstance(this).hashPassword(password);
-            ModeratorAPI.getInstance(this).login(name, password);
+            ModeratorAPI.getInstance(this).login(tilName.getText(), password);
         }
     }
 

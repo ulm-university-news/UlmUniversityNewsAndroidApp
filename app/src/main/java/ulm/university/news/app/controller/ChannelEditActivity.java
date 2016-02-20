@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,9 +36,9 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class ChannelAddActivity extends AppCompatActivity {
+public class ChannelEditActivity extends AppCompatActivity {
     /** This classes tag for logging. */
-    private static final String TAG = "ChannelAddActivity";
+    private static final String TAG = "ChannelEditActivity";
 
     private TextInputLabels tilName;
     private TextInputLabels tilDescription;
@@ -54,19 +53,25 @@ public class ChannelAddActivity extends AppCompatActivity {
     private TextInputLabels tilCost;
     private TextInputLabels tilParticipants;
     private TextInputLabels tilOrganizer;
-    private Spinner spType;
     private Spinner spTerm;
     private Spinner spFaculty;
     private EditText etYear;
-    private TextView tvFaculty;
     private TextView tvError;
     private ProgressBar pgrAdding;
     private Button btnCreate;
 
     private Toast toast;
+    private ChannelDatabaseManager channelDBM;
+    private Channel channelDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set color theme according to channel and lecture type.
+        int channelId = getIntent().getIntExtra("channelId", 0);
+        channelDBM = new ChannelDatabaseManager(this);
+        channelDB = channelDBM.getChannel(channelId);
+        ChannelController.setColorTheme(this, channelDB);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel_add);
 
@@ -78,6 +83,7 @@ public class ChannelAddActivity extends AppCompatActivity {
         }
 
         initView();
+        initFields();
     }
 
     @Override
@@ -123,13 +129,14 @@ public class ChannelAddActivity extends AppCompatActivity {
         tilCost = (TextInputLabels) findViewById(R.id.activity_channel_add_til_cost);
         tilParticipants = (TextInputLabels) findViewById(R.id.activity_channel_add_til_participants);
         tilOrganizer = (TextInputLabels) findViewById(R.id.activity_channel_add_til_organizer);
-
-        spType = (Spinner) findViewById(R.id.activity_channel_add_sp_channel_type);
+        Spinner spType = (Spinner) findViewById(R.id.activity_channel_add_sp_channel_type);
         spTerm = (Spinner) findViewById(R.id.activity_channel_add_sp_term);
         spFaculty = (Spinner) findViewById(R.id.activity_channel_add_sp_channel_faculty);
         etYear = (EditText) findViewById(R.id.activity_channel_add_et_year);
         pgrAdding = (ProgressBar) findViewById(R.id.activity_channel_add_pgr_adding);
-        tvFaculty = (TextView) findViewById(R.id.activity_channel_add_tv_channel_faculty);
+        TextView tvType = (TextView) findViewById(R.id.activity_channel_add_tv_channel_type);
+        TextView tvFaculty = (TextView) findViewById(R.id.activity_channel_add_tv_channel_faculty);
+        TextView tvInfo = (TextView) findViewById(R.id.activity_channel_add_tv_info);
         tvError = (TextView) findViewById(R.id.activity_channel_add_tv_error);
         btnCreate = (Button) findViewById(R.id.activity_channel_add_btn_create);
 
@@ -183,53 +190,8 @@ public class ChannelAddActivity extends AppCompatActivity {
         tilOrganizer.setNameAndHint(getString(R.string.event_organizer) + " *");
         tilOrganizer.setLength(0, Constants.CHANNEL_CONTACTS_MAX_LENGTH);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.channel_types, R.layout.spinner_item);
-        // Specify the layout to use when the list of choices appears.
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner.
-        spType.setAdapter(adapter);
-        spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // Show channel type specific fields.
-                tilLecturer.setVisibility(View.GONE);
-                tilAssistant.setVisibility(View.GONE);
-                tilStartDate.setVisibility(View.GONE);
-                tilEndDate.setVisibility(View.GONE);
-                tilCost.setVisibility(View.GONE);
-                tilParticipants.setVisibility(View.GONE);
-                tilOrganizer.setVisibility(View.GONE);
-                tvFaculty.setVisibility(View.GONE);
-                spFaculty.setVisibility(View.GONE);
-                switch (position) {
-                    case 0:
-                        tilLecturer.setVisibility(View.VISIBLE);
-                        tilAssistant.setVisibility(View.VISIBLE);
-                        tilStartDate.setVisibility(View.VISIBLE);
-                        tilEndDate.setVisibility(View.VISIBLE);
-                        tvFaculty.setVisibility(View.VISIBLE);
-                        spFaculty.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        tilCost.setVisibility(View.VISIBLE);
-                        tilOrganizer.setVisibility(View.VISIBLE);
-                        break;
-                    case 2:
-                        tilCost.setVisibility(View.VISIBLE);
-                        tilParticipants.setVisibility(View.VISIBLE);
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-        spType.setSelection(0);
-
-        adapter = ArrayAdapter.createFromResource(this, R.array.terms, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.terms, R.layout
+                .spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTerm.setAdapter(adapter);
         spTerm.setSelection(0);
@@ -257,16 +219,89 @@ public class ChannelAddActivity extends AppCompatActivity {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addChannel();
+                editChannel();
             }
         });
+
+        // Show channel type specific fields.
+        tilLecturer.setVisibility(View.GONE);
+        tilAssistant.setVisibility(View.GONE);
+        tilStartDate.setVisibility(View.GONE);
+        tilEndDate.setVisibility(View.GONE);
+        tilCost.setVisibility(View.GONE);
+        tilParticipants.setVisibility(View.GONE);
+        tilOrganizer.setVisibility(View.GONE);
+        tvFaculty.setVisibility(View.GONE);
+        spFaculty.setVisibility(View.GONE);
+        switch (channelDB.getType()) {
+            case LECTURE:
+                tilLecturer.setVisibility(View.VISIBLE);
+                tilAssistant.setVisibility(View.VISIBLE);
+                tilStartDate.setVisibility(View.VISIBLE);
+                tilEndDate.setVisibility(View.VISIBLE);
+                tvFaculty.setVisibility(View.VISIBLE);
+                spFaculty.setVisibility(View.VISIBLE);
+                break;
+            case EVENT:
+                tilCost.setVisibility(View.VISIBLE);
+                tilOrganizer.setVisibility(View.VISIBLE);
+                break;
+            case SPORTS:
+                tilCost.setVisibility(View.VISIBLE);
+                tilParticipants.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        tvType.setVisibility(View.GONE);
+        spType.setVisibility(View.GONE);
+        tvInfo.setText(getString(R.string.activity_channel_edit_info));
+        btnCreate.setText(getString(R.string.general_edit));
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
     }
 
-    private void addChannel() {
+    private void initFields() {
+        // Fill fields with stored channel data.
+        tilName.setText(channelDB.getName());
+        tilDescription.setText(channelDB.getDescription());
+        tilDates.setText(channelDB.getDates());
+        tilLocations.setText(channelDB.getLocations());
+        tilWebsite.setText(channelDB.getWebsite());
+        tilContacts.setText(channelDB.getContacts());
+
+        String termShort = channelDB.getTerm().substring(0, 0);
+        if (termShort.equals(getString(R.string.channel_term_summer_short))) {
+            spTerm.setSelection(0);
+        } else {
+            spTerm.setSelection(1);
+        }
+
+        String year = channelDB.getTerm().substring(1);
+        etYear.setText(year);
+
+        switch (channelDB.getType()) {
+            case LECTURE:
+                tilLecturer.setText(((Lecture) channelDB).getLecturer());
+                tilAssistant.setText(((Lecture) channelDB).getAssistant());
+                tilStartDate.setText(((Lecture) channelDB).getStartDate());
+                tilEndDate.setText(((Lecture) channelDB).getEndDate());
+                // TODO Change of faculty not designated on server side.
+                spFaculty.setSelection(((Lecture) channelDB).getFaculty().ordinal());
+                break;
+            case EVENT:
+                tilCost.setText(((Event) channelDB).getCost());
+                tilOrganizer.setText(((Event) channelDB).getOrganizer());
+                break;
+            case SPORTS:
+                tilCost.setText(((Sports) channelDB).getCost());
+                tilParticipants.setText(((Sports) channelDB).getNumberOfParticipants());
+                break;
+        }
+    }
+
+    private void editChannel() {
         boolean valid = true;
         String year = etYear.getText().toString().trim();
 
@@ -289,10 +324,8 @@ public class ChannelAddActivity extends AppCompatActivity {
             valid = false;
         }
 
-        ChannelType type;
-        switch (spType.getSelectedItemPosition()) {
-            case 0:
-                type = ChannelType.LECTURE;
+        switch (channelDB.getType()) {
+            case LECTURE:
                 if (!tilLecturer.isValid()) {
                     valid = false;
                 }
@@ -306,8 +339,7 @@ public class ChannelAddActivity extends AppCompatActivity {
                     valid = false;
                 }
                 break;
-            case 1:
-                type = ChannelType.EVENT;
+            case EVENT:
                 if (!tilCost.isValid()) {
                     valid = false;
                 }
@@ -315,8 +347,7 @@ public class ChannelAddActivity extends AppCompatActivity {
                     valid = false;
                 }
                 break;
-            case 2:
-                type = ChannelType.SPORTS;
+            case SPORTS:
                 if (!tilCost.isValid()) {
                     valid = false;
                 }
@@ -324,11 +355,6 @@ public class ChannelAddActivity extends AppCompatActivity {
                     valid = false;
                 }
                 break;
-            case 3:
-                type = ChannelType.STUDENT_GROUP;
-                break;
-            default:
-                type = ChannelType.OTHER;
         }
 
         try {
@@ -367,7 +393,7 @@ public class ChannelAddActivity extends AppCompatActivity {
             term += year;
 
             Channel channel;
-            switch (type) {
+            switch (channelDB.getType()) {
                 case LECTURE:
                     channel = new Lecture();
                     ((Lecture) channel).setLecturer(tilLecturer.getText());
@@ -417,9 +443,10 @@ public class ChannelAddActivity extends AppCompatActivity {
                 default:
                     channel = new Channel();
             }
+            channel.setId(channelDB.getId());
             channel.setName(tilName.getText());
             channel.setTerm(term);
-            channel.setType(type);
+            channel.setType(channelDB.getType());
             channel.setContacts(tilContacts.getText());
             if (!tilDescription.getText().isEmpty()) {
                 channel.setDescription(tilDescription.getText());
@@ -435,7 +462,7 @@ public class ChannelAddActivity extends AppCompatActivity {
             }
 
             // Send channel data to the server.
-            ChannelAPI.getInstance(this).createChannel(channel);
+            ChannelAPI.getInstance(this).changeChannel(channel);
         }
     }
 
@@ -449,14 +476,22 @@ public class ChannelAddActivity extends AppCompatActivity {
         Log.d(TAG, channel.toString());
 
         // Store channel in database and show created message.
-        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(this);
-        channelDBM.storeChannel(channel);
-        // Mark local moderator as responsible for this channel.
-        channelDBM.moderateChannel(channel.getId(), Util.getInstance(this).getLoggedInModerator().getId());
-        toast.setText(getString(R.string.channel_created));
+        channelDBM.updateChannel(channel);
+        toast.setText(getString(R.string.channel_edited));
         toast.show();
 
-        // Go back to moderator channel view.
+        // If the channel is a lecture.
+        if (channelDB.getType().equals(ChannelType.LECTURE)) {
+            // And if the faculty has changed, go to ModeratorMainActivity due to color theme change.
+            if (!((Lecture) channelDB).getFaculty().equals(((Lecture) channel).getFaculty())) {
+                Intent intent = new Intent(this, ModeratorMainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+                return;
+            }
+        }
+        // Otherwise, go back to moderator channel view.
         navigateUp();
     }
 
