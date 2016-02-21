@@ -7,6 +7,10 @@ package ulm.university.news.app.controller;
  * @author Matthias Mak
  */
 public interface DialogListener {
-    /** The dialogs positive button was clicked. This method handles the button click. */
-    void onDialogPositiveClick();
+    /**
+     * The dialogs positive button was clicked. This method handles the button click.
+     *
+     * @param tag - The tag which identifies the dialog.
+     */
+    void onDialogPositiveClick(String tag);
 }

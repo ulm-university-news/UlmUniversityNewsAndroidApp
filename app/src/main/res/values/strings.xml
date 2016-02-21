@@ -11,6 +11,7 @@
     <string name="general_error_refresh"> Can\'t refresh.</string>
     <string name="general_error_subscribe"> Can\'t subscribe.</string>
     <string name="general_error_unsubscribe"> Can\'t unsubscribe.</string>
+    <string name="general_error_delete"> Can\'t delete.</string>
     <string name="general_year_format">YYYY</string>
     <string name="general_create">Create</string>
     <string name="general_edit">Edit</string>
@@ -128,6 +129,7 @@
     <string name="activity_moderator_channel_menu_add_announcement">Add Announcement</string>
     <string name="activity_moderator_channel_menu_add_reminder">Add Reminder</string>
     <string name="activity_moderator_channel_menu_edit_details">Edit Details</string>
+    <string name="activity_moderator_channel_menu_delete_channel">Delete Channel</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
@@ -166,10 +168,14 @@
     <string name="channel_info_updated">Channel data updated.</string>
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
     <string name="channel_unsubscribe_dialog_title">Unsubscribe Channel</string>
-    <string name="channel_unsubscribe_dialog_text">This channels data will be deleted. You won\'t be able to receive
-        or read announcements of this channel.\nDo you really want to unsubscribe?</string>
+    <string name="channel_unsubscribe_dialog_text">This channel will be deleted from your subscribed channels. You
+        won\'t be able to receive or read announcements of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
     <string name="channel_edited">Channel changed successfully.</string>
+    <string name="channel_delete_dialog_title">Delete Channel</string>
+    <string name="channel_delete_dialog_text">This channel will be deleted completely. This includes all channel
+        data on the server. All subscribers of the channel will be notified that the channel no longer exists. They
+        will be able to keep a local copy of the channel.\nDo you really want to delete the channel?</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>

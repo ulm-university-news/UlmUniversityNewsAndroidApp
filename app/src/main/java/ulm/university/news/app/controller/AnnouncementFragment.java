@@ -25,11 +25,14 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEventAnnouncements;
+import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Announcement;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
+import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
@@ -189,6 +192,45 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
                 String message = getString(R.string.announcement_info_up_to_date);
                 toast.setText(message);
                 toast.show();
+            }
+        }
+    }
+
+    /**
+     * This method will be called when a list of moderators is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of moderator objects.
+     */
+    public void onEventMainThread(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        List<Moderator> moderators = event.getModerators();
+        processModeratorData(moderators);
+    }
+
+    /**
+     * Saves new moderators and updates existing ones.
+     *
+     * @param moderators The moderator list to process.
+     */
+    private void processModeratorData(List<Moderator> moderators) {
+        ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(getContext());
+
+        List<Moderator> moderatorsDB = moderatorDBM.getModerators();
+        // Store or update channels in the database and update local channel list.
+        Integer moderatorDBId = null;
+        for (Moderator moderator : moderators) {
+            // Store new moderators and update existing ones.
+            for (int i = 0; i < moderatorsDB.size(); i++) {
+                if (moderatorsDB.get(i).getId() == moderator.getId()) {
+                    moderatorDBId = i;
+                    break;
+                }
+            }
+            if (moderatorDBId == null) {
+                moderatorDBM.storeModerator(moderator);
+            } else {
+                moderatorDBM.updateModerator(moderator);
+                moderatorDBId = null;
             }
         }
     }

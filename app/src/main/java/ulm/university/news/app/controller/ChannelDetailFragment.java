@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     private Button btnSubscribe;
     private Button btnUnsubscribe;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar pgrSending;
 
     private String errorMessage;
     private Toast toast;
@@ -118,6 +120,28 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 intent.putExtra("channelId", channelId);
                 startActivity(intent);
                 return true;
+            case R.id.activity_moderator_channel_channel_delete:
+                if (Util.getInstance(getContext()).isOnline()) {
+                    // Show delete channel dialog.
+                    YesNoDialogFragment dialog = new YesNoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
+                            .channel_delete_dialog_title));
+                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
+                            .channel_delete_dialog_text));
+                    dialog.setArguments(args);
+                    dialog.setTargetFragment(ChannelDetailFragment.this, 0);
+                    dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_CHANNEL_DELETE);
+
+                    errorMessage = getString(R.string.general_error_connection_failed);
+                    errorMessage += " " + getString(R.string.general_error_delete);
+                } else {
+                    String message = getString(R.string.general_error_no_connection);
+                    message += " " + getString(R.string.general_error_delete);
+                    toast.setText(message);
+                    toast.show();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -129,6 +153,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         TextView tvListEmpty = (TextView) v.findViewById(R.id.fragment_channel_detail_tv_list_empty);
         btnSubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_subscribe);
         btnUnsubscribe = (Button) v.findViewById(R.id.fragment_channel_detail_btn_unsubscribe);
+        pgrSending = (ProgressBar) v.findViewById(R.id.fragment_channel_detail_pgr_sending);
 
         lvChannelDetails.setEmptyView(tvListEmpty);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
@@ -148,11 +173,13 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             public void onClick(View v) {
                 if (Util.getInstance(v.getContext()).isOnline()) {
                     ChannelAPI.getInstance(v.getContext()).subscribeChannel(channel.getId());
+                    btnSubscribe.setVisibility(View.GONE);
+                    pgrSending.setVisibility(View.VISIBLE);
                     errorMessage = getString(R.string.general_error_connection_failed);
-                    errorMessage += getString(R.string.general_error_subscribe);
+                    errorMessage += " " + getString(R.string.general_error_subscribe);
                 } else {
                     String message = getString(R.string.general_error_no_connection);
-                    message += getString(R.string.general_error_subscribe);
+                    message += " " + getString(R.string.general_error_subscribe);
                     toast.setText(message);
                     toast.show();
                 }
@@ -163,14 +190,22 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             @Override
             public void onClick(View v) {
                 if (Util.getInstance(v.getContext()).isOnline()) {
-                    UnsubscribeDialogFragment dialog = new UnsubscribeDialogFragment();
+                    // Show unsubscribe channel dialog.
+                    YesNoDialogFragment dialog = new YesNoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
+                            .channel_unsubscribe_dialog_title));
+                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
+                            .channel_unsubscribe_dialog_text));
+                    dialog.setArguments(args);
                     dialog.setTargetFragment(ChannelDetailFragment.this, 0);
-                    dialog.show(getFragmentManager(), "unsubscribeDialog");
+                    dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_CHANNEL_UNSUBSCRIBE);
+
                     errorMessage = getString(R.string.general_error_connection_failed);
-                    errorMessage += getString(R.string.general_error_unsubscribe);
+                    errorMessage += " " + getString(R.string.general_error_unsubscribe);
                 } else {
                     String message = getString(R.string.general_error_no_connection);
-                    message += getString(R.string.general_error_unsubscribe);
+                    message += " " + getString(R.string.general_error_unsubscribe);
                     toast.setText(message);
                     toast.show();
                 }
@@ -287,7 +322,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                             event.getCost(), R.drawable.ic_attach_money_black_36dp);
                     channelDetails.add(cost);
                 }
-                if (event.getOrganizer() != null &&!event.getOrganizer().isEmpty()) {
+                if (event.getOrganizer() != null && !event.getOrganizer().isEmpty()) {
                     ChannelDetail organizer = new ChannelDetail(getString(R.string.event_organizer),
                             event.getOrganizer(), R.drawable.ic_person_black_36dp);
                     channelDetails.add(organizer);
@@ -344,12 +379,12 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         // Channel refresh is only possible if there is an internet connection.
         if (Util.getInstance(getContext()).isOnline()) {
             errorMessage = getString(R.string.general_error_connection_failed);
-            errorMessage += getString(R.string.general_error_refresh);
+            errorMessage += " " + getString(R.string.general_error_refresh);
             // Update channel on swipe down.
             ChannelAPI.getInstance(getContext()).getChannel(channel.getId());
         } else {
             errorMessage = getString(R.string.general_error_no_connection);
-            errorMessage += getString(R.string.general_error_refresh);
+            errorMessage += " " + getString(R.string.general_error_refresh);
             // Only show error message if refreshing was triggered manually.
             toast.setText(errorMessage);
             toast.show();
@@ -422,8 +457,6 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         Log.d(TAG, "EventBus: BusEvent");
         String action = busEvent.getAction();
         if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
-            // btnSubscribe.setVisibility(View.GONE);
-            // btnUnsubscribe.setVisibility(View.VISIBLE);
             channelDBM.subscribeChannel(channel.getId());
             // TODO Load responsible moderators once and after push message MODERATOR_ADD?
             ChannelAPI.getInstance(getContext()).getResponsibleModerators(channel.getId());
@@ -433,10 +466,16 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             getActivity().finish();
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
+            // TODO Delete announcements and reminders of channel!? ON DELETE CASCADE?
             // channelDBM.deleteAnnouncements(channel.getId());
-            // channelDBM.deleteChannel(channel.getId());
-            // btnSubscribe.setVisibility(View.VISIBLE);
-            // btnUnsubscribe.setVisibility(View.GONE);
+            // Delete unsubscribed channel if it was marked as deleted.
+            if (channel.isDeleted()) {
+                ChannelController.deleteChannel(getContext(), channel.getId());
+            }
+            getActivity().finish();
+        } else if (ChannelAPI.DELETE_CHANNEL.equals(action)) {
+            // Mark local channel as deleted.
+            ChannelController.deleteChannel(getContext(), channel.getId());
             getActivity().finish();
         }
     }
@@ -460,6 +499,14 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         Log.d(TAG, serverError.toString());
         // Hide loading animation on server response.
         swipeRefreshLayout.setRefreshing(false);
+        if (channelDBM.isSubscribedChannel(channel.getId())) {
+            btnSubscribe.setVisibility(View.GONE);
+            btnUnsubscribe.setVisibility(View.VISIBLE);
+        } else {
+            btnSubscribe.setVisibility(View.VISIBLE);
+            btnUnsubscribe.setVisibility(View.GONE);
+        }
+        pgrSending.setVisibility(View.GONE);
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
@@ -470,7 +517,14 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
     }
 
     @Override
-    public void onDialogPositiveClick() {
-        ChannelAPI.getInstance(getContext()).unsubscribeChannel(channel.getId());
+    public void onDialogPositiveClick(String tag) {
+        if (tag.equals(YesNoDialogFragment.DIALOG_CHANNEL_UNSUBSCRIBE)) {
+            ChannelAPI.getInstance(getContext()).unsubscribeChannel(channel.getId());
+            btnUnsubscribe.setVisibility(View.GONE);
+            pgrSending.setVisibility(View.VISIBLE);
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_CHANNEL_DELETE)) {
+            ChannelAPI.getInstance(getContext()).deleteChannel(channel.getId());
+            pgrSending.setVisibility(View.VISIBLE);
+        }
     }
 }

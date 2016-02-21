@@ -7,25 +7,30 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
-import ulm.university.news.app.R;
-
 /**
- * A dialog which asks to decide weather to actually unsubscribe the channel or not.
+ * A dialog which asks to decide weather to actually perform an action or not.
  *
  * @author Matthias Mak
  */
-public class UnsubscribeDialogFragment extends AppCompatDialogFragment {
+public class YesNoDialogFragment extends AppCompatDialogFragment {
+
+    public static final String DIALOG_TITLE = "dialogTitle";
+    public static final String DIALOG_TEXT = "dialogText";
+    public static final String DIALOG_CHANNEL_UNSUBSCRIBE = "dialogChannelUnsubscribe";
+    public static final String DIALOG_CHANNEL_DELETE = "dialogChannelDelete";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String dialogTitle = getArguments().getString(DIALOG_TITLE);
+        String dialogText = getArguments().getString(DIALOG_TEXT);
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.channel_unsubscribe_dialog_title)
-                .setMessage(R.string.channel_unsubscribe_dialog_text)
+        builder.setTitle(dialogTitle)
+                .setMessage(dialogText)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Unsubscribe channel.
-                        listener.onDialogPositiveClick();
+                        listener.onDialogPositiveClick(getTag());
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

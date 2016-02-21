@@ -64,6 +64,15 @@
         <item name="alertDialogTheme">@style/UlmUniversity.Mathematics.Dialog</item>
     </style>
 
+    <style name="UlmUniversity.Deleted" parent="UlmUniversity.Main">
+        <!-- customize the color palette -->
+        <item name="colorPrimary">@color/dark_grey</item>
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimaryDark">@color/darker_grey</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Deleted.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Deleted.Dialog</item>
+    </style>
+
     <!-- extend one of the Theme.AppCompat themes -->
     <style name="UlmUniversity.Main.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/uni_main_primary</item>
@@ -83,6 +92,10 @@
 
     <style name="UlmUniversity.Mathematics.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/uni_mathematics_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Deleted.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/darker_grey</item>
     </style>
 
     <style name="spinnerStyle" parent="android:Widget.ListView.DropDown">

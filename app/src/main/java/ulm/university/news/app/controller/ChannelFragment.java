@@ -127,6 +127,7 @@ public class ChannelFragment extends Fragment implements LoaderManager.LoaderCal
                 filter.addAction(ChannelDatabaseManager.SUBSCRIBE_CHANNEL);
                 filter.addAction(ChannelDatabaseManager.UNSUBSCRIBE_CHANNEL);
                 filter.addAction(ChannelDatabaseManager.STORE_ANNOUNCEMENT);
+                filter.addAction(ChannelDatabaseManager.MARK_CHANNEL_DELETED);
                 return filter;
             }
         });

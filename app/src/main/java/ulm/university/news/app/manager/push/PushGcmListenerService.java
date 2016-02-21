@@ -74,10 +74,15 @@ public class PushGcmListenerService extends GcmListenerService {
         // TODO
         switch (pushMessage.getPushType()){
             case ANNOUNCEMENT_NEW:
-                int messageNumber = new ChannelDatabaseManager(getApplication()).getMaxMessageNumberAnnouncement
+                // Load new announcements from server.
+                int messageNumber = new ChannelDatabaseManager(getApplicationContext()).getMaxMessageNumberAnnouncement
                         (pushMessage.getId1());
                 ChannelAPI.getInstance(getApplicationContext()).getAnnouncements(pushMessage.getId1(), messageNumber);
                 break;
+            case CHANNEL_DELETED:
+                // Mark local channel as deleted.
+                int channelId = pushMessage.getId1();
+                ChannelController.deleteChannel(getApplicationContext(), channelId);
             default:
         }
     }

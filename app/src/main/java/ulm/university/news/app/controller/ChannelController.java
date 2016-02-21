@@ -12,12 +12,15 @@ import java.util.HashSet;
 import java.util.List;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
+import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 
 /**
  * This class provides static util methods which are often used across different activities.
@@ -35,7 +38,10 @@ public class ChannelController {
      * @param channel The channel which defines the colors.
      */
     public static void setColorTheme(Activity activity, Channel channel) {
-        if (ChannelType.LECTURE.equals(channel.getType())) {
+        if (channel.isDeleted()) {
+            // Set special color for channels which are marked as deleted.
+            activity.setTheme(R.style.UlmUniversity_Deleted);
+        } else if (ChannelType.LECTURE.equals(channel.getType())) {
             Lecture lecture = (Lecture) channel;
             // Set appropriate faculty color.
             switch (lecture.getFaculty()) {
@@ -59,19 +65,38 @@ public class ChannelController {
     }
 
     public static void storeAnnouncements(Context context, List<Announcement> announcements) {
-        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
-        HashSet<Integer> authorIds = new HashSet<>();
+        // Check if there are new announcements.
+        if (!announcements.isEmpty()) {
+            ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
+            HashSet<Integer> authorIds = new HashSet<>();
 
-        // Store new announcements.
-        for (Announcement announcement : announcements) {
-            channelDBM.storeAnnouncement(announcement);
-            authorIds.add(announcement.getAuthorModerator());
-        }
+            // Store new announcements.
+            for (Announcement announcement : announcements) {
+                channelDBM.storeAnnouncement(announcement);
+                authorIds.add(announcement.getAuthorModerator());
+            }
 
-        // Load and store new moderators.
-        for (Integer authorId : authorIds) {
-            Log.d(TAG, "authorId:" + authorId);
-            // TODO Check moderator existence, load and store if necessary.
+            // Check if a new moderator has written any of the announcements.
+            List<Moderator> moderatorsDB = new ModeratorDatabaseManager(context).getModerators();
+            boolean moderatorExists = false;
+            for (Integer authorId : authorIds) {
+                moderatorExists = false;
+                for (Moderator moderator : moderatorsDB) {
+                    if (moderator.getId() == authorId) {
+                        moderatorExists = true;
+                        break;
+                    }
+                }
+                if (!moderatorExists) {
+                    break;
+                }
+            }
+            // If a moderator who is not stored yet is found, request new moderator data from server.
+            if (!moderatorExists) {
+                ChannelAPI.getInstance(context).getResponsibleModerators(announcements.get(0).getChannelId());
+            }
+
+            // TODO How to receive the responsible moderators in PushGcmListenerService?
         }
     }
 
@@ -96,7 +121,7 @@ public class ChannelController {
                         break;
                     }
                 }
-                if(!alreadyStored){
+                if (!alreadyStored) {
                     channelDBM.storeReminder(reminder);
                     authorIds.add(reminder.getAuthorModerator());
                     newReminders = true;
@@ -111,6 +136,29 @@ public class ChannelController {
         }
 
         return newReminders;
+    }
+
+    public static void deleteChannel(Context context, int channelId) {
+        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
+
+        // Check if deleted channel is subscribed by local user.
+        List<Channel> channels = channelDBM.getSubscribedChannels();
+        boolean isSubscribed = false;
+        for (Channel channel : channels) {
+            if (channel.getId() == channelId) {
+                isSubscribed = true;
+                break;
+            }
+        }
+
+        if (isSubscribed) {
+            // If deleted channel is subscribed, just mark channel as deleted and keep in in local database.
+            channelDBM.setChannelToDeleted(channelId);
+            // TODO Also show a dialog which explains that the channel was delete from the server.
+        } else {
+            // If deleted channel isn't subscribed, delete it from local database.
+            channelDBM.deleteChannel(channelId);
+        }
     }
 
     public static String getFormattedDateShort(DateTime date) {

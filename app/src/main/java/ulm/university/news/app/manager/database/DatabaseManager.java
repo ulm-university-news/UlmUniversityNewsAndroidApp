@@ -99,6 +99,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String CHANNEL_MODIFICATION_DATE = "ModificationDate";
     public static final String CHANNEL_DATES = "Dates";
     public static final String CHANNEL_WEBSITE = "Website";
+    public static final String CHANNEL_DELETED = "Deleted";
 
     /** SQL statement to create the Channel table. */
     private static final String CREATE_TABLE_CHANNEL = "CREATE TABLE " + CHANNEL_TABLE + "("
@@ -112,7 +113,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_CREATION_DATE + " INTEGER NOT NULL, "
             + CHANNEL_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + CHANNEL_DATES + " TEXT, "
-            + CHANNEL_WEBSITE + " TEXT);";
+            + CHANNEL_WEBSITE + " TEXT, "
+            + CHANNEL_DELETED + " INTEGER NOT NULL);";
 
     // Column of the SubscribedChannels table.
     public static final String SUBSCRIBED_CHANNELS_TABLE = "SubscribedChannels";
@@ -197,7 +199,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + MESSAGE_ID_FOREIGN + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + ANNOUNCEMENT_MESSAGE_NUMBER + ", " + CHANNEL_ID_FOREIGN + "), "
             + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE, "
-    //        + "FOREIGN KEY(" + ANNOUNCEMENT_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
+            //        + "FOREIGN KEY(" + ANNOUNCEMENT_AUTHOR + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
             + "FOREIGN KEY(" + MESSAGE_ID_FOREIGN + ") REFERENCES " + MESSAGE_TABLE + "(" + MESSAGE_ID + ") ON DELETE CASCADE);";
 
     // Columns of the Reminder table.
@@ -440,6 +442,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
                 + ", which will destroy all old data.");
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + LOCAL_MODERATOR_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MODERATOR_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CHANNEL_TABLE);

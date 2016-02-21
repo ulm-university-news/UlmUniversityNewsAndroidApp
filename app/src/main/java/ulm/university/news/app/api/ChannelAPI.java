@@ -43,6 +43,7 @@ public class ChannelAPI extends MainAPI {
     public static final String GET_CHANNELS = "getGroups";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
+    public static final String DELETE_CHANNEL = "deleteChannel";
     public static final String GET_RESPONSIBLE_MODERATORS = "getResponsibleModerators";
     public static final String GET_REMINDERS = "getAnnouncements";
 
@@ -285,6 +286,21 @@ public class ChannelAPI extends MainAPI {
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         rTask.setBody(channelJson);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void deleteChannel(int channelId) {
+        // Add channel id to url.
+        String url = serverAddressChannel + "/" +channelId;
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(DELETE_CHANNEL, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }

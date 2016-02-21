@@ -104,6 +104,8 @@ public class Channel {
                 ", reminders=" + reminders +
                 ", moderators=" + moderators +
                 ", subscribers=" + subscribers +
+                ", numberOfUnreadAnnouncements=" + numberOfUnreadAnnouncements +
+                ", deleted=" + deleted +
                 '}';
     }
 
@@ -235,7 +237,7 @@ public class Channel {
         this.subscribers = subscribers;
     }
 
-    public Boolean getDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 

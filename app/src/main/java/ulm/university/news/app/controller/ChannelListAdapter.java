@@ -140,6 +140,11 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
                     tvIcon.setBackgroundResource(R.drawable.circle_main);
                     break;
             }
+
+            // If channel is marked as deleted, set deleted icon.
+            if(channel.isDeleted()) {
+                tvIcon.setBackgroundResource(R.drawable.circle_deleted);
+            }
         }
         return convertView;
     }

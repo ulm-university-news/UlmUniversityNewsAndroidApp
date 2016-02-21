@@ -204,6 +204,7 @@ public class AnnouncementAddActivity extends AppCompatActivity {
         Log.d(TAG, serverError.toString());
         // Show appropriate error message.
         pgrAdding.setVisibility(View.GONE);
+        btnCreate.setVisibility(View.VISIBLE);
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
