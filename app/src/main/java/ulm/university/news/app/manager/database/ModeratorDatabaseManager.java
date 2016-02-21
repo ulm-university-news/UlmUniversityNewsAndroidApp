@@ -3,6 +3,7 @@ package ulm.university.news.app.manager.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -51,7 +52,13 @@ public class ModeratorDatabaseManager {
         moderatorValues.put(MODERATOR_FIRST_NAME, moderator.getFirstName());
         moderatorValues.put(MODERATOR_LAST_NAME, moderator.getLastName());
         moderatorValues.put(MODERATOR_EMAIL, moderator.getEmail());
-        db.insert(MODERATOR_TABLE, null, moderatorValues);
+
+        try {
+            db.insertOrThrow(MODERATOR_TABLE, null, moderatorValues);
+        } catch (SQLiteConstraintException e) {
+            // If moderator is already exists in database, just do nothing.
+            Log.i(TAG, "Moderator with id " + moderator.getId() + " already exists in database.");
+        }
     }
 
     /**

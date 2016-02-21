@@ -13,15 +13,13 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventAnnouncements;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.controller.ChannelActivity;
 import ulm.university.news.app.controller.ChannelController;
 import ulm.university.news.app.controller.MainActivity;
-import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.PushMessage;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 
@@ -87,12 +85,11 @@ public class PushGcmListenerService extends GcmListenerService {
     /**
      * This method will be called when a list of announcements is posted to the EventBus.
      *
-     * @param announcements The list containing announcement objects.
+     * @param event The bus event containing a list of announcement objects.
      */
-    public void onEvent(List<Announcement> announcements) {
-        Log.d(TAG, "EventBus: List<Announcement>");
-        Log.d(TAG, announcements.toString());
-        ChannelController.storeAnnouncements(getApplicationContext(), announcements);
+    public void onEvent(BusEventAnnouncements event) {
+        Log.d(TAG, event.toString());
+        ChannelController.storeAnnouncements(getApplicationContext(), event.getAnnouncements());
         // Unregister this instance. For new push messages the new instance will be registered in onCreate().
         EventBus.getDefault().unregister(this);
     }

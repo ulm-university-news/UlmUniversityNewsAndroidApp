@@ -169,7 +169,7 @@
     <string name="channel_unsubscribe_dialog_text">This channels data will be deleted. You won\'t be able to receive
         or read announcements of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
-    <string name="channel_edited">Channel edited successfully.</string>
+    <string name="channel_edited">Channel changed successfully.</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>

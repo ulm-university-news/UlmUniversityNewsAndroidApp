@@ -130,58 +130,58 @@ public class ChannelAddActivity extends AppCompatActivity {
         etYear = (EditText) findViewById(R.id.activity_channel_add_et_year);
         pgrAdding = (ProgressBar) findViewById(R.id.activity_channel_add_pgr_adding);
         tvFaculty = (TextView) findViewById(R.id.activity_channel_add_tv_channel_faculty);
+        TextView tvTerm = (TextView) findViewById(R.id.activity_channel_add_tv_term);
+        TextView tvType = (TextView) findViewById(R.id.activity_channel_add_tv_channel_type);
         tvError = (TextView) findViewById(R.id.activity_channel_add_tv_error);
         btnCreate = (Button) findViewById(R.id.activity_channel_add_btn_create);
 
-        tilName.setNameAndHint(getString(R.string.channel_name));
+        // Field may not be empty.
+        tilName.setNameAndHint(getString(R.string.channel_name) + " *");
         tilName.setPattern(Constants.NAME_PATTERN);
         tilName.setLength(3, 45);
 
-        // Field may be empty.
-        tilDescription.setNameAndHint(getString(R.string.channel_description) + " *");
+        tilDescription.setNameAndHint(getString(R.string.channel_description));
         tilDescription.setLength(0, Constants.DESCRIPTION_MAX_LENGTH);
 
-        // Field may be empty.
-        tilDates.setNameAndHint(getString(R.string.channel_dates) + " *");
+        tilDates.setNameAndHint(getString(R.string.channel_dates));
         tilDates.setLength(0, Constants.CHANNEL_DATES_MAX_LENGTH);
 
-        // Field may be empty.
-        tilLocations.setNameAndHint(getString(R.string.channel_locations) + " *");
+        tilLocations.setNameAndHint(getString(R.string.channel_locations));
         tilLocations.setLength(0, Constants.CHANNEL_LOCATIONS_MAX_LENGTH);
 
-        // Field may be empty.
-        tilWebsite.setNameAndHint(getString(R.string.channel_website) + " *");
+        tilWebsite.setNameAndHint(getString(R.string.channel_website));
         tilWebsite.setLength(0, Constants.CHANNEL_WEBSITE_MAX_LENGTH);
 
-        tilContacts.setNameAndHint(getString(R.string.channel_contacts));
+        // Field may not be empty.
+        tilContacts.setNameAndHint(getString(R.string.channel_contacts) + " *");
         tilContacts.setLength(1, Constants.CHANNEL_CONTACTS_MAX_LENGTH);
 
-        tilLecturer.setNameAndHint(getString(R.string.lecture_lecturer));
+        // Field may not be empty.
+        tilLecturer.setNameAndHint(getString(R.string.lecture_lecturer) + " *");
         tilLecturer.setLength(1, Constants.CHANNEL_CONTACTS_MAX_LENGTH);
 
-        // Field may be empty.
-        tilAssistant.setNameAndHint(getString(R.string.lecture_assistant) + " *");
+        tilAssistant.setNameAndHint(getString(R.string.lecture_assistant));
         tilAssistant.setLength(0, Constants.CHANNEL_CONTACTS_MAX_LENGTH);
 
-        // Field may be empty.
-        tilStartDate.setNameAndHint(getString(R.string.lecture_start_date) + " *");
+        tilStartDate.setNameAndHint(getString(R.string.lecture_start_date));
         tilStartDate.setLength(0, Constants.CHANNEL_DATES_MAX_LENGTH);
 
-        // Field may be empty.
-        tilEndDate.setNameAndHint(getString(R.string.lecture_end_date) + " *");
+        tilEndDate.setNameAndHint(getString(R.string.lecture_end_date));
         tilEndDate.setLength(0, Constants.CHANNEL_DATES_MAX_LENGTH);
 
-        // Field may be empty.
-        tilCost.setNameAndHint(getString(R.string.event_cost) + " *");
+        tilCost.setNameAndHint(getString(R.string.event_cost));
         tilCost.setLength(0, Constants.CHANNEL_COST_MAX_LENGTH);
 
-        // Field may be empty.
-        tilParticipants.setNameAndHint(getString(R.string.sports_participants) + " *");
+        tilParticipants.setNameAndHint(getString(R.string.sports_participants));
         tilParticipants.setLength(0, Constants.CHANNEL_PARTICIPANTS_MAX_LENGTH);
 
-        // Field may be empty.
-        tilOrganizer.setNameAndHint(getString(R.string.event_organizer) + " *");
+        tilOrganizer.setNameAndHint(getString(R.string.event_organizer));
         tilOrganizer.setLength(0, Constants.CHANNEL_CONTACTS_MAX_LENGTH);
+
+        // Field my not be empty.
+        tvTerm.setText(tvTerm.getText() + " *");
+        tvFaculty.setText(tvFaculty.getText() + " *");
+        tvType.setText(tvType.getText() + " *");
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
