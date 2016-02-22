@@ -122,7 +122,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
         // Handle item selection.
         switch (item.getItemId()) {
             case R.id.activity_moderator_channel_reminder_add:
-                Intent intent = new Intent(getActivity(), AnnouncementAddActivity.class);
+                Intent intent = new Intent(getActivity(), ReminderAddActivity.class);
                 intent.putExtra("channelId", channelId);
                 startActivity(intent);
                 return true;

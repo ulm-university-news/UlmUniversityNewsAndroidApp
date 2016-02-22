@@ -113,9 +113,9 @@ public class Reminder {
      */
     public void computeNextDate() {
         // If interval is 0, it's a one time reminder, so marked reminder as expired.
-        if(interval == 0){
+        if (interval == null || interval == 0) {
             nextDate = endDate.plusSeconds(1);
-        }else{
+        } else {
             nextDate = nextDate.plusSeconds(interval);
         }
 
@@ -126,11 +126,9 @@ public class Reminder {
      */
     public void computeFirstNextDate() {
         // Set first next date to start date.
-        if (nextDate == null) {
-            nextDate = startDate;
-        }
+        nextDate = startDate;
         // If interval is 0, the first next date is the start date.
-        if (interval == 0) {
+        if (interval == null || interval == 0) {
             return;
         }
         // The next date has to be in the future.
@@ -162,7 +160,7 @@ public class Reminder {
      */
     public boolean isValidInterval() {
         // 0 is a valid interval. It means that there is no interval, it's a one time reminder.
-        if (interval == 0) {
+        if (interval == null || interval == 0) {
             return true;
         } else
             // If start date equals end date it's a one time reminder, so interval has to be 0.

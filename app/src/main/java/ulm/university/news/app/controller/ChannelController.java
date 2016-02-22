@@ -174,4 +174,17 @@ public class ChannelController {
         DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
         return dtfOut.print(date);
     }
+
+    public static String getFormattedDateOnly(DateTime date) {
+        // Format the date for output.
+        // TODO Language dependency.
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy");
+        return dtfOut.print(date);
+    }
+
+    public static String getFormattedTimeOnly(DateTime date) {
+        // Format the time of the date for output.
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("HH:mm");
+        return dtfOut.print(date);
+    }
 }

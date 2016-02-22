@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#ffffff"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_reminder_add_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/activity_channel_add_tv_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border_info"
+                android:padding="10dp"
+                android:text="@string/activity_reminder_add_info"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_reminder_add_til_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_reminder_add_til_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="8dp"
+                android:text="@string/message_priority"
+                android:textSize="12sp"/>
+
+            <Spinner
+                android:id="@+id/activity_reminder_add_sp_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/reminder_start_date"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_start_date_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:textColor="@color/black"
+                android:text="@string/activity_reminder_add_select_date"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/reminder_end_date"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_end_date_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:textColor="@color/black"
+                android:paddingTop="6dp"
+                android:text="@string/activity_reminder_add_select_date"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/reminder_time"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_time_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:textColor="@color/black"
+                android:text="@string/activity_reminder_add_select_time"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_next_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/reminder_next_date_info"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_next_date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:textColor="@color/black"
+                android:text="@string/reminder_next_date"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_error"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_error"
+                android:padding="10dp"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/activity_reminder_add_pgr_adding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/activity_reminder_add_btn_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:text="@string/general_create"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

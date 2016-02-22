@@ -150,8 +150,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
         </activity>
-        <activity android:name=".controller.ChannelEditActivity"
-                  android:label="@string/activity_channel_edit_title">
+        <activity
+            android:name=".controller.ChannelEditActivity"
+            android:label="@string/activity_channel_edit_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
+        </activity>
+        <activity android:name=".controller.ReminderAddActivity"
+            android:label="@string/activity_reminder_add_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
