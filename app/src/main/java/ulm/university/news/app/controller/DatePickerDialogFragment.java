@@ -1,7 +1,6 @@
 package ulm.university.news.app.controller;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -14,7 +13,8 @@ import java.util.Calendar;
  *
  * @author Matthias Mak
  */
-public class DatePickerFragment extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+public class DatePickerDialogFragment extends AppCompatDialogFragment implements android.app.DatePickerDialog
+        .OnDateSetListener {
 
     // Use this instance of the interface to deliver action events.
     DatePickerListener listener;
@@ -27,8 +27,8 @@ public class DatePickerFragment extends AppCompatDialogFragment implements DateP
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        // Create a new instance of DatePickerDialog and return it.
-        return new DatePickerDialog(getActivity(), this, year, month, day);
+        // Create a new instance of DatePickerDialogFragment and return it.
+        return new android.app.DatePickerDialog(getActivity(), this, year, month, day);
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {

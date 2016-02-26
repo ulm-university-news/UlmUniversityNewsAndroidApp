@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/text_input_labels_tv_name"
@@ -17,7 +18,6 @@
             android:layout_gravity="start"
             android:paddingLeft="4dp"
             android:paddingStart="4dp"
-            android:textSize="12sp"
             android:visibility="invisible"/>
 
         <View
@@ -32,7 +32,6 @@
             android:layout_gravity="end"
             android:paddingRight="4dp"
             android:paddingEnd="4dp"
-            android:textSize="12sp"
             android:visibility="invisible"/>
     </LinearLayout>
 
@@ -52,6 +51,5 @@
         android:paddingLeft="4dp"
         android:paddingStart="4dp"
         android:textColor="@color/error"
-        android:textSize="12sp"
         android:visibility="gone"/>
 </LinearLayout>

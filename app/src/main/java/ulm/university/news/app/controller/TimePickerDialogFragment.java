@@ -2,7 +2,6 @@ package ulm.university.news.app.controller;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.format.DateFormat;
@@ -15,7 +14,8 @@ import java.util.Calendar;
  *
  * @author Matthias Mak
  */
-public class TimePickerFragment extends AppCompatDialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerDialogFragment extends AppCompatDialogFragment implements android.app.TimePickerDialog
+        .OnTimeSetListener {
 
     // Use this instance of the interface to deliver action events.
     TimePickerListener listener;
@@ -27,8 +27,8 @@ public class TimePickerFragment extends AppCompatDialogFragment implements TimeP
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
-        // Create a new instance of TimePickerDialog and return it.
-        return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat
+        // Create a new instance of TimePickerDialogFragment and return it.
+        return new android.app.TimePickerDialog(getActivity(), this, hour, minute, DateFormat
                 .is24HourFormat(getActivity()));
     }
 

@@ -29,4 +29,10 @@
         <item>@string/channel_term_summer</item>
         <item>@string/channel_term_winter</item>
     </string-array>
+
+    <string-array name="interval">
+        <item>@string/reminder_interval_once</item>
+        <item>@string/reminder_interval_daily</item>
+        <item>@string/reminder_interval_weekly</item>
+    </string-array>
 </resources>

@@ -12,7 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,7 +38,8 @@ import ulm.university.news.app.util.Util;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
-public class ReminderAddActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener {
+public class ReminderAddActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
+        IntervalPickerListener {
     /** This classes tag for logging. */
     private static final String TAG = "ReminderAddActivity";
 
@@ -46,9 +50,12 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
     private TextView tvStartDateValue;
     private TextView tvEndDateValue;
     private TextView tvNextDateValue;
-    private TextView tvTime;
+    private TextView tvIntervalValue;
+    private TextView tvTimeValue;
     private TextView tvError;
     private Button btnCreate;
+    private CheckBox chkIgnore;
+    // private ImageView ivIconTitle;
 
     private ChannelDatabaseManager channelDBM;
     private int channelId;
@@ -56,9 +63,8 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
 
     private DateTime startDate;
     private DateTime endDate;
-    private DateTime nextDate;
+    private DateTime firstNextDate;
     private Reminder reminder;
-    private boolean isStartDateSet;
     private boolean isTimeSet;
 
     @Override
@@ -82,7 +88,6 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         startDate = new DateTime(TIME_ZONE);
         endDate = new DateTime(TIME_ZONE);
         reminder = new Reminder();
-        isStartDateSet = false;
         isTimeSet = false;
 
         initView();
@@ -125,14 +130,19 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         tvStartDateValue = (TextView) findViewById(R.id.activity_reminder_add_tv_start_date_value);
         tvEndDateValue = (TextView) findViewById(R.id.activity_reminder_add_tv_end_date_value);
         tvNextDateValue = (TextView) findViewById(R.id.activity_reminder_add_tv_next_date_value);
-        tvTime = (TextView) findViewById(R.id.activity_reminder_add_tv_time_value);
+        tvIntervalValue = (TextView) findViewById(R.id.activity_reminder_add_tv_interval_value);
+        tvTimeValue = (TextView) findViewById(R.id.activity_reminder_add_tv_time_value);
         tvError = (TextView) findViewById(R.id.activity_reminder_add_tv_error);
         btnCreate = (Button) findViewById(R.id.activity_reminder_add_btn_create);
+        chkIgnore = (CheckBox) findViewById(R.id.activity_reminder_add_chk_ignore);
+        // ivIconTitle = (ImageView) findViewById(R.id.activity_reminder_add_iv_icon_title);
 
         tilTitle.setNameAndHint(getString(R.string.announcement_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
         tilText.setNameAndHint(getString(R.string.message_text));
         tilText.setLength(1, Constants.MESSAGE_MAX_LENGTH);
+
+        // ivIconTitle.setColorFilter(ContextCompat.getColor(this, R.color.grey));
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -153,7 +163,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         tvStartDateValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dateFragment = new DatePickerFragment();
+                DialogFragment dateFragment = new DatePickerDialogFragment();
                 dateFragment.show(getSupportFragmentManager(), "startDate");
             }
         });
@@ -161,22 +171,45 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         tvEndDateValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dateFragment = new DatePickerFragment();
+                DialogFragment dateFragment = new DatePickerDialogFragment();
                 dateFragment.show(getSupportFragmentManager(), "endDate");
             }
         });
 
-        tvTime.setOnClickListener(new View.OnClickListener() {
+        tvTimeValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timeFragment = new TimePickerFragment();
+                DialogFragment timeFragment = new TimePickerDialogFragment();
                 timeFragment.show(getSupportFragmentManager(), "time");
+            }
+        });
+
+        tvIntervalValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment intervalFragment = new IntervalPickerDialogFragment();
+                intervalFragment.show(getSupportFragmentManager(), "interval");
+            }
+        });
+
+        chkIgnore.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setNextDate();
             }
         });
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
+
+
+        NumberPicker picker = new NumberPicker(this);
+        picker.setMinValue(0);
+        picker.setMaxValue(2);
+        picker.setDisplayedValues(new String[]{"Belgium", "France", "United Kingdom"});
+
+
     }
 
     private void addReminder() {
@@ -195,7 +228,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         }
 
         if (valid) {
-            // All checks passed. Create new group.
+            // All checks passed. Create new reminder.
             tvError.setVisibility(View.GONE);
             btnCreate.setVisibility(View.GONE);
             pgrAdding.setVisibility(View.VISIBLE);
@@ -207,12 +240,12 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
                 priority = Priority.NORMAL;
             }
 
-            Reminder reminder = new Reminder();
             reminder.setTitle(tilTitle.getText());
             reminder.setText(tilText.getText());
             reminder.setPriority(priority);
+            reminder.setIgnore(chkIgnore.isChecked());
 
-            // Send announcement data to the server.
+            // Send reminder data to the server.
             // ChannelAPI.getInstance(this).createReminder(reminder);
         }
     }
@@ -269,13 +302,8 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             startDate = startDate.year().setCopy(year);
             startDate = startDate.monthOfYear().setCopy(month + 1);
             startDate = startDate.dayOfMonth().setCopy(day);
-            isStartDateSet = true;
+            reminder.setStartDate(startDate);
             tvStartDateValue.setText(ChannelController.getFormattedDateOnly(startDate));
-            if (isTimeSet) {
-                reminder.setStartDate(startDate);
-                reminder.computeFirstNextDate();
-                tvNextDateValue.setText(ChannelController.getFormattedDateLong(reminder.getNextDate()));
-            }
         } else {
             endDate = endDate.year().setCopy(year);
             endDate = endDate.monthOfYear().setCopy(month + 1);
@@ -283,6 +311,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             reminder.setEndDate(endDate);
             tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
         }
+        setNextDate();
     }
 
     @Override
@@ -292,13 +321,32 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             startDate = startDate.minuteOfHour().setCopy(minute);
             endDate = endDate.hourOfDay().setCopy(hourOfDay);
             endDate = endDate.minuteOfHour().setCopy(minute);
-            isTimeSet = true;
             reminder.setStartDate(startDate);
             reminder.setEndDate(endDate);
-            tvTime.setText(ChannelController.getFormattedTimeOnly(startDate));
-            if (isStartDateSet) {
-                reminder.setStartDate(startDate);
-                reminder.computeFirstNextDate();
+            isTimeSet = true;
+            tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+            setNextDate();
+        }
+    }
+
+    @Override
+    public void onIntervalSet(String tag, int interval, String intervalText) {
+        reminder.setInterval(interval);
+        tvIntervalValue.setText(intervalText);
+        setNextDate();
+    }
+
+    private void setNextDate() {
+        if (isTimeSet && reminder.getStartDate() != null && reminder.getEndDate() != null
+                && reminder.getInterval() != null) {
+            reminder.computeFirstNextDate();
+            if (chkIgnore.isChecked()) {
+                // If checked, compute new next date.
+                reminder.computeNextDate();
+            }
+            if (reminder.isExpired()) {
+                tvNextDateValue.setText(getString(R.string.reminder_expired));
+            } else {
                 tvNextDateValue.setText(ChannelController.getFormattedDateLong(reminder.getNextDate()));
             }
         }

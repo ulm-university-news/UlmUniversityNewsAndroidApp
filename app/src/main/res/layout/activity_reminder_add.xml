@@ -34,10 +34,136 @@
                 android:padding="10dp"
                 android:text="@string/activity_reminder_add_info"/>
 
-            <ulm.university.news.app.util.TextInputLabels
-                android:id="@+id/activity_reminder_add_til_title"
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_start_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="12dp"
+                android:text="@string/reminder_start_date"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_start_date_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/activity_reminder_add_select_date"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="12dp"
+                android:text="@string/reminder_end_date"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_end_date_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/activity_reminder_add_select_date"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="12dp"
+                android:text="@string/reminder_time"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_time_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/activity_reminder_add_select_time"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="12dp"
+                android:text="@string/reminder_interval"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_interval_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/reminder_interval_once"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <CheckBox
+                android:id="@+id/activity_reminder_add_chk_ignore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/activity_reminder_add_ignore_flag"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_next_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="12dp"
+                android:text="@string/reminder_next_date_info"/>
+
+            <TextView
+                android:id="@+id/activity_reminder_add_tv_next_date_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
+                android:paddingTop="6dp"
+                android:text="@string/general_dots"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="6dp">
+
+                <!--
+                <ImageView
+                    android:id="@+id/activity_reminder_add_iv_icon_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:src="@drawable/ic_info_black_36dp"/>
+                -->
+
+                <ulm.university.news.app.util.TextInputLabels
+                    android:id="@+id/activity_reminder_add_til_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
             <ulm.university.news.app.util.TextInputLabels
                 android:id="@+id/activity_reminder_add_til_text"
@@ -51,97 +177,12 @@
                 android:paddingLeft="4dp"
                 android:paddingStart="4dp"
                 android:paddingTop="8dp"
-                android:text="@string/message_priority"
-                android:textSize="12sp"/>
+                android:text="@string/message_priority"/>
 
             <Spinner
                 android:id="@+id/activity_reminder_add_sp_priority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_start_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:text="@string/reminder_start_date"
-                android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_start_date_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:textColor="@color/black"
-                android:text="@string/activity_reminder_add_select_date"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_end_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:text="@string/reminder_end_date"
-                android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_end_date_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:textColor="@color/black"
-                android:paddingTop="6dp"
-                android:text="@string/activity_reminder_add_select_date"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:text="@string/reminder_time"
-                android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_time_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:textColor="@color/black"
-                android:text="@string/activity_reminder_add_select_time"
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_next_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:text="@string/reminder_next_date_info"
-                android:textSize="12sp"/>
-
-            <TextView
-                android:id="@+id/activity_reminder_add_tv_next_date_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="6dp"
-                android:textColor="@color/black"
-                android:text="@string/reminder_next_date"
-                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/activity_reminder_add_tv_error"
