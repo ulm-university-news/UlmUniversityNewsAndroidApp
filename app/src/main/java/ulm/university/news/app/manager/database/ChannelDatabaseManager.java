@@ -1055,4 +1055,52 @@ public class ChannelDatabaseManager {
         Log.d(TAG, "End with " + reminders);
         return reminders;
     }
+
+    /**
+     * Gets the reminder with the specified id from the database.
+     *
+     * @param reminderId The id of the reminder.
+     * @return The reminder object.
+     */
+    public Reminder getReminder(int reminderId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String remindersQuery = "SELECT * FROM " + REMINDER_TABLE + " WHERE " + REMINDER_ID + "=?";
+        String[] args = {String.valueOf(reminderId)};
+        Log.d(TAG, remindersQuery);
+
+        // Create fields before while loop, not within every pass.
+        Reminder reminder = null;
+        String text, title;
+        int id, author, interval, channelId;
+        boolean ignore;
+        Priority priority;
+        DateTime creationDate, modificationDate, startDate, endDate;
+
+        // Get message data from database.
+        Cursor cReminder = db.rawQuery(remindersQuery, args);
+        if (cReminder != null && cReminder.moveToNext()) {
+            id = cReminder.getInt(cReminder.getColumnIndex(REMINDER_ID));
+            interval = cReminder.getInt(cReminder.getColumnIndex(REMINDER_INTERVAL));
+            text = cReminder.getString(cReminder.getColumnIndex(REMINDER_TEXT));
+            title = cReminder.getString(cReminder.getColumnIndex(REMINDER_TITLE));
+            priority = Priority.values[(cReminder.getInt(cReminder.getColumnIndex(REMINDER_PRIORITY)))];
+            ignore = cReminder.getInt(cReminder.getColumnIndex(REMINDER_IGNORE)) != 0;
+            author = cReminder.getInt(cReminder.getColumnIndex(REMINDER_AUTHOR));
+            creationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_CREATION_DATE)), TIME_ZONE);
+            modificationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_MODIFICATION_DATE)),
+                    TIME_ZONE);
+            startDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_START_DATE)), TIME_ZONE);
+            endDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_END_DATE)), TIME_ZONE);
+            channelId = cReminder.getInt(cReminder.getColumnIndex(CHANNEL_ID_FOREIGN));
+
+            // Add new reminder to the reminder list.
+            reminder = new Reminder(id, creationDate, modificationDate, startDate, endDate, interval, ignore,
+                    channelId, author, title, text, priority);
+        }
+        if (cReminder != null) {
+            cReminder.close();
+        }
+        Log.d(TAG, "End with " + reminder);
+        return reminder;
+    }
 }

@@ -36,12 +36,11 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
-import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
-public class ReminderAddActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
+public class ReminderEditActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
         IntervalPickerListener {
     /** This classes tag for logging. */
-    private static final String TAG = "ReminderAddActivity";
+    private static final String TAG = "ReminderEditActivity";
 
     private TextInputLabels tilTitle;
     private TextInputLabels tilText;
@@ -71,12 +70,14 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Set color theme according to channel and lecture type.
-        channelId = getIntent().getIntExtra("channelId", 0);
+        // Get reminder data from database.
         channelDBM = new ChannelDatabaseManager(this);
+        int reminderId = getIntent().getIntExtra("reminderId", 0);
+        reminder = channelDBM.getReminder(reminderId);
+        channelId = reminder.getChannelId();
+        // Set color theme according to channel and lecture type.
         Channel channel = channelDBM.getChannel(channelId);
         ChannelController.setColorTheme(this, channel);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_add);
 
@@ -87,12 +88,8 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        startDate = new DateTime(TIME_ZONE);
-        endDate = new DateTime(TIME_ZONE);
-        reminder = new Reminder();
-        isTimeSet = false;
-
         initView();
+        setStoredValues();
     }
 
     @Override
@@ -230,6 +227,62 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         if (v != null) v.setGravity(Gravity.CENTER);
     }
 
+    private void setStoredValues() {
+        startDate = reminder.getStartDate();
+        endDate = reminder.getEndDate();
+        interval = reminder.getInterval();
+        hour = startDate.getHourOfDay();
+        minute = startDate.getMinuteOfHour();
+        // Reconstruct interval type.
+        if (interval == 0) {
+            intervalType = 0;
+        } else {
+            // Set interval to days.
+            interval /= 86400;
+            intervalType = 1;
+            if (interval % 7 == 0) {
+                // Set interval to weeks.
+                interval /= 7;
+                intervalType = 2;
+            }
+        }
+        isTimeSet = true;
+        tilTitle.setText(reminder.getTitle());
+        tilText.setText(reminder.getText());
+        if (reminder.getPriority().equals(Priority.HIGH)) {
+            spPriority.setSelection(0);
+        } else {
+            spPriority.setSelection(1);
+        }
+        btnCreate.setText(getString(R.string.general_edit));
+        tvStartDateValue.setText(ChannelController.getFormattedDateOnly(startDate));
+        tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
+        tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+        switch (intervalType) {
+            case 0:
+                tvIntervalValue.setText(getString(R.string.reminder_interval_once_text));
+                break;
+            case 1:
+                if (interval == 1) {
+                    tvIntervalValue.setText(getString(R.string.reminder_interval_one_day));
+                } else {
+                    tvIntervalValue.setText(String.format(getString(R.string.reminder_interval_multiple_days),
+                            interval));
+                }
+                break;
+            case 2:
+                if (interval == 1) {
+                    tvIntervalValue.setText(getString(R.string.reminder_interval_one_week));
+                } else {
+                    tvIntervalValue.setText(String.format(getString(R.string.reminder_interval_multiple_weeks),
+                            interval));
+                }
+                break;
+        }
+        setNextDate();
+        chkIgnore.setChecked(reminder.isIgnore());
+    }
+
     private void addReminder() {
         boolean valid = true;
         if (!tilTitle.isValid()) {
@@ -277,9 +330,11 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             reminder.setIgnore(chkIgnore.isChecked());
             reminder.setChannelId(channelId);
             reminder.setNextDate(null);
+            reminder.setCreationDate(null);
+            reminder.setModificationDate(null);
 
             // Send reminder data to the server.
-            ChannelAPI.getInstance(this).createReminder(reminder);
+            ChannelAPI.getInstance(this).changeReminder(reminder);
         }
     }
 
@@ -293,8 +348,8 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         Log.d(TAG, reminder.toString());
 
         // Store reminder in database and show created message.
-        channelDBM.storeReminder(reminder);
-        toast.setText(getString(R.string.reminder_created));
+        channelDBM.updateReminder(reminder);
+        toast.setText(getString(R.string.reminder_edited));
         toast.show();
 
         // Go back to moderator channel view.

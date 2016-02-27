@@ -105,6 +105,10 @@ public class Reminder {
      * @return true if Reminder is expired.
      */
     public boolean isExpired() {
+        // The start date of a single reminder has to be in the future.
+        if (interval == null || interval == 0) {
+            return startDate.isBefore(DateTime.now(TIME_ZONE));
+        }
         return nextDate.isAfter(endDate) || endDate.isBefore(DateTime.now(TIME_ZONE));
     }
 
@@ -237,7 +241,7 @@ public class Reminder {
         return nextDate;
     }
 
-    public void setNextDate(DateTime nextDate){
+    public void setNextDate(DateTime nextDate) {
         this.nextDate = nextDate;
     }
 

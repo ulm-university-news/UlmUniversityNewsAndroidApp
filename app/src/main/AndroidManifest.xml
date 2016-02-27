@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="ulm.university.news.app"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="ulm.university.news.app"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -157,8 +158,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
         </activity>
-        <activity android:name=".controller.ReminderAddActivity"
+        <activity
+            android:name=".controller.ReminderAddActivity"
             android:label="@string/activity_reminder_add_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
+        </activity>
+        <activity
+            android:name=".controller.ReminderEditActivity"
+            android:label="@string/activity_reminder_edit_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>

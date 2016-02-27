@@ -325,6 +325,26 @@ public class ChannelAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
+    public void changeReminder(Reminder reminder) {
+        // Add channel id to url and point to specific reminder resource.
+        String url = serverAddressChannel + "/" + reminder.getChannelId() + "/reminder/" + reminder.getId();
+        // Parse reminder to json.
+        String reminderJson = gson.toJson(reminder, Reminder.class);
+        reminderJson = adjustDateTimeFormat(reminderJson);
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Reminder r = gson.fromJson(json, Reminder.class);
+                EventBus.getDefault().post(r);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        rTask.setBody(reminderJson);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
     private String adjustDateTimeFormat(String reminderJson) {
         // Adjust date time format to match the servers format: e.g. 2016-11-19T00:00:00.000+0100
         String adjusted = "";

@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,9 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     private DatabaseLoader<List<Reminder>> databaseLoader;
     private List<Reminder> reminders;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private AdapterView.OnItemClickListener itemClickListener;
+
+    private ListView lvReminders;
 
     private int channelId;
     private Toast toast;
@@ -82,7 +86,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reminder, container, false);
         TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_reminder_tv_list_empty);
-        ListView lvReminders = (ListView) view.findViewById(R.id.fragment_reminder_lv_reminders);
+        lvReminders = (ListView) view.findViewById(R.id.fragment_reminder_lv_reminders);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_reminder_swipe_refresh_layout);
 
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
@@ -98,8 +102,19 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
+        itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Reminder reminder = (Reminder) lvReminders.getItemAtPosition(position);
+                Intent intent = new Intent(arg0.getContext(), ReminderEditActivity.class);
+                intent.putExtra("reminderId", reminder.getId());
+                startActivity(intent);
+            }
+        };
+
         lvReminders.setAdapter(listAdapter);
         lvReminders.setEmptyView(tvListEmpty);
+        lvReminders.setOnItemClickListener(itemClickListener);
         return view;
     }
 
