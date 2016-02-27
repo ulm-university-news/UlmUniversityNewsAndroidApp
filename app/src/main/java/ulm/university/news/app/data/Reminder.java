@@ -186,6 +186,10 @@ public class Reminder {
      * @return true if dates are valid.
      */
     public boolean isValidDates() {
+        // Check if dates are set.
+        if (startDate == null || endDate == null) {
+            return false;
+        }
         // Check if the start date is after the end date.
         if (startDate.isAfter(endDate)) {
             return false;
@@ -193,7 +197,7 @@ public class Reminder {
         } else if (endDate.isBefore(DateTime.now(TIME_ZONE))) {
             return false;
         }
-        //All checks passed. Dates are valid.
+        // All checks passed. Dates are valid.
         return true;
     }
 
@@ -231,6 +235,10 @@ public class Reminder {
 
     public DateTime getNextDate() {
         return nextDate;
+    }
+
+    public void setNextDate(DateTime nextDate){
+        this.nextDate = nextDate;
     }
 
     public DateTime getEndDate() {

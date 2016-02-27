@@ -47,7 +47,8 @@ public abstract class MainAPI implements ErrorCallback {
         // Make sure, channel class or appropriate channel subclass is (de)serialized properly.
         ChannelDeserializer cd = new ChannelDeserializer();
         // Make sure, dates are (de)serialized properly.
-        gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd).create();
+        gson = Converters.registerDateTime(new GsonBuilder()).registerTypeAdapter(Channel.class, cd)
+                .create();
         initServerAddress();
     }
 

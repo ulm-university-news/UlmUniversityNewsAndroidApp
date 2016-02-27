@@ -260,7 +260,7 @@ public class ChannelAPI extends MainAPI {
 
     public void changeChannel(Channel channel) {
         // Add channel id to url.
-        String url = serverAddressChannel + "/" +channel.getId();
+        String url = serverAddressChannel + "/" + channel.getId();
         // Parse channel to json.
         String channelJson;
         switch (channel.getType()) {
@@ -292,7 +292,7 @@ public class ChannelAPI extends MainAPI {
 
     public void deleteChannel(int channelId) {
         // Add channel id to url.
-        String url = serverAddressChannel + "/" +channelId;
+        String url = serverAddressChannel + "/" + channelId;
         RequestCallback rCallback = new RequestCallback() {
             @Override
             public void onResponse(String json) {
@@ -303,5 +303,43 @@ public class ChannelAPI extends MainAPI {
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
+    }
+
+    public void createReminder(Reminder reminder) {
+        // Add channel id to url and point to reminder resource.
+        String url = serverAddressChannel + "/" + reminder.getChannelId() + "/reminder";
+        // Parse reminder to json.
+        String reminderJson = gson.toJson(reminder, Reminder.class);
+        reminderJson = adjustDateTimeFormat(reminderJson);
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Reminder r = gson.fromJson(json, Reminder.class);
+                EventBus.getDefault().post(r);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        rTask.setBody(reminderJson);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    private String adjustDateTimeFormat(String reminderJson) {
+        // Adjust date time format to match the servers format: e.g. 2016-11-19T00:00:00.000+0100
+        String adjusted = "";
+        String[] parts = reminderJson.split(",");
+        for (String part : parts) {
+            if (part.contains("startDate") || part.contains("endDate")) {
+                int remove = part.lastIndexOf(':');
+                adjusted += part.substring(0, remove) + part.substring(remove + 1);
+            } else {
+                adjusted += part;
+            }
+            adjusted += ",";
+        }
+        adjusted = adjusted.substring(0, adjusted.length() - 1);
+        Log.d(TAG, "Adjusted reminderJson: " + adjusted);
+        return adjusted;
     }
 }

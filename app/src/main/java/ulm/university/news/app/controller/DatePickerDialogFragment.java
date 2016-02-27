@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.widget.DatePicker;
 
-import java.util.Calendar;
-
 /**
  * TODO
  *
@@ -26,16 +24,10 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment implements
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use previous selected values if existing.
+        // Use the current date as the default date in the picker.
         int year = getArguments().getInt(YEAR);
         int month = getArguments().getInt(MONTH);
         int day = getArguments().getInt(DAY);
-        if (year == 0 && month == 0 && day == 0) {
-            // Use the current date as the default date in the picker.
-            final Calendar c = Calendar.getInstance();
-            year = c.get(Calendar.YEAR);
-            month = c.get(Calendar.MONTH);
-            day = c.get(Calendar.DAY_OF_MONTH);
-        }
 
         // Create a new instance of DatePickerDialogFragment and return it.
         return new android.app.DatePickerDialog(getActivity(), this, year, month, day);

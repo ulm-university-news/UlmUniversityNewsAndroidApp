@@ -130,6 +130,8 @@
     <string name="activity_reminder_add_select_time">Click to select time</string>
     <string name="activity_reminder_add_select_interval">Click to select interval</string>
     <string name="activity_reminder_add_ignore_flag">Skip next upcoming reminder event</string>
+    <string name="activity_reminder_add_error_not_set">Select dates, time and interval.</string>
+    <string name="activity_reminder_add_error_invalid_dates">The selected dates are invalid.</string>
 
     <!-- AnnouncementAddActivity ################################################################################### -->
     <string name="activity_announcement_add_title">Add Announcement</string>
@@ -247,6 +249,7 @@
     <string name="reminder_interval_once">Single event</string>
     <string name="reminder_interval_once_text">Send reminder only once.</string>
     <string name="reminder_expired">The reminder is expired.</string>
+    <string name="reminder_created">Reminder created successfully.</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

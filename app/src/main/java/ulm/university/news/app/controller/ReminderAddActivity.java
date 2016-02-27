@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ import org.joda.time.DateTime;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Reminder;
@@ -228,14 +228,6 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
-
-
-        NumberPicker picker = new NumberPicker(this);
-        picker.setMinValue(0);
-        picker.setMaxValue(2);
-        picker.setDisplayedValues(new String[]{"Belgium", "France", "United Kingdom"});
-
-
     }
 
     private void addReminder() {
@@ -247,9 +239,22 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             valid = false;
         }
         if (!Util.getInstance(this).isOnline()) {
-            String message = getString(R.string.general_error_no_connection) + getString(R.string.general_error_create);
+            String message = getString(R.string.general_error_no_connection) + " " + getString(R.string
+                    .general_error_create);
             toast.setText(message);
             toast.show();
+            valid = false;
+        }
+
+        if (!reminder.isValidDates()) {
+            tvError.setText(getString(R.string.activity_reminder_add_error_invalid_dates));
+            tvError.setVisibility(View.VISIBLE);
+            valid = false;
+        }
+
+        if (reminder.getStartDate() == null || reminder.getEndDate() == null || reminder.getInterval() == null) {
+            tvError.setText(getString(R.string.activity_reminder_add_error_not_set));
+            tvError.setVisibility(View.VISIBLE);
             valid = false;
         }
 
@@ -270,9 +275,11 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             reminder.setText(tilText.getText());
             reminder.setPriority(priority);
             reminder.setIgnore(chkIgnore.isChecked());
+            reminder.setChannelId(channelId);
+            reminder.setNextDate(null);
 
             // Send reminder data to the server.
-            // ChannelAPI.getInstance(this).createReminder(reminder);
+            ChannelAPI.getInstance(this).createReminder(reminder);
         }
     }
 
@@ -288,7 +295,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         // Store reminder in database and show created message.
         ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(this);
         channelDBM.storeReminder(reminder);
-        toast.setText(getString(R.string.channel_created));
+        toast.setText(getString(R.string.reminder_created));
         toast.show();
 
         // Go back to moderator channel view.
@@ -338,6 +345,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
         }
         setNextDate();
+        tvError.setVisibility(View.GONE);
     }
 
     @Override
@@ -353,6 +361,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         isTimeSet = true;
         tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
         setNextDate();
+        tvError.setVisibility(View.GONE);
     }
 
     @Override
@@ -375,6 +384,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         reminder.setInterval(interval);
         tvIntervalValue.setText(intervalText);
         setNextDate();
+        tvError.setVisibility(View.GONE);
     }
 
     private void setNextDate() {
