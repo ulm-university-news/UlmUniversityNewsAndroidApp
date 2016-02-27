@@ -110,7 +110,7 @@
                 android:paddingLeft="4dp"
                 android:paddingStart="4dp"
                 android:paddingTop="6dp"
-                android:text="@string/reminder_interval_once"
+                android:text="@string/activity_reminder_add_select_interval"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
 

@@ -6,5 +6,5 @@ package ulm.university.news.app.controller;
  * @author Matthias Mak
  */
 public interface IntervalPickerListener {
-    void onIntervalSet(String tag, int interval, String intervalText);
+    void onIntervalSet(String tag, int interval, int type, String intervalText);
 }

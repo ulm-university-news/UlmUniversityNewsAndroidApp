@@ -17,15 +17,23 @@ import java.util.Calendar;
 public class TimePickerDialogFragment extends AppCompatDialogFragment implements android.app.TimePickerDialog
         .OnTimeSetListener {
 
+    public static final String HOUR = "hour";
+    public static final String MINUTE = "minute";
+
     // Use this instance of the interface to deliver action events.
     TimePickerListener listener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current time as the default values for the picker.
-        final Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
+        // Use previous selected values if existing.
+        int hour = getArguments().getInt(HOUR);
+        int minute = getArguments().getInt(MINUTE);
+        if (hour == 0 && minute == 0) {
+            // Use the current time as the default values for the picker.
+            final Calendar c = Calendar.getInstance();
+            hour = c.get(Calendar.HOUR_OF_DAY);
+            minute = c.get(Calendar.MINUTE);
+        }
 
         // Create a new instance of TimePickerDialogFragment and return it.
         return new android.app.TimePickerDialog(getActivity(), this, hour, minute, DateFormat

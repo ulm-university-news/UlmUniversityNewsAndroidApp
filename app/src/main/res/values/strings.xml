@@ -128,6 +128,7 @@
         are mandatory. Some special characters are not allowed.</string>
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
+    <string name="activity_reminder_add_select_interval">Click to select interval</string>
     <string name="activity_reminder_add_ignore_flag">Skip next upcoming reminder event</string>
 
     <!-- AnnouncementAddActivity ################################################################################### -->
@@ -238,13 +239,13 @@
     <string name="reminder_time">Time</string>
     <string name="reminder_interval">Interval</string>
     <string name="reminder_interval_weekly">Weekly</string>
-    <string name="reminder_interval_one_week">Fire reminder every week.</string>
-    <string name="reminder_interval_multiple_weeks">Fire reminder every %1$s weeks.</string>
+    <string name="reminder_interval_one_week">Send reminder every week.</string>
+    <string name="reminder_interval_multiple_weeks">Send reminder every %1$s weeks.</string>
     <string name="reminder_interval_daily">Daily</string>
-    <string name="reminder_interval_one_day">Fire reminder every day.</string>
-    <string name="reminder_interval_multiple_days">Fire reminder every %1$s days.</string>
+    <string name="reminder_interval_one_day">Send reminder every day.</string>
+    <string name="reminder_interval_multiple_days">Send reminder every %1$s days.</string>
     <string name="reminder_interval_once">Single event</string>
-    <string name="reminder_interval_once_text">Fire reminder only once.</string>
+    <string name="reminder_interval_once_text">Send reminder only once.</string>
     <string name="reminder_expired">The reminder is expired.</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->

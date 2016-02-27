@@ -63,9 +63,11 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
 
     private DateTime startDate;
     private DateTime endDate;
-    private DateTime firstNextDate;
     private Reminder reminder;
     private boolean isTimeSet;
+    private int interval;
+    private Integer intervalType;
+    private int hour, minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,32 +165,56 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         tvStartDateValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dateFragment = new DatePickerDialogFragment();
-                dateFragment.show(getSupportFragmentManager(), "startDate");
+                DialogFragment dateDialog = new DatePickerDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(DatePickerDialogFragment.YEAR, startDate.getYear());
+                args.putInt(DatePickerDialogFragment.MONTH, startDate.getMonthOfYear() - 1);
+                args.putInt(DatePickerDialogFragment.DAY, startDate.getDayOfMonth());
+                dateDialog.setArguments(args);
+                dateDialog.show(getSupportFragmentManager(), "startDate");
             }
         });
 
         tvEndDateValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dateFragment = new DatePickerDialogFragment();
-                dateFragment.show(getSupportFragmentManager(), "endDate");
+                DialogFragment dateDialog = new DatePickerDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(DatePickerDialogFragment.YEAR, endDate.getYear());
+                args.putInt(DatePickerDialogFragment.MONTH, endDate.getMonthOfYear() - 1);
+                args.putInt(DatePickerDialogFragment.DAY, endDate.getDayOfMonth());
+                dateDialog.setArguments(args);
+                dateDialog.show(getSupportFragmentManager(), "endDate");
             }
         });
 
         tvTimeValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment timeFragment = new TimePickerDialogFragment();
-                timeFragment.show(getSupportFragmentManager(), "time");
+                DialogFragment timeDialog = new TimePickerDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(TimePickerDialogFragment.HOUR, hour);
+                args.putInt(TimePickerDialogFragment.MINUTE, minute);
+                timeDialog.setArguments(args);
+                timeDialog.show(getSupportFragmentManager(), "time");
             }
         });
 
         tvIntervalValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment intervalFragment = new IntervalPickerDialogFragment();
-                intervalFragment.show(getSupportFragmentManager(), "interval");
+                DialogFragment intervalDialog = new IntervalPickerDialogFragment();
+                Bundle args = new Bundle();
+                args.putInt(IntervalPickerDialogFragment.INTERVAL, interval);
+                if (intervalType != null) {
+                    // Set previous selected value.
+                    args.putInt(IntervalPickerDialogFragment.INTERVAL_TYPE, intervalType);
+                } else {
+                    // If nothing was set previously, set daily as default.
+                    args.putInt(IntervalPickerDialogFragment.INTERVAL_TYPE, 1);
+                }
+                intervalDialog.setArguments(args);
+                intervalDialog.show(getSupportFragmentManager(), "interval");
             }
         });
 
@@ -316,21 +342,36 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onTimeSet(String tag, TimePicker view, int hourOfDay, int minute) {
-        if (tag.equals("time")) {
-            startDate = startDate.hourOfDay().setCopy(hourOfDay);
-            startDate = startDate.minuteOfHour().setCopy(minute);
-            endDate = endDate.hourOfDay().setCopy(hourOfDay);
-            endDate = endDate.minuteOfHour().setCopy(minute);
-            reminder.setStartDate(startDate);
-            reminder.setEndDate(endDate);
-            isTimeSet = true;
-            tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
-            setNextDate();
-        }
+        hour = hourOfDay;
+        this.minute = minute;
+        startDate = startDate.hourOfDay().setCopy(hourOfDay);
+        startDate = startDate.minuteOfHour().setCopy(minute);
+        endDate = endDate.hourOfDay().setCopy(hourOfDay);
+        endDate = endDate.minuteOfHour().setCopy(minute);
+        reminder.setStartDate(startDate);
+        reminder.setEndDate(endDate);
+        isTimeSet = true;
+        tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+        setNextDate();
     }
 
     @Override
-    public void onIntervalSet(String tag, int interval, String intervalText) {
+    public void onIntervalSet(String tag, int interval, int type, String intervalText) {
+        this.interval = interval;
+        intervalType = type;
+        switch (type) {
+            case 0:
+                // One time reminder.
+                interval = 0;
+                break;
+            case 1:
+                // Days: 86400 is one day in seconds.
+                interval *= 86400;
+                break;
+            case 2:
+                // Weeks: One day times seven.
+                interval *= 86400 * 7;
+        }
         reminder.setInterval(interval);
         tvIntervalValue.setText(intervalText);
         setNextDate();

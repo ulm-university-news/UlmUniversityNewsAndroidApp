@@ -31,9 +31,13 @@ import ulm.university.news.app.R;
  */
 public class IntervalPickerDialogFragment extends AppCompatDialogFragment {
 
+    public static final String INTERVAL_TYPE = "intervalType";
+    public static final String INTERVAL = "interval";
+
     TextView tvInterval;
     Spinner spInterval;
     NumberPicker npInterval;
+    private boolean isFirstPopup = true;
 
     // Use this instance of the interface to deliver action events.
     IntervalPickerListener listener;
@@ -46,21 +50,8 @@ public class IntervalPickerDialogFragment extends AppCompatDialogFragment {
         builder.setTitle(dialogTitle)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        int interval = npInterval.getValue();
-                        switch (spInterval.getSelectedItemPosition()) {
-                            case 0:
-                                // One time reminder.
-                                interval = 0;
-                                break;
-                            case 1:
-                                // Days: 86400 is one day in seconds.
-                                interval *= 86400;
-                                break;
-                            case 2:
-                                // Weeks: One day times seven.
-                                interval *= 86400 * 7;
-                        }
-                        listener.onIntervalSet(getTag(), interval, tvInterval.getText().toString());
+                        listener.onIntervalSet(getTag(), npInterval.getValue(), spInterval.getSelectedItemPosition(),
+                                tvInterval.getText().toString());
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -88,7 +79,8 @@ public class IntervalPickerDialogFragment extends AppCompatDialogFragment {
                 R.array.interval, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spInterval.setAdapter(adapter);
-        spInterval.setSelection(0);
+        // On first dialog popup show previous selected value.
+        spInterval.setSelection(getArguments().getInt(INTERVAL_TYPE));
 
         spInterval.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -109,6 +101,14 @@ public class IntervalPickerDialogFragment extends AppCompatDialogFragment {
                         npInterval.setMaxValue(4);
                         npInterval.setEnabled(true);
                         break;
+                }
+                // On first dialog popup show previous selected value.
+                if (isFirstPopup) {
+                    npInterval.setValue(1);
+                    if (getArguments().getInt(INTERVAL) != 0) {
+                        npInterval.setValue(getArguments().getInt(INTERVAL));
+                    }
+                    isFirstPopup = false;
                 }
                 setIntervalText(position, npInterval.getValue());
             }
