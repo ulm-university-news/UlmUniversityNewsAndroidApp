@@ -1,16 +1,16 @@
 package ulm.university.news.app.data;
 
 /**
- * This class holds information to represent a channel details name, value and icon.
+ * This class holds information to represent a resources details with name, value and icon.
  *
  * @author Matthias Mak
  */
-public class ChannelDetail {
+public class ResourceDetail {
     private String name;
     private String value;
     private int resource;
 
-    public ChannelDetail(String name, String value, int resource) {
+    public ResourceDetail(String name, String value, int resource) {
         this.name = name;
         this.value = value;
         this.resource = resource;
@@ -18,7 +18,7 @@ public class ChannelDetail {
 
     @Override
     public String toString() {
-        return "ChannelDetail{" +
+        return "ResourceDetail{" +
                 "name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 ", resource=" + resource +

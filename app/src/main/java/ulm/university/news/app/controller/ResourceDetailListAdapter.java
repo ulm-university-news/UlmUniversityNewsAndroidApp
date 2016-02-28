@@ -11,27 +11,27 @@ import android.widget.TextView;
 import java.util.List;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.data.ChannelDetail;
+import ulm.university.news.app.data.ResourceDetail;
 
 /**
  * TODO
  *
  * @author Matthias Mak
  */
-public class ChannelDetailListAdapter extends BaseAdapter {
+public class ResourceDetailListAdapter extends BaseAdapter {
     /** This classes tag for logging. */
-    private static final String TAG = "ChannelDetailListAdapt";
-    /** The channel detail data. */
-    private List<ChannelDetail> channelDetails;
+    private static final String TAG = "ResourceDetailListAdapt";
+    /** The resource detail data. */
+    private List<ResourceDetail> resourceDetails;
 
     @Override
     public int getCount() {
-        return channelDetails.size();
+        return resourceDetails.size();
     }
 
     @Override
-    public ChannelDetail getItem(int position) {
-        return channelDetails.get(position);
+    public ResourceDetail getItem(int position) {
+        return resourceDetails.get(position);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ChannelDetailListAdapter extends BaseAdapter {
             convertView = vi.inflate(R.layout.channel_detail_list_item, parent, false);
         }
 
-        ChannelDetail item = getItem(position);
+        ResourceDetail item = getItem(position);
 
         if (item != null) {
             TextView tvName = (TextView) convertView.findViewById(R.id.channel_detail_list_item_tv_title);
@@ -64,11 +64,11 @@ public class ChannelDetailListAdapter extends BaseAdapter {
     }
 
     /**
-     * Sets the adapters channel detail data to the given one.
+     * Sets the adapters resource detail data to the given one.
      *
-     * @param channelDetails The detail data of this channel.
+     * @param resourceDetails The detail data of this resource.
      */
-    public void setChannelDetails(List<ChannelDetail> channelDetails) {
-        this.channelDetails = channelDetails;
+    public void setResourceDetails(List<ResourceDetail> resourceDetails) {
+        this.resourceDetails = resourceDetails;
     }
 }

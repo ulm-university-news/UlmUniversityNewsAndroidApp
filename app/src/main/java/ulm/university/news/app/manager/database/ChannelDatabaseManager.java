@@ -102,6 +102,8 @@ public class ChannelDatabaseManager {
     public static final String STORE_REMINDER = "storeReminder";
     public static final String UPDATE_REMINDER = "updateReminder";
     public static final String MODERATE_CHANNEL = "moderateChannel";
+    public static final String DELETE_CHANNEL = "deleteChannel";
+    public static final String DELETE_REMINDER = "deleteReminder";
 
     /** Creates a new instance of ChannelDatabaseManager. */
     public ChannelDatabaseManager(Context context) {
@@ -1102,5 +1104,21 @@ public class ChannelDatabaseManager {
         }
         Log.d(TAG, "End with " + reminder);
         return reminder;
+    }
+
+    /**
+     * Deletes the reminder identified by id.
+     *
+     * @param reminderId The id of the reminder.
+     */
+    public void deleteReminder(int reminderId) {
+        Log.d(TAG, "Delete reminder with id " + reminderId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+        String whereClause = REMINDER_ID + "=?";
+        String[] whereArgs = new String[]{String.valueOf(reminderId)};
+        db.delete(REMINDER_TABLE, whereClause, whereArgs);
+        // Notify observers that specific database content has changed.
+        Intent databaseChanged = new Intent(DELETE_REMINDER);
+        Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
     }
 }

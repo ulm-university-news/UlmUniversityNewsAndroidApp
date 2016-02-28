@@ -71,8 +71,19 @@ public class ReminderListAdapter extends ArrayAdapter<Reminder> {
             tvTitle.setText(reminder.getTitle());
             tvText.setText(reminder.getText());
             // Compute the date on which the reminder gets fired for the next time.
+            String nextDateText;
             reminder.computeFirstNextDate();
-            tvDate.setText(ChannelController.getFormattedDateShort(reminder.getNextDate()));
+            if (reminder.isIgnore()) {
+                // If ignored, compute new next date.
+                reminder.computeNextDate();
+            }
+            if (reminder.isExpired()) {
+                nextDateText = getContext().getString(R.string.reminder_expired);
+            } else {
+                nextDateText = ChannelController.getFormattedDateLong(reminder.getNextDate());
+                nextDateText = String.format(getContext().getString(R.string.reminder_next_date_on), nextDateText);
+            }
+            tvDate.setText(nextDateText);
         }
 
         return convertView;

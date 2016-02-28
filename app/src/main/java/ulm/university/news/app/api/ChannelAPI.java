@@ -38,14 +38,10 @@ public class ChannelAPI extends MainAPI {
     private String serverAddressChannel;
 
     // Constants.
-    public static final String GET_CHANNEL = "getChannel";
-    public static final String UPDATE_CHANNEL = "updateChannel";
-    public static final String GET_CHANNELS = "getGroups";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String DELETE_CHANNEL = "deleteChannel";
-    public static final String GET_RESPONSIBLE_MODERATORS = "getResponsibleModerators";
-    public static final String GET_REMINDERS = "getAnnouncements";
+    public static final String DELETE_REMINDER = "deleteReminder";
 
     /**
      * Get the instance of the ChannelAPI class.
@@ -190,26 +186,6 @@ public class ChannelAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
-    public void getReminders(int channelId) {
-        // Create url to specific channel and point to reminder resource.
-        String url = serverAddressChannel + "/" + channelId + "/reminder";
-
-        RequestCallback rCallback = new RequestCallback() {
-            @Override
-            public void onResponse(String json) {
-                // Use a list of reminders as deserialization type.
-                Type listType = new TypeToken<List<Reminder>>() {
-                }.getType();
-                List<Reminder> reminders = gson.fromJson(json, listType);
-                EventBus.getDefault().post(new BusEventReminders(reminders));
-            }
-        };
-        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
-        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
-        Log.d(TAG, rTask.toString());
-        new Thread(rTask).start();
-    }
-
     public void createAnnouncement(int channelId, Announcement announcement) {
         // Add channel id to url and point to announcement resource.
         String url = serverAddressChannel + "/" + channelId + "/announcement";
@@ -341,6 +317,58 @@ public class ChannelAPI extends MainAPI {
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         rTask.setBody(reminderJson);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getReminders(int channelId) {
+        // Create url to specific channel and point to reminder resource.
+        String url = serverAddressChannel + "/" + channelId + "/reminder";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of reminders as deserialization type.
+                Type listType = new TypeToken<List<Reminder>>() {
+                }.getType();
+                List<Reminder> reminders = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventReminders(reminders));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getReminder(int channelId, int reminderId) {
+        // Create url to specific channel and point to a specific reminder resource.
+        String url = serverAddressChannel + "/" + channelId + "/reminder/" + reminderId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Reminder reminder = gson.fromJson(json, Reminder.class);
+                EventBus.getDefault().post(reminder);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void deleteReminder(int channelId, int reminderId) {
+        // Add channel id to url and point to specific reminder resource.
+        String url = serverAddressChannel + "/" + channelId + "/reminder/" + reminderId;
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(DELETE_REMINDER, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
     }

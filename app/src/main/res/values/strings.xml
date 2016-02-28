@@ -4,6 +4,8 @@
     <!-- <string name="app_name_launcher">University News</string> -->
 
     <!-- General ################################################################################################### -->
+    <string name="general_yes">Yes</string>
+    <string name="general_no">No</string>
     <string name="general_error_something">Something went wrong. Please try again.</string>
     <string name="general_error_database">Database failure. Please try again.</string>
     <string name="general_error_connection_failed">Connection to server failed.</string>
@@ -135,6 +137,9 @@
     <!-- ReminderEditActivity ###################################################################################### -->
     <string name="activity_reminder_edit_title">Edit Reminder</string>
 
+    <!-- ReminderDetailActivity #################################################################################### -->
+    <string name="activity_reminder_detail_title">Reminder Details</string>
+
     <!-- AnnouncementAddActivity ################################################################################### -->
     <string name="activity_announcement_add_title">Add Announcement</string>
 
@@ -142,8 +147,10 @@
     <string name="activity_moderator_channel_reminder_tab">Reminders</string>
     <string name="activity_moderator_channel_menu_add_announcement">Add Announcement</string>
     <string name="activity_moderator_channel_menu_add_reminder">Add Reminder</string>
-    <string name="activity_moderator_channel_menu_edit_details">Edit Details</string>
+    <string name="activity_moderator_channel_menu_edit_channel">Edit Channel</string>
     <string name="activity_moderator_channel_menu_delete_channel">Delete Channel</string>
+    <string name="activity_moderator_channel_menu_edit_reminder">Edit Reminder</string>
+    <string name="activity_moderator_channel_menu_delete_reminder">Delete Reminder</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
@@ -234,12 +241,15 @@
     <string name="message_priority_normal">Normal</string>
 
     <!-- Reminder ################################################################################################## -->
-    <string name="reminder_info_updated">Reminders updated.</string>
-    <string name="reminder_info_up_to_date">Reminders already up to date.</string>
+    <string name="reminder_info_updated">Reminder updated.</string>
+    <string name="reminder_info_up_to_date">Reminder already up to date.</string>
+    <string name="reminders_info_updated">Reminders updated.</string>
+    <string name="reminders_info_up_to_date">Reminders already up to date.</string>
     <string name="reminder_start_date">Start date</string>
     <string name="reminder_end_date">End date</string>
     <string name="reminder_next_date">Next date</string>
     <string name="reminder_next_date_info">Next reminder event</string>
+    <string name="reminder_next_date_on">Next reminder event: %1$s</string>
     <string name="reminder_time">Time</string>
     <string name="reminder_interval">Interval</string>
     <string name="reminder_interval_weekly">Weekly</string>
@@ -253,6 +263,13 @@
     <string name="reminder_expired">The reminder is expired.</string>
     <string name="reminder_created">Reminder created successfully.</string>
     <string name="reminder_edited">Reminder changed successfully.</string>
+    <string name="reminder_delete_dialog_title">Delete Reminder</string>
+    <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder events will be sent
+        afterwards.\nDo you really want to delete the reminder?</string>
+    <string name="reminder_last_edited_by">Last edited by</string>
+
+    <!-- Moderator ################################################################################################# -->
+    <string name="moderator_unknown">Unknown</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

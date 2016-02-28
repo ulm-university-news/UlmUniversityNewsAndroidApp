@@ -27,7 +27,7 @@ import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.ChannelDetail;
+import ulm.university.news.app.data.ResourceDetail;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.Sports;
@@ -47,8 +47,8 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
 
     private ChannelDatabaseManager channelDBM;
     private Channel channel;
-    private List<ChannelDetail> channelDetails;
-    ChannelDetailListAdapter listAdapter;
+    private List<ResourceDetail> resourceDetails;
+    ResourceDetailListAdapter listAdapter;
 
     private ListView lvChannelDetails;
     private Button btnSubscribe;
@@ -77,7 +77,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         channelId = getArguments().getInt("channelId");
         channel = new ChannelDatabaseManager(getActivity()).getChannel(channelId);
         channelDBM = new ChannelDatabaseManager(getActivity());
-        channelDetails = new ArrayList<>();
+        resourceDetails = new ArrayList<>();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         // Update channel in case it was edited.
         channel = channelDBM.getChannel(channelId);
         setChannelDetails();
-        listAdapter.setChannelDetails(channelDetails);
+        listAdapter.setResourceDetails(resourceDetails);
         listAdapter.notifyDataSetChanged();
     }
 
@@ -227,17 +227,17 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         }
 
         setChannelDetails();
-        listAdapter = new ChannelDetailListAdapter();
-        listAdapter.setChannelDetails(channelDetails);
+        listAdapter = new ResourceDetailListAdapter();
+        listAdapter.setResourceDetails(resourceDetails);
         lvChannelDetails.setAdapter(listAdapter);
     }
 
     /**
-     * Adds all existing channel detail data to the details list. The details are adde in a specific order.
+     * Adds all existing channel detail data to the details list. The details are added in a specific order.
      */
     private void setChannelDetails() {
-        channelDetails.clear();
-        ChannelDetail name = new ChannelDetail(getString(R.string.channel_name), channel.getName(),
+        resourceDetails.clear();
+        ResourceDetail name = new ResourceDetail(getString(R.string.channel_name), channel.getName(),
                 R.drawable.ic_info_black_36dp);
         String typeName;
         switch (channel.getType()) {
@@ -257,19 +257,19 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 typeName = getString(R.string.channel_type_other);
 
         }
-        ChannelDetail type = new ChannelDetail(getString(R.string.channel_type), typeName,
+        ResourceDetail type = new ResourceDetail(getString(R.string.channel_type), typeName,
                 R.drawable.ic_details_black_36dp);
-        ChannelDetail term = new ChannelDetail(getString(R.string.channel_term), channel.getTerm(),
+        ResourceDetail term = new ResourceDetail(getString(R.string.channel_term), channel.getTerm(),
                 R.drawable.ic_date_range_black_36dp);
-        channelDetails.add(name);
-        channelDetails.add(type);
-        channelDetails.add(term);
+        resourceDetails.add(name);
+        resourceDetails.add(type);
+        resourceDetails.add(term);
 
         // Check nullable fields.
         if (channel.getDescription() != null && !channel.getDescription().isEmpty()) {
-            ChannelDetail description = new ChannelDetail(getString(R.string.channel_description), channel
+            ResourceDetail description = new ResourceDetail(getString(R.string.channel_description), channel
                     .getDescription(), R.drawable.ic_info_outline_black_36dp);
-            channelDetails.add(description);
+            resourceDetails.add(description);
         }
 
         // Check type specific fields.
@@ -290,86 +290,86 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                     default:
                         facultyName = getString(R.string.lecture_faculty_mathematics);
                 }
-                ChannelDetail faculty = new ChannelDetail(getString(R.string.lecture_faculty), facultyName,
+                ResourceDetail faculty = new ResourceDetail(getString(R.string.lecture_faculty), facultyName,
                         R.drawable.ic_school_black_36dp);
-                ChannelDetail lecturer = new ChannelDetail(getString(R.string.lecture_lecturer),
+                ResourceDetail lecturer = new ResourceDetail(getString(R.string.lecture_lecturer),
                         lecture.getLecturer(), R.drawable.ic_person_black_36dp);
-                channelDetails.add(faculty);
-                channelDetails.add(lecturer);
+                resourceDetails.add(faculty);
+                resourceDetails.add(lecturer);
 
                 // Check nullable fields.
                 if (lecture.getAssistant() != null && !lecture.getAssistant().isEmpty()) {
-                    ChannelDetail assistant = new ChannelDetail(getString(R.string.lecture_assistant),
+                    ResourceDetail assistant = new ResourceDetail(getString(R.string.lecture_assistant),
                             lecture.getAssistant(), R.drawable.ic_person_outline_black_36dp);
-                    channelDetails.add(assistant);
+                    resourceDetails.add(assistant);
                 }
                 if (lecture.getStartDate() != null && !lecture.getStartDate().isEmpty()) {
-                    ChannelDetail startDate = new ChannelDetail(getString(R.string.lecture_start_date),
+                    ResourceDetail startDate = new ResourceDetail(getString(R.string.lecture_start_date),
                             lecture.getStartDate(), R.drawable.ic_today_black_36dp);
-                    channelDetails.add(startDate);
+                    resourceDetails.add(startDate);
                 }
                 if (lecture.getEndDate() != null && !lecture.getEndDate().isEmpty()) {
-                    ChannelDetail endDate = new ChannelDetail(getString(R.string.lecture_end_date),
+                    ResourceDetail endDate = new ResourceDetail(getString(R.string.lecture_end_date),
                             lecture.getEndDate(), R.drawable.ic_event_black_36dp);
-                    channelDetails.add(endDate);
+                    resourceDetails.add(endDate);
                 }
                 break;
             case EVENT:
                 Event event = (Event) channel;
                 // Check nullable fields.
                 if (event.getCost() != null && !event.getCost().isEmpty()) {
-                    ChannelDetail cost = new ChannelDetail(getString(R.string.event_cost),
+                    ResourceDetail cost = new ResourceDetail(getString(R.string.event_cost),
                             event.getCost(), R.drawable.ic_attach_money_black_36dp);
-                    channelDetails.add(cost);
+                    resourceDetails.add(cost);
                 }
                 if (event.getOrganizer() != null && !event.getOrganizer().isEmpty()) {
-                    ChannelDetail organizer = new ChannelDetail(getString(R.string.event_organizer),
+                    ResourceDetail organizer = new ResourceDetail(getString(R.string.event_organizer),
                             event.getOrganizer(), R.drawable.ic_person_black_36dp);
-                    channelDetails.add(organizer);
+                    resourceDetails.add(organizer);
                 }
                 break;
             case SPORTS:
                 Sports sports = (Sports) channel;
                 // Check nullable fields.
                 if (sports.getCost() != null && !sports.getCost().isEmpty()) {
-                    ChannelDetail cost = new ChannelDetail(getString(R.string.sports_cost),
+                    ResourceDetail cost = new ResourceDetail(getString(R.string.sports_cost),
                             sports.getCost(), R.drawable.ic_attach_money_black_36dp);
-                    channelDetails.add(cost);
+                    resourceDetails.add(cost);
                 }
                 if (sports.getNumberOfParticipants() != null && !sports.getNumberOfParticipants().isEmpty()) {
-                    ChannelDetail participants = new ChannelDetail(getString(R.string.sports_participants),
+                    ResourceDetail participants = new ResourceDetail(getString(R.string.sports_participants),
                             sports.getNumberOfParticipants(), R.drawable.ic_group_black_36dp);
-                    channelDetails.add(participants);
+                    resourceDetails.add(participants);
                 }
                 break;
         }
 
         // Check nullable fields.
         if (channel.getDates() != null && !channel.getDates().isEmpty()) {
-            ChannelDetail dates = new ChannelDetail(getString(R.string.channel_dates), channel.getDates(),
+            ResourceDetail dates = new ResourceDetail(getString(R.string.channel_dates), channel.getDates(),
                     R.drawable.ic_schedule_black_36dp);
-            channelDetails.add(dates);
+            resourceDetails.add(dates);
         }
         if (channel.getLocations() != null && !channel.getLocations().isEmpty()) {
-            ChannelDetail locations = new ChannelDetail(getString(R.string.channel_locations), channel.getLocations(),
+            ResourceDetail locations = new ResourceDetail(getString(R.string.channel_locations), channel.getLocations(),
                     R.drawable.ic_room_black_36dp);
-            channelDetails.add(locations);
+            resourceDetails.add(locations);
         }
         if (channel.getWebsite() != null && !channel.getWebsite().isEmpty()) {
-            ChannelDetail website = new ChannelDetail(getString(R.string.channel_website), channel.getWebsite(),
+            ResourceDetail website = new ResourceDetail(getString(R.string.channel_website), channel.getWebsite(),
                     R.drawable.ic_public_black_36dp);
-            channelDetails.add(website);
+            resourceDetails.add(website);
         }
 
-        ChannelDetail contacts = new ChannelDetail(getString(R.string.channel_contacts), channel.getContacts(),
+        ResourceDetail contacts = new ResourceDetail(getString(R.string.channel_contacts), channel.getContacts(),
                 R.drawable.ic_account_circle_black_36dp);
-        ChannelDetail creationDate = new ChannelDetail(getString(R.string.channel_creation_date),
+        ResourceDetail creationDate = new ResourceDetail(getString(R.string.channel_creation_date),
                 ChannelController.getFormattedDateLong(channel.getCreationDate()), R.drawable.ic_today_black_36dp);
-        ChannelDetail modificationDate = new ChannelDetail(getString(R.string.channel_modification_date),
+        ResourceDetail modificationDate = new ResourceDetail(getString(R.string.channel_modification_date),
                 ChannelController.getFormattedDateLong(channel.getModificationDate()), R.drawable.ic_event_black_36dp);
-        channelDetails.add(contacts);
-        channelDetails.add(creationDate);
-        channelDetails.add(modificationDate);
+        resourceDetails.add(contacts);
+        resourceDetails.add(creationDate);
+        resourceDetails.add(modificationDate);
     }
 
     /**
@@ -385,7 +385,6 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         } else {
             errorMessage = getString(R.string.general_error_no_connection);
             errorMessage += " " + getString(R.string.general_error_refresh);
-            // Only show error message if refreshing was triggered manually.
             toast.setText(errorMessage);
             toast.show();
             // Can't refresh. Hide loading animation.
@@ -427,7 +426,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             channelDBM.updateChannel(channel);
             this.channel = channel;
             setChannelDetails();
-            listAdapter.setChannelDetails(channelDetails);
+            listAdapter.setResourceDetails(resourceDetails);
             listAdapter.notifyDataSetChanged();
         }
 
@@ -440,7 +439,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             toast.setText(message);
             toast.show();
         } else {
-            // Only show up to date message if a manual refresh was triggered.
+            // Otherwise show up to date message.
             String message = getString(R.string.channel_info_up_to_date);
             toast.setText(message);
             toast.show();

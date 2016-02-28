@@ -18,6 +18,7 @@ public class YesNoDialogFragment extends AppCompatDialogFragment {
     public static final String DIALOG_TEXT = "dialogText";
     public static final String DIALOG_CHANNEL_UNSUBSCRIBE = "dialogChannelUnsubscribe";
     public static final String DIALOG_CHANNEL_DELETE = "dialogChannelDelete";
+    public static final String DIALOG_REMINDER_DELETE = "dialogReminderDelete";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -52,10 +53,18 @@ public class YesNoDialogFragment extends AppCompatDialogFragment {
         // Verify that the host fragment implements the callback interface.
         try {
             // Instantiate the DialogListener so we can send events to the host.
-            listener = (DialogListener) getTargetFragment();
+            if (getTargetFragment() != null) {
+                listener = (DialogListener) getTargetFragment();
+            } else {
+                listener = (DialogListener) getActivity();
+            }
         } catch (ClassCastException e) {
             // The target fragment doesn't implement the interface, throw exception.
-            throw new ClassCastException(getTargetFragment().toString() + " must implement DialogListener.");
+            if (getTargetFragment() != null) {
+                throw new ClassCastException(getTargetFragment().toString() + " must implement DialogListener.");
+            } else {
+                throw new ClassCastException(getActivity().toString() + " must implement DialogListener.");
+            }
         }
     }
 }

@@ -106,7 +106,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Reminder reminder = (Reminder) lvReminders.getItemAtPosition(position);
-                Intent intent = new Intent(arg0.getContext(), ReminderEditActivity.class);
+                Intent intent = new Intent(arg0.getContext(), ReminderDetailActivity.class);
                 intent.putExtra("reminderId", reminder.getId());
                 startActivity(intent);
             }
@@ -194,13 +194,13 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
 
         if (newReminders) {
             // If reminder data was updated show message no matter if it was a manual or auto refresh.
-            String message = getString(R.string.reminder_info_updated);
+            String message = getString(R.string.reminders_info_updated);
             toast.setText(message);
             toast.show();
         } else {
             if (!isAutoRefresh) {
                 // Only show up to date message if a manual refresh was triggered.
-                String message = getString(R.string.reminder_info_up_to_date);
+                String message = getString(R.string.reminders_info_up_to_date);
                 toast.setText(message);
                 toast.show();
             }
@@ -258,6 +258,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(ChannelDatabaseManager.STORE_REMINDER);
                 filter.addAction(ChannelDatabaseManager.UPDATE_REMINDER);
+                filter.addAction(ChannelDatabaseManager.DELETE_REMINDER);
                 return filter;
             }
         });

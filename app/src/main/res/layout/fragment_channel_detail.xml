@@ -17,7 +17,8 @@
         <ListView
             android:id="@+id/fragment_channel_detail_lv_channel_details"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:listSelector="@android:color/transparent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
