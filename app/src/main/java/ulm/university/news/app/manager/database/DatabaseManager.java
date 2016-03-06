@@ -25,6 +25,30 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /** SQL statement to enable foreign key support. */
     private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";
 
+    // Columns of the Settings table.
+    public static final String SETTINGS_TABLE = "Settings";
+    public static final String SETTINGS_ID = "_id";
+    public static final String SETTINGS_CHANNEL = "ChannelSettings";
+    public static final String SETTINGS_CONVERSATION = "ConversationSettings";
+    public static final String SETTINGS_GROUP = "GroupSettings";
+    public static final String SETTINGS_BALLOT = "BallotSettings";
+    public static final String SETTINGS_ANNOUNCEMENT = "AnnouncementSettings";
+    public static final String SETTINGS_GENERAL = "GeneralSettings";
+    public static final String SETTINGS_LANGUAGE = "LanguageSettings";
+    public static final String SETTINGS_NOTIFICATION = "NotificationSettings";
+
+    /** SQL statement to create the Settings table. */
+    private static final String CREATE_TABLE_SETTINGS = "CREATE TABLE " + SETTINGS_TABLE + "("
+            + SETTINGS_ID + " INTEGER PRIMARY KEY NOT NULL, "
+            + SETTINGS_CHANNEL + " INTEGER NOT NULL, "
+            + SETTINGS_CONVERSATION + " INTEGER NOT NULL, "
+            + SETTINGS_GROUP + " INTEGER NOT NULL, "
+            + SETTINGS_BALLOT + " INTEGER NOT NULL, "
+            + SETTINGS_ANNOUNCEMENT + " INTEGER NOT NULL, "
+            + SETTINGS_GENERAL + " INTEGER NOT NULL, "
+            + SETTINGS_LANGUAGE + " INTEGER NOT NULL, "
+            + SETTINGS_NOTIFICATION + " INTEGER NOT NULL);";
+
     // Columns of the LocalUser table.
     public static final String LOCAL_USER_TABLE = "LocalUser";
     public static final String LOCAL_USER_ID = "_id";
@@ -114,6 +138,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + CHANNEL_DATES + " TEXT, "
             + CHANNEL_WEBSITE + " TEXT, "
+            + SETTINGS_NOTIFICATION + " INTEGER, "
             + CHANNEL_DELETED + " INTEGER NOT NULL);";
 
     // Column of the SubscribedChannels table.
@@ -257,6 +282,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + GROUP_TERM + " TEXT, "
             + GROUP_DELETED + " INTEGER NOT NULL, "
             + GROUP_ADMIN + " INTEGER NOT NULL, "
+            + SETTINGS_NOTIFICATION + " INTEGER, "
             + "FOREIGN KEY(" + GROUP_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
 
     // Column of the UserGroup table.
@@ -435,6 +461,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         database.execSQL(CREATE_TABLE_USER_GROUP);
         Log.i(TAG, CREATE_TABLE_MODERATOR_CHANNEL);
         database.execSQL(CREATE_TABLE_MODERATOR_CHANNEL);
+        Log.i(TAG, CREATE_TABLE_SETTINGS);
+        database.execSQL(CREATE_TABLE_SETTINGS);
     }
 
     @Override
@@ -461,6 +489,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + SUBSCRIBED_CHANNELS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_GROUP_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MODERATOR_CHANNEL_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SETTINGS_TABLE);
         onCreate(db);
     }
 

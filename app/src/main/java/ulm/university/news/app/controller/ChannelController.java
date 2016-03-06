@@ -154,7 +154,8 @@ public class ChannelController {
         if (isSubscribed) {
             // If deleted channel is subscribed, just mark channel as deleted and keep in in local database.
             channelDBM.setChannelToDeleted(channelId);
-            // TODO Also show a dialog which explains that the channel was delete from the server.
+            // Create local announcement which describes that the channel was deleted from the server.
+            Announcement a = new Announcement();
         } else {
             // If deleted channel isn't subscribed, delete it from local database.
             channelDBM.deleteChannel(channelId);

@@ -457,7 +457,6 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         String action = busEvent.getAction();
         if (ChannelAPI.SUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.subscribeChannel(channel.getId());
-            // TODO Load responsible moderators once and after push message MODERATOR_ADD?
             ChannelAPI.getInstance(getContext()).getResponsibleModerators(channel.getId());
             Intent intent = new Intent(getActivity(), ChannelActivity.class);
             intent.putExtra("channelId", channel.getId());
@@ -465,7 +464,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             getActivity().finish();
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
-            // TODO Delete announcements and reminders of channel!? ON DELETE CASCADE?
+            // TODO Delete announcements of channel!
             // channelDBM.deleteAnnouncements(channel.getId());
             // Delete unsubscribed channel if it was marked as deleted.
             if (channel.isDeleted()) {

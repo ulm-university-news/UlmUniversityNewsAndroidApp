@@ -24,6 +24,7 @@ import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.enums.Platform;
+import ulm.university.news.app.manager.database.SettingsDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.manager.push.PushTokenGenerationService;
 import ulm.university.news.app.util.Constants;
@@ -169,7 +170,10 @@ public class CreateAccountActivity extends AppCompatActivity {
     public void onEventMainThread(LocalUser localUser) {
         // Store localUser in database.
         new UserDatabaseManager(this).storeLocalUser(localUser);
+        // Set the users server access token.
         Util.getInstance(this).setCurrentAccessToken();
+        // Create and store the default settings.
+        new SettingsDatabaseManager(this).createDefaultSettings();
 
         // Update view.
         showCreatedView();

@@ -279,6 +279,7 @@ public class ModeratorMainActivity extends AppCompatActivity
      * @param channels The channel list to process.
      */
     public void processChannelData(List<Channel> channels) {
+        // TODO Check which channels are not moderated actively anymore.
         // Store or update channels in the database and update local channel list.
         Integer localChannelListId = null;
         boolean newChannels = false;

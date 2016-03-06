@@ -176,7 +176,7 @@ public class Util {
      *
      * @param channels The channel list.
      */
-    private void sortChannelsTypeName(List<Channel> channels) {
+    private void sortChannelsType(List<Channel> channels) {
         Collections.sort(channels, new Comparator<Channel>() {
             public int compare(Channel c1, Channel c2) {
                 int res = c1.getType().compareTo(c2.getType());

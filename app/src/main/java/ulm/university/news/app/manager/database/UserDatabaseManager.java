@@ -60,7 +60,7 @@ public class UserDatabaseManager {
         LocalUser localUser = null;
         SQLiteDatabase db = dbm.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM " + LOCAL_USER_TABLE + ";";
+        String selectQuery = "SELECT * FROM " + LOCAL_USER_TABLE;
         Log.d(TAG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
