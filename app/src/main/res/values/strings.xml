@@ -87,6 +87,7 @@
 
     <!-- SettingsUserActivity ###################################################################################### -->
     <string name="activity_settings_user_title">User Settings</string>
+    <string name="activity_settings_user_info">Your current user name is %1$s.\nYou can change this name below.</string>
 
     <!-- SettingsNotificationActivity ############################################################################## -->
     <string name="activity_settings_notification_title">Notification Settings</string>
@@ -303,6 +304,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- User ###################################################################################################### -->
+    <string name="user_edited">User updated successfully.</string>
+    <string name="user_name_not_changed">The user name hasn\'t changed.</string>
+
 </resources>

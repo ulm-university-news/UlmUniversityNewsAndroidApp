@@ -14,4 +14,58 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/activity_settings_user_tv_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border_info"
+                android:padding="10dp"
+                android:scrollbars="vertical"/>
+
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_settings_user_til_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/activity_settings_user_tv_error"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border_error"
+                android:padding="10dp"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/activity_settings_user_pgr_edit_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/activity_settings_user_btn_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:text="@string/general_edit"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

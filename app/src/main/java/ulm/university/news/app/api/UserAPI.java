@@ -5,6 +5,7 @@ import android.util.Log;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.util.Util;
 
 /**
  * The UserAPI is responsible for sending requests regarding the user resource. Required data is handed over from
@@ -68,6 +69,30 @@ public class UserAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, serverAddressUser);
+        rTask.setBody(jsonUser);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * updates the local user account on the server.
+     *
+     * @param localUser The localUser object including the updated data of the new localUser.
+     */
+    public void updateLocalUser(LocalUser localUser) {
+        String url = serverAddressUser + "/" + localUser.getId();
+        // Parse localUser object to JSON String.
+        String jsonUser = gson.toJson(localUser, LocalUser.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                LocalUser localUser = gson.fromJson(json, LocalUser.class);
+                EventBus.getDefault().post(localUser);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         rTask.setBody(jsonUser);
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
