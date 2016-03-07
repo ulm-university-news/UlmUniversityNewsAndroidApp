@@ -22,6 +22,7 @@
     <string name="general_error_input">Invalid field(s) found.</string>
     <string name="general_error_input_field_invalid">is invalid.</string>
     <string name="general_error_input_field_empty">is empty.</string>
+    <string name="general_settings_updated">Settings updated successfully.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="activity_start_title">StartActivity</string>
@@ -91,6 +92,12 @@
 
     <!-- SettingsNotificationActivity ############################################################################## -->
     <string name="activity_settings_notification_title">Notification Settings</string>
+    <string name="activity_settings_notification_info">Define the behaviour of the app on incoming messages.
+        These settings are used for the whole app. You are able to choose other announcement settings for single
+        channels and groups.</string>
+    <string name="activity_settings_notification_rb_all">Announce all incoming messages.</string>
+    <string name="activity_settings_notification_rb_priority">Announce high priority messages only.</string>
+    <string name="activity_settings_notification_rb_none">Announce no incoming messages.</string>
 
     <!-- SettingsListActivity ###################################################################################### -->
     <string name="activity_settings_lists_title">List Settings</string>

@@ -15,7 +15,6 @@ import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_I
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TABLE;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_ANNOUNCEMENT;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_BALLOT;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_CHANNEL;
@@ -61,7 +60,7 @@ public class SettingsDatabaseManager {
         values.put(SETTINGS_GENERAL, OrderSettings.ASCENDING.ordinal());
         values.put(SETTINGS_LANGUAGE, Language.GERMAN.ordinal());
         values.put(SETTINGS_NOTIFICATION, NotificationSettings.ALL.ordinal());
-        db.insert(LOCAL_USER_TABLE, null, values);
+        db.insert(SETTINGS_TABLE, null, values);
     }
 
     /**
