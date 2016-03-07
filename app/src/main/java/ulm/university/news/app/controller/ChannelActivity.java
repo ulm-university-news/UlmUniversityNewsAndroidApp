@@ -69,7 +69,7 @@ public class ChannelActivity extends AppCompatActivity {
                 NavUtils.navigateUpTo(this, intent);
                 return true;
             case R.id.activity_channel_menu_settings:
-                intent = new Intent(this, ChannelSettingsActivity.class);
+                intent = new Intent(this, SettingsChannelActivity.class);
                 intent.putExtra("channelId", getIntent().getIntExtra("channelId", 0));
                 startActivity(intent);
                 return true;

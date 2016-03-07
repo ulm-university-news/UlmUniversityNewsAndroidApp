@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="ulm.university.news.app"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="ulm.university.news.app"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -111,11 +112,8 @@
                 android:value="ulm.university.news.app.controller.MainActivity"/>
         </activity>
         <activity
-            android:name=".controller.SettingsActivity"
-            android:label="@string/activity_settings_title">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ulm.university.news.app.controller.MainActivity"/>
+            android:name=".controller.SettingsUserActivity"
+            android:label="@string/activity_settings_user_title">
         </activity>
         <activity
             android:name=".controller.LoginActivity"
@@ -126,7 +124,7 @@
             android:label="@string/activity_moderator_main_title"
             android:theme="@style/UlmUniversity.Main">
         </activity>
-        <activity android:name=".controller.ChannelSettingsActivity">
+        <activity android:name=".controller.SettingsChannelActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ChannelActivity"/>
@@ -171,11 +169,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
         </activity>
-        <activity android:name=".controller.ReminderDetailActivity"
-                  android:label="@string/activity_reminder_detail_title">
+        <activity
+            android:name=".controller.ReminderDetailActivity"
+            android:label="@string/activity_reminder_detail_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.ModeratorChannelActivity"/>
+        </activity>
+        <activity
+            android:name=".controller.SettingsNotificationActivity"
+            android:label="@string/activity_settings_notification_title">
+        </activity>
+        <activity
+            android:name=".controller.SettingsListActivity"
+            android:label="@string/activity_settings_lists_title">
+        </activity>
+        <activity
+            android:name=".controller.AboutActivity"
+            android:label="@string/activity_about_title">
         </activity>
     </application>
 

@@ -100,18 +100,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.activity_main_nav_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-        } else if (id == R.id.activity_main_nav_about) {
-            startActivity(new Intent(this, LoginActivity.class));
-        } else if (id == R.id.activity_main_nav_login) {
-            startActivity(new Intent(this, LoginActivity.class));
+        switch (id){
+            case R.id.activity_main_nav_settings_user:
+                startActivity(new Intent(this, SettingsUserActivity.class));
+                break;
+            case R.id.activity_main_nav_settings_notification:
+                startActivity(new Intent(this, SettingsNotificationActivity.class));
+                break;
+            case R.id.activity_main_nav_settings_lists:
+                startActivity(new Intent(this, SettingsListActivity.class));
+                break;
+            case R.id.activity_main_nav_login:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.activity_main_nav_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawer_layout);

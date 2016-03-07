@@ -179,13 +179,19 @@ public class ModeratorMainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.activity_moderator_main_nav_settings) {
-
-        } else if (id == R.id.activity_moderator_main_nav_about) {
-
-        } else if (id == R.id.activity_moderator_main_nav_logout) {
-            logout();
+        switch (id){
+            case R.id.activity_moderator_main_nav_settings_notification:
+                startActivity(new Intent(this, SettingsNotificationActivity.class));
+                break;
+            case R.id.activity_moderator_main_nav_settings_lists:
+                startActivity(new Intent(this, SettingsListActivity.class));
+                break;
+            case R.id.activity_moderator_main_nav_logout:
+                logout();
+                break;
+            case R.id.activity_moderator_main_nav_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_moderator_main_drawer_layout);
