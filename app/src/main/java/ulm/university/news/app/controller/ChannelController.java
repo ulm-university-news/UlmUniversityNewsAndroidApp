@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.ChannelAPI;
@@ -62,6 +63,78 @@ public class ChannelController {
             // Use main color for other channels.
             activity.setTheme(R.style.UlmUniversity_Main);
         }
+    }
+
+    /**
+     * Chooses the appropriate icon for the given channel.
+     *
+     * @param channel The channel.
+     * @return The resource id of the channel icon.
+     */
+    public static int getChannelIcon(Channel channel) {
+        int channelIcon = R.drawable.ic_u;
+        // Get current language.
+        String language = Locale.getDefault().getLanguage();
+
+        // Set appropriate channel icon.
+        switch (channel.getType()) {
+            case LECTURE:
+                Lecture lecture = (Lecture) channel;
+                // Set icon with appropriate faculty color.
+                switch (lecture.getFaculty()) {
+                    case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
+                        if (language.equals("de")) {
+                            channelIcon = R.drawable.ic_v_informatics;
+                        } else {
+                            channelIcon = R.drawable.ic_l_informatics;
+                        }
+                        break;
+                    case MATHEMATICS_ECONOMICS:
+                        if (language.equals("de")) {
+                            channelIcon = R.drawable.ic_v_mathematics;
+                        } else {
+                            channelIcon = R.drawable.ic_l_mathematics;
+                        }
+                        break;
+                    case MEDICINES:
+                        if (language.equals("de")) {
+                            channelIcon = R.drawable.ic_v_medicines;
+                        } else {
+                            channelIcon = R.drawable.ic_l_medicines;
+                        }
+                        break;
+                    case NATURAL_SCIENCES:
+                        if (language.equals("de")) {
+                            channelIcon = R.drawable.ic_v_science;
+                        } else {
+                            channelIcon = R.drawable.ic_l_science;
+                        }
+                        break;
+                }
+                break;
+            case EVENT:
+                channelIcon = R.drawable.ic_e;
+                break;
+            case SPORTS:
+                channelIcon = R.drawable.ic_s;
+                break;
+            case STUDENT_GROUP:
+                channelIcon = R.drawable.ic_g;
+                break;
+            case OTHER:
+                if (language.equals("de")) {
+                    channelIcon = R.drawable.ic_a;
+                } else {
+                    channelIcon = R.drawable.ic_o;
+                }
+                break;
+        }
+
+        // If channel is marked as deleted, set deleted icon.
+        if (channel.isDeleted()) {
+            channelIcon = R.drawable.ic_deleted;
+        }
+        return channelIcon;
     }
 
     public static void storeAnnouncements(Context context, List<Announcement> announcements) {

@@ -179,7 +179,7 @@ public class ModeratorMainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.activity_moderator_main_nav_settings_notification:
                 startActivity(new Intent(this, SettingsNotificationActivity.class));
                 break;
@@ -252,7 +252,9 @@ public class ModeratorMainActivity extends AppCompatActivity
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
             // Update responsible channels when activity is created.
-            ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getLoggedInModerator().getId(), null);
+            if (Util.getInstance(this).getLoggedInModerator() != null) {
+                ChannelAPI.getInstance(this).getChannels(Util.getInstance(this).getLoggedInModerator().getId(), null);
+            }
         } else {
             if (!isAutoRefresh) {
                 errorMessage = getString(R.string.general_error_no_connection);

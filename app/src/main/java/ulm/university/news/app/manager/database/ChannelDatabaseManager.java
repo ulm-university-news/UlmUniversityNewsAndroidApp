@@ -910,7 +910,7 @@ public class ChannelDatabaseManager {
         return messageNumber;
     }
 
-    private int getNumberOfUnreadAnnouncements(int channelId) {
+    public int getNumberOfUnreadAnnouncements(int channelId) {
         int count = 0;
         SQLiteDatabase db = dbm.getReadableDatabase();
         String announcementsQuery = "SELECT * FROM " + MESSAGE_TABLE +

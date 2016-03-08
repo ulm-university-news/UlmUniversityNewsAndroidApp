@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.Lecture;
 
 /**
  * TODO
@@ -49,12 +49,10 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             convertView = vi.inflate(R.layout.channel_list_item, parent, false);
-            // convertView = vi.inflate(R.layout.channel_list_item, parent, false);
         }
 
         Channel channel = getItem(position);
@@ -63,8 +61,8 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             TextView tvName = (TextView) convertView.findViewById(R.id.channel_list_item_tv_name);
             TextView tvType = (TextView) convertView.findViewById(R.id.channel_list_item_tv_type);
             TextView tvTerm = (TextView) convertView.findViewById(R.id.channel_list_item_tv_term);
-            TextView tvIcon = (TextView) convertView.findViewById(R.id.channel_list_item_tv_icon);
             TextView tvNew = (TextView) convertView.findViewById(R.id.channel_list_item_tv_new);
+            ImageView ivIcon = (ImageView) convertView.findViewById(R.id.channel_list_item_iv_icon);
 
             String typeName;
             switch (channel.getType()) {
@@ -93,7 +91,7 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
             Integer number = channel.getNumberOfUnreadAnnouncements();
             if (number != null && number > 0) {
                 if (number > 99) {
-                    tvNew.setText("" + 99);
+                    tvNew.setText(String.valueOf(99));
                 } else {
                     tvNew.setText(number.toString());
                 }
@@ -102,49 +100,8 @@ public class ChannelListAdapter extends ArrayAdapter<Channel> {
                 tvNew.setVisibility(View.GONE);
             }
 
-            // Set appropriate channel icon.
-            switch (channel.getType()) {
-                case LECTURE:
-                    tvIcon.setText(getContext().getString(R.string.lecture_symbol));
-                    Lecture lecture = (Lecture) channel;
-                    // Set icon with appropriate faculty color.
-                    switch (lecture.getFaculty()) {
-                        case ENGINEERING_COMPUTER_SCIENCE_PSYCHOLOGY:
-                            tvIcon.setBackgroundResource(R.drawable.circle_informatics);
-                            break;
-                        case MATHEMATICS_ECONOMICS:
-                            tvIcon.setBackgroundResource(R.drawable.circle_mathematics);
-                            break;
-                        case MEDICINES:
-                            tvIcon.setBackgroundResource(R.drawable.circle_medicines);
-                            break;
-                        case NATURAL_SCIENCES:
-                            tvIcon.setBackgroundResource(R.drawable.circle_sciences);
-                            break;
-                    }
-                    break;
-                case EVENT:
-                    tvIcon.setText(getContext().getString(R.string.event_symbol));
-                    tvIcon.setBackgroundResource(R.drawable.circle_main);
-                    break;
-                case SPORTS:
-                    tvIcon.setText(getContext().getString(R.string.sports_symbol));
-                    tvIcon.setBackgroundResource(R.drawable.circle_main);
-                    break;
-                case STUDENT_GROUP:
-                    tvIcon.setText(getContext().getString(R.string.student_group_symbol));
-                    tvIcon.setBackgroundResource(R.drawable.circle_main);
-                    break;
-                case OTHER:
-                    tvIcon.setText(getContext().getString(R.string.other_symbol));
-                    tvIcon.setBackgroundResource(R.drawable.circle_main);
-                    break;
-            }
-
-            // If channel is marked as deleted, set deleted icon.
-            if(channel.isDeleted()) {
-                tvIcon.setBackgroundResource(R.drawable.circle_deleted);
-            }
+            // Set channel icon.
+            ivIcon.setImageResource(ChannelController.getChannelIcon(channel));
         }
         return convertView;
     }

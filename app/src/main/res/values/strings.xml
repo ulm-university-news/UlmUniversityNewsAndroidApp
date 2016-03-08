@@ -26,6 +26,7 @@
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
+    <string name="push_message_new_announcements">New announcements posted.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="activity_start_title">StartActivity</string>
