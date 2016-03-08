@@ -24,6 +24,9 @@
     <string name="general_error_input_field_empty">is empty.</string>
     <string name="general_settings_updated">Settings updated successfully.</string>
 
+    <!-- PushMessages ############################################################################################## -->
+    <string name="push_message_new_announcement">New announcement posted.</string>
+
     <!-- StartActivity ############################################################################################# -->
     <string name="activity_start_title">StartActivity</string>
 
