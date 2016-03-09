@@ -7,7 +7,7 @@ package ulm.university.news.app.data.enums;
  * @author Philipp Speidel
  */
 public enum NotificationSettings {
-    ALL, PRIORITY, NONE;
+    ALL, PRIORITY, NONE, GENERAL;
 
     public static final NotificationSettings values[] = values();
 }

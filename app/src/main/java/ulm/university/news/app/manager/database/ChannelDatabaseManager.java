@@ -21,6 +21,7 @@ import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.data.enums.ChannelType;
 import ulm.university.news.app.data.enums.Faculty;
+import ulm.university.news.app.data.enums.NotificationSettings;
 import ulm.university.news.app.data.enums.Priority;
 import ulm.university.news.app.util.Util;
 
@@ -74,6 +75,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_TITLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_NOTIFICATION;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_COST;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_PARTICIPANTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.SPORTS_TABLE;
@@ -136,6 +138,7 @@ public class ChannelDatabaseManager {
             channelValues.put(CHANNEL_WEBSITE, channel.getWebsite());
             channelValues.put(CHANNEL_DELETED, false);
             channelValues.put(CHANNEL_DELETED_READ, false);
+            channelValues.put(SETTINGS_NOTIFICATION, NotificationSettings.GENERAL.ordinal());
 
             // If there are two insert statements make sure that they are performed in one transaction.
             db.beginTransaction();

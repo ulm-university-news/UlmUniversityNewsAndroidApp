@@ -91,12 +91,17 @@ public class PushGcmListenerService extends GcmListenerService {
                 int channelId = pushMessage.getId1();
                 ChannelController.deleteChannel(getApplicationContext(), channelId);
                 // Notify user as if this push message had the priority HIGH.
-                NotificationSettings notificationSettings = settingsDBM.getSettings().getNotificationSettings();
+                NotificationSettings notificationSettings = settingsDBM.getChannelNotificationSettings(channelId);
+                if (notificationSettings == NotificationSettings.GENERAL) {
+                    notificationSettings = settingsDBM.getSettings().getNotificationSettings();
+                }
                 if (!notificationSettings.equals(NotificationSettings.NONE)) {
                     sendChannelDeletedNotification(channelId);
                 }
                 break;
             case CHANNEL_CHANGED:
+                // Load updated channel data from server.
+                ChannelAPI.getInstance(getApplicationContext()).getChannel(pushMessage.getId1());
                 break;
             case MODERATOR_ADDED:
                 break;
@@ -227,9 +232,13 @@ public class PushGcmListenerService extends GcmListenerService {
 
         // Check if new announcements were loaded.
         if (!event.getAnnouncements().isEmpty()) {
+            int channelId = event.getAnnouncements().get(0).getChannelId();
             // Defines whether the user should be notified or not.
             boolean showNotification = false;
-            NotificationSettings notificationSettings = settingsDBM.getSettings().getNotificationSettings();
+            NotificationSettings notificationSettings = settingsDBM.getChannelNotificationSettings(channelId);
+            if (notificationSettings == NotificationSettings.GENERAL) {
+                notificationSettings = settingsDBM.getSettings().getNotificationSettings();
+            }
             switch (notificationSettings) {
                 case ALL:
                     showNotification = true;
@@ -257,8 +266,20 @@ public class PushGcmListenerService extends GcmListenerService {
 
             if (showNotification) {
                 // Show a separate notification for each channel.
-                sendAnnouncementNotification(event.getAnnouncements().get(0).getChannelId());
+                sendAnnouncementNotification(channelId);
             }
         }
+    }
+
+    /**
+     * This method will be called when a channel is posted to the EventBus.
+     *
+     * @param channel The bus event containing a channel object.
+     */
+    public void onEvent(Channel channel) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
+        Log.d(TAG, "EventBus:" + channel.toString());
+        new ChannelDatabaseManager(this).updateChannel(channel);
     }
 }

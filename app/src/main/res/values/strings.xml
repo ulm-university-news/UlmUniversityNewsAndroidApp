@@ -103,6 +103,10 @@
     <string name="activity_settings_notification_rb_all">Announce all incoming messages.</string>
     <string name="activity_settings_notification_rb_priority">Announce high priority messages only.</string>
     <string name="activity_settings_notification_rb_none">Announce no incoming messages.</string>
+    <string name="activity_settings_notification_rb_general">Use general announcement settings.</string>
+    <string name="activity_settings_channel_info">Define the behaviour of the app on incoming messages for this
+        specific channel. These settings are used for this channel only. This settings will override the
+        general notification settings.</string>
 
     <!-- SettingsListActivity ###################################################################################### -->
     <string name="activity_settings_lists_title">List Settings</string>
