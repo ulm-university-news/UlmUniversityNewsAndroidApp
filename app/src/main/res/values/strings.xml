@@ -27,6 +27,7 @@
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
     <string name="push_message_new_announcements">New announcements posted.</string>
+    <string name="push_message_channel_deleted">Channel has been deleted.</string>
 
     <!-- StartActivity ############################################################################################# -->
     <string name="activity_start_title">StartActivity</string>
@@ -223,6 +224,10 @@
     <string name="channel_delete_dialog_text">This channel will be deleted completely. This includes all channel
         data on the server. All subscribers of the channel will be notified that the channel no longer exists. They
         will be able to keep a local copy of the channel.\nDo you really want to delete the channel?</string>
+    <string name="channel_deleted_dialog_title">Channel deleted</string>
+    <string name="channel_deleted_dialog_text">The channel \"%1$s\" has been deleted. Hence, there won\'t be any further
+        activities. Since you subscribed this channel you still have a local copy on your device. If you
+        unsubscribe, the local channel data will be deleted and can\'t be restored.</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>

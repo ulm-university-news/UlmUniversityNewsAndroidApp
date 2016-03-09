@@ -32,6 +32,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_C
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_DATES;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_DELETED;
+import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_DELETED_READ;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_DESCRIPTION;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_ID_FOREIGN;
@@ -95,7 +96,6 @@ public class ChannelDatabaseManager {
 
     public static final String STORE_CHANNEL = "storeChannel";
     public static final String UPDATE_CHANNEL = "updateChannel";
-    public static final String MARK_CHANNEL_DELETED = "markChannelDeleted";
     public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
@@ -135,6 +135,7 @@ public class ChannelDatabaseManager {
             channelValues.put(CHANNEL_DATES, channel.getDates());
             channelValues.put(CHANNEL_WEBSITE, channel.getWebsite());
             channelValues.put(CHANNEL_DELETED, false);
+            channelValues.put(CHANNEL_DELETED_READ, false);
 
             // If there are two insert statements make sure that they are performed in one transaction.
             db.beginTransaction();
@@ -277,7 +278,27 @@ public class ChannelDatabaseManager {
         db.update(CHANNEL_TABLE, values, where, args);
 
         // Notify observers that database content has changed.
-        Intent databaseChanged = new Intent(MARK_CHANNEL_DELETED);
+        Intent databaseChanged = new Intent(UPDATE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Marks a deleted channel. When a channel is marked this way, no channel deleted dialog will show again.
+     *
+     * @param channelId The deleted channel which should be set to read.
+     */
+    public void setChannelDeletedToRead(int channelId) {
+        Log.d(TAG, "Set deleted channel with id " + channelId + " to read.");
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CHANNEL_DELETED_READ, true);
+        String where = CHANNEL_ID + "=?";
+        String[] args = {String.valueOf(channelId)};
+        db.update(CHANNEL_TABLE, values, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_CHANNEL);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
@@ -314,7 +335,7 @@ public class ChannelDatabaseManager {
         ChannelType type;
         Faculty faculty;
         int id;
-        boolean deleted;
+        boolean deleted, deletedRead;
 
         // Get channel data from database.
         Cursor c = db.rawQuery(selectQuery, args);
@@ -331,6 +352,7 @@ public class ChannelDatabaseManager {
             dates = c.getString(c.getColumnIndex(CHANNEL_DATES));
             website = c.getString(c.getColumnIndex(CHANNEL_WEBSITE));
             deleted = c.getInt(c.getColumnIndex(CHANNEL_DELETED)) == 1;
+            deletedRead = c.getInt(c.getColumnIndex(CHANNEL_DELETED_READ)) == 1;
             c.close();
 
             // If necessary get additional channel data and create corresponding channel subclass.
@@ -376,8 +398,9 @@ public class ChannelDatabaseManager {
                             locations, dates, contacts, website);
             }
             if (channel != null) {
-                // Add weather the channel is marked as deleted or not.
+                // Add weather the channel is marked as deleted and if it was read or not.
                 channel.setDeleted(deleted);
+                channel.setDeletedRead(deletedRead);
             }
         }
         Log.d(TAG, "End with " + channel);
@@ -404,7 +427,7 @@ public class ChannelDatabaseManager {
         ChannelType type;
         Faculty faculty;
         int id;
-        boolean deleted;
+        boolean deleted, deletedRead;
 
         // Get channel data from database.
         Cursor cSub;
@@ -422,6 +445,7 @@ public class ChannelDatabaseManager {
             dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
             website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
             deleted = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED)) == 1;
+            deletedRead = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED_READ)) == 1;
             args[0] = String.valueOf(id);
 
             // If necessary get additional channel data and create corresponding channel subclass.
@@ -467,8 +491,9 @@ public class ChannelDatabaseManager {
                             locations, dates, contacts, website);
             }
             if (channel != null) {
-                // Add weather the channel is marked as deleted or not.
+                // Add weather the channel is marked as deleted and if it was read or not.
                 channel.setDeleted(deleted);
+                channel.setDeletedRead(deletedRead);
             }
             // Add created channel to the channel list.
             channels.add(channel);
@@ -501,7 +526,7 @@ public class ChannelDatabaseManager {
         ChannelType type;
         Faculty faculty;
         int id;
-        boolean deleted;
+        boolean deleted, deletedRead;
 
         // Get channel data from database.
         Cursor cSub;
@@ -519,6 +544,7 @@ public class ChannelDatabaseManager {
             dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
             website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
             deleted = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED)) == 1;
+            deletedRead = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED_READ)) == 1;
             args[0] = String.valueOf(id);
 
             // If necessary get additional channel data and create corresponding channel subclass.
@@ -563,10 +589,12 @@ public class ChannelDatabaseManager {
                     channel = new Channel(id, name, description, type, creationDate, modificationDate, term,
                             locations, dates, contacts, website);
             }
-            // Add count of unread announcements and weather the channel is deleted to the channel.
             if (channel != null) {
+                // Add count of unread announcements.
                 channel.setNumberOfUnreadAnnouncements(getNumberOfUnreadAnnouncements(id));
+                // Add weather the channel is marked as deleted and if it was read or not.
                 channel.setDeleted(deleted);
+                channel.setDeletedRead(deletedRead);
             }
             // Add created channel to the channel list.
             channels.add(channel);
@@ -603,7 +631,7 @@ public class ChannelDatabaseManager {
         ChannelType type;
         Faculty faculty;
         int id;
-        boolean deleted;
+        boolean deleted, deletedRead;
 
         // Get channel data from database.
         Cursor cSub;
@@ -622,6 +650,7 @@ public class ChannelDatabaseManager {
             dates = cSup.getString(cSup.getColumnIndex(CHANNEL_DATES));
             website = cSup.getString(cSup.getColumnIndex(CHANNEL_WEBSITE));
             deleted = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED)) == 1;
+            deletedRead = cSup.getInt(cSup.getColumnIndex(CHANNEL_DELETED_READ)) == 1;
             args[0] = String.valueOf(id);
 
             // If necessary get additional channel data and create corresponding channel subclass.
@@ -666,10 +695,12 @@ public class ChannelDatabaseManager {
                     channel = new Channel(id, name, description, type, creationDate, modificationDate, term,
                             locations, dates, contacts, website);
             }
-            // Add count of unread announcements and weather the channel is deleted to the channel.
             if (channel != null) {
+                // Add count of unread announcements.
                 channel.setNumberOfUnreadAnnouncements(getNumberOfUnreadAnnouncements(id));
+                // Add weather the channel is marked as deleted and if it was read or not.
                 channel.setDeleted(deleted);
+                channel.setDeletedRead(deletedRead);
             }
             // Add created channel to the channel list.
             channels.add(channel);

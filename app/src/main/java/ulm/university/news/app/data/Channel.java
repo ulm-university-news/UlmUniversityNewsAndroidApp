@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import ulm.university.news.app.data.enums.ChannelType;
-import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
 /**
  * The Channel class is the superclass of Lecture, Event and Sports. It provides information which are used by all
@@ -50,6 +49,8 @@ public class Channel {
     Integer numberOfUnreadAnnouncements;
     /** Indicates weather the channel is delete on server or not. */
     Boolean deleted;
+    /** Indicates weather the channel deletion dialog was read or not. */
+    Boolean deletedRead;
 
     public Channel() {
     }
@@ -68,22 +69,6 @@ public class Channel {
         this.dates = dates;
         this.contacts = contacts;
         this.website = website;
-    }
-
-    /**
-     * Computes the creation date of the channel. If the creation date was already set, this method does nothing.
-     */
-    public void computeCreationDate() {
-        if (creationDate == null) {
-            creationDate = DateTime.now(TIME_ZONE);
-        }
-    }
-
-    /**
-     * Computes the modification date of the channel.
-     */
-    public void computemModificationDate() {
-        modificationDate = DateTime.now(TIME_ZONE);
     }
 
     @Override
@@ -106,15 +91,8 @@ public class Channel {
                 ", subscribers=" + subscribers +
                 ", numberOfUnreadAnnouncements=" + numberOfUnreadAnnouncements +
                 ", deleted=" + deleted +
+                ", deletedRead=" + deletedRead +
                 '}';
-    }
-
-    public Integer getNumberOfUnreadAnnouncements() {
-        return numberOfUnreadAnnouncements;
-    }
-
-    public void setNumberOfUnreadAnnouncements(Integer numberOfUnreadAnnouncements) {
-        this.numberOfUnreadAnnouncements = numberOfUnreadAnnouncements;
     }
 
     public int getId() {
@@ -243,5 +221,21 @@ public class Channel {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Boolean isDeletedRead() {
+        return deletedRead;
+    }
+
+    public void setDeletedRead(Boolean deletedRead) {
+        this.deletedRead = deletedRead;
+    }
+
+    public Integer getNumberOfUnreadAnnouncements() {
+        return numberOfUnreadAnnouncements;
+    }
+
+    public void setNumberOfUnreadAnnouncements(Integer numberOfUnreadAnnouncements) {
+        this.numberOfUnreadAnnouncements = numberOfUnreadAnnouncements;
     }
 }

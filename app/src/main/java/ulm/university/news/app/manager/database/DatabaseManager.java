@@ -124,6 +124,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String CHANNEL_DATES = "Dates";
     public static final String CHANNEL_WEBSITE = "Website";
     public static final String CHANNEL_DELETED = "Deleted";
+    public static final String CHANNEL_DELETED_READ = "DeletedRead";
 
     /** SQL statement to create the Channel table. */
     private static final String CREATE_TABLE_CHANNEL = "CREATE TABLE " + CHANNEL_TABLE + "("
@@ -139,7 +140,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CHANNEL_DATES + " TEXT, "
             + CHANNEL_WEBSITE + " TEXT, "
             + SETTINGS_NOTIFICATION + " INTEGER, "
-            + CHANNEL_DELETED + " INTEGER NOT NULL);";
+            + CHANNEL_DELETED + " INTEGER NOT NULL, "
+            + CHANNEL_DELETED_READ + " INTEGER NOT NULL);";
 
     // Column of the SubscribedChannels table.
     public static final String SUBSCRIBED_CHANNELS_TABLE = "SubscribedChannels";
