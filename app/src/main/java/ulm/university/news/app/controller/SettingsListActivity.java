@@ -78,7 +78,7 @@ public class SettingsListActivity extends AppCompatActivity {
         RadioButton rbMessagesAsc = (RadioButton) findViewById(R.id.activity_settings_list_rb_messages_asc);
         RadioButton rbMessagesDesc = (RadioButton) findViewById(R.id.activity_settings_list_rb_messages_desc);
 
-        switch (settings.getGeneralSettings()) {
+        switch (settings.getMessageSettings()) {
             case ASCENDING:
                 rbMessagesAsc.setChecked(true);
                 break;

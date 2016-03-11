@@ -60,7 +60,6 @@
                     android:id="@+id/activity_settings_list_rb_general_asc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/activity_settings_list_rb_general_asc"/>
 
                 <RadioButton
@@ -105,7 +104,6 @@
                     android:id="@+id/activity_settings_list_rb_messages_asc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/activity_settings_list_rb_messages_asc"/>
 
                 <RadioButton
@@ -150,7 +148,6 @@
                     android:id="@+id/activity_settings_list_rb_channel_alphabetical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/activity_settings_list_rb_channel_alphabetical"/>
 
                 <RadioButton
@@ -201,7 +198,6 @@
                     android:id="@+id/activity_settings_list_rb_group_alphabetical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/activity_settings_list_rb_group_alphabetical"/>
 
                 <RadioButton

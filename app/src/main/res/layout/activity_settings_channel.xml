@@ -27,12 +27,27 @@
             android:padding="10dp">
 
             <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
+                android:scrollbars="vertical"
+                android:text="@string/activity_settings_notification_title"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
                 android:id="@+id/activity_settings_channel_tv_info"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/border_info"
-                android:padding="10dp"
+                android:layout_marginBottom="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
                 android:scrollbars="vertical"
                 android:text="@string/activity_settings_channel_info"/>
 

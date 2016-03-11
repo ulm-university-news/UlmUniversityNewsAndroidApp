@@ -63,9 +63,6 @@ public class GroupFragment extends Fragment {
             case R.id.activity_main_group_menu_search:
                 startActivity(new Intent(getActivity(), GroupSearchActivity.class));
                 return true;
-            case R.id.activity_main_group_menu_settings:
-                startActivity(new Intent(getActivity(), SettingsUserActivity.class));
-                return true;
             case R.id.activity_main_group_menu_add:
                 startActivity(new Intent(getActivity(), GroupAddActivity.class));
                 return true;

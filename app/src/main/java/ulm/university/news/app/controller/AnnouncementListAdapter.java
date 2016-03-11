@@ -32,19 +32,22 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
      * Updates the data of the AnnouncementListAdapter.
      *
      * @param data The updated announcement list.
+     * @param isAscending Defines if the announcements should be arranged ascending or descending.
      */
-    public void setData(List<Announcement> data) {
+    public void setData(List<Announcement> data, boolean isAscending) {
         clear();
         if (data != null) {
-            /*
-            // DESC
-            for (int i = 0; i < data.size(); i++) {
-                add(data.get(i));
-            }
-            */
-            // ASC
-            for (int i = data.size() - 1; i >= 0; i--) {
-                add(data.get(i));
+            // Arrange announcements according to the message settings.
+            if (isAscending) {
+                // Ascending.
+                for (int i = data.size() - 1; i >= 0; i--) {
+                    add(data.get(i));
+                }
+            } else {
+                // Descending.
+                for (int i = 0; i < data.size(); i++) {
+                    add(data.get(i));
+                }
             }
         }
     }

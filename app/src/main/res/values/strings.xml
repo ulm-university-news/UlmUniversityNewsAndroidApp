@@ -34,7 +34,7 @@
     <string name="push_message_channel_deleted">Channel has been deleted.</string>
 
     <!-- StartActivity ############################################################################################# -->
-    <string name="activity_start_title">StartActivity</string>
+    <string name="activity_start_title">Start activity</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
     <string name="activity_create_account_information">To use this app you need to create a user account. To do that
@@ -56,7 +56,7 @@
         characters and numbers.</string>
 
     <!-- LoginActivity ############################################################################################# -->
-    <string name="activity_login_title">Moderator Login</string>
+    <string name="activity_login_title">Moderator login</string>
     <string name="activity_login_info">Please use your moderator name and moderator password to login.\nIf you don\'t
         have a moderator account, forgot your password or encounter other problems, please visit the following website
         for further information:\nwww.google.de</string>
@@ -71,12 +71,12 @@
     <string name="activity_login_error_deleted">Moderator account was deleted.</string>
 
     <!-- ChannelSearchActivity ##################################################################################### -->
-    <string name="activity_channel_search_title">Search Channel</string>
+    <string name="activity_channel_search_title">Search channel</string>
     <string name="activity_channel_search_hint">Channel name</string>
     <string name="activity_channel_search_updating">No channel data found. Swipe down to refresh.</string>
 
     <!-- GroupSearchActivity ####################################################################################### -->
-    <string name="activity_group_search_title">Search Group</string>
+    <string name="activity_group_search_title">Search group</string>
     <string name="activity_group_search_et_hint_id">Group Id</string>
     <string name="activity_group_search_et_hint_name">Group Name</string>
     <string name="activity_group_search_btn_search">Search Group</string>
@@ -93,16 +93,16 @@
     <string name="activity_group_search_error_not_found">No group found.</string>
 
     <!-- GroupAddActivity ########################################################################################## -->
-    <string name="activity_group_add_title">Add Group</string>
-    <string name="activity_group_add_group_type">Group Type</string>
+    <string name="activity_group_add_title">Add group</string>
+    <string name="activity_group_add_group_type">Group type</string>
 
     <!-- SettingsUserActivity ###################################################################################### -->
-    <string name="activity_settings_user_title">User Settings</string>
+    <string name="activity_settings_user_title">User settings</string>
     <string name="activity_settings_user_info">Your current user name is %1$s.\nYou can change this name below.</string>
-    <string name="activity_settings_user_info_title">User Name</string>
+    <string name="activity_settings_user_info_title">User name</string>
 
     <!-- SettingsNotificationActivity ############################################################################## -->
-    <string name="activity_settings_notification_title">Notification Settings</string>
+    <string name="activity_settings_notification_title">Notification settings</string>
     <string name="activity_settings_notification_info">Define the behaviour of the app on incoming messages.
         These settings are used for the whole app. You are able to choose other announcement settings for single
         channels and groups.</string>
@@ -115,7 +115,7 @@
         general notification settings.</string>
 
     <!-- SettingsListActivity ###################################################################################### -->
-    <string name="activity_settings_list_title">List Settings</string>
+    <string name="activity_settings_list_title">List settings</string>
     <string name="activity_settings_list_channel_info_title">Channel settings</string>
     <string name="activity_settings_list_channel_info">Choose the arrangement criterion for channel lists here.</string>
     <string name="activity_settings_list_rb_channel_alphabetical">Alphabetical</string>
@@ -168,22 +168,22 @@
     <!-- ModeratorMainActivity ##################################################################################### -->
     <string name="activity_moderator_main_nav_moderator">Moderator</string>
     <string name="activity_moderator_main_nav_logout">Logout</string>
-    <string name="activity_moderator_main_title">My Channels</string>
-    <string name="activity_moderator_main_menu_add_channel">Add Channel</string>
+    <string name="activity_moderator_main_title">My channels</string>
+    <string name="activity_moderator_main_menu_add_channel">Add channel</string>
     <string name="activity_moderator_main_channel_list_empty">You\'re currently not moderating any channel.</string>
 
     <!-- ChannelAddActivity ######################################################################################## -->
-    <string name="activity_channel_add_title">Add Channel</string>
+    <string name="activity_channel_add_title">Add channel</string>
     <string name="activity_channel_add_info">The channel type defines which fields are shown. All shown fields with *
         are mandatory. Some special characters are not allowed.</string>
 
     <!-- ChannelEditActivity ####################################################################################### -->
-    <string name="activity_channel_edit_title">Edit Channel</string>
+    <string name="activity_channel_edit_title">Edit channel</string>
     <string name="activity_channel_edit_info">Edit the channel details below. All shown fields with * are mandatory.
         Some special characters are not allowed.</string>
 
     <!-- ReminderAddActivity ####################################################################################### -->
-    <string name="activity_reminder_add_title">Add Reminder</string>
+    <string name="activity_reminder_add_title">Add reminder</string>
     <string name="activity_reminder_add_info">All shown fields are mandatory. TODO</string>
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
@@ -193,13 +193,13 @@
     <string name="activity_reminder_add_error_invalid_dates">The selected dates are invalid.</string>
 
     <!-- ReminderEditActivity ###################################################################################### -->
-    <string name="activity_reminder_edit_title">Edit Reminder</string>
+    <string name="activity_reminder_edit_title">Edit reminder</string>
 
     <!-- ReminderDetailActivity #################################################################################### -->
-    <string name="activity_reminder_detail_title">Reminder Details</string>
+    <string name="activity_reminder_detail_title">Reminder details</string>
 
     <!-- AnnouncementAddActivity ################################################################################### -->
-    <string name="activity_announcement_add_title">Add Announcement</string>
+    <string name="activity_announcement_add_title">Add announcement</string>
 
     <!-- ModeratorChannelActivity ################################################################################## -->
     <string name="activity_moderator_channel_reminder_tab">Reminders</string>
@@ -246,12 +246,12 @@
     <string name="channel_modification_date">Modification date</string>
     <string name="channel_info_updated">Channel data updated.</string>
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
-    <string name="channel_unsubscribe_dialog_title">Unsubscribe Channel</string>
+    <string name="channel_unsubscribe_dialog_title">Unsubscribe channel</string>
     <string name="channel_unsubscribe_dialog_text">This channel will be deleted from your subscribed channels. You
         won\'t be able to receive or read announcements of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
     <string name="channel_edited">Channel changed successfully.</string>
-    <string name="channel_delete_dialog_title">Delete Channel</string>
+    <string name="channel_delete_dialog_title">Delete channel</string>
     <string name="channel_delete_dialog_text">This channel will be deleted completely. This includes all channel
         data on the server. All subscribers of the channel will be notified that the channel no longer exists. They
         will be able to keep a local copy of the channel.\nDo you really want to delete the channel?</string>
@@ -325,7 +325,7 @@
     <string name="reminder_expired">The reminder is expired.</string>
     <string name="reminder_created">Reminder created successfully.</string>
     <string name="reminder_edited">Reminder changed successfully.</string>
-    <string name="reminder_delete_dialog_title">Delete Reminder</string>
+    <string name="reminder_delete_dialog_title">Delete reminder</string>
     <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder events will be sent
         afterwards.\nDo you really want to delete the reminder?</string>
     <string name="reminder_last_edited_by">Last edited by</string>

@@ -30,9 +30,12 @@ import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Moderator;
+import ulm.university.news.app.data.Settings;
+import ulm.university.news.app.data.enums.OrderSettings;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
+import ulm.university.news.app.manager.database.SettingsDatabaseManager;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
@@ -45,6 +48,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     private DatabaseLoader<List<Announcement>> databaseLoader;
     private List<Announcement> announcements;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ListView lvAnnouncements;
 
     private int channelId;
     private Toast toast;
@@ -85,7 +89,7 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_announcement, container, false);
         TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_announcement_tv_list_empty);
-        ListView lvAnnouncements = (ListView) view.findViewById(R.id.fragment_announcement_lv_announcements);
+        lvAnnouncements = (ListView) view.findViewById(R.id.fragment_announcement_lv_announcements);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_announcement_swipe_refresh_layout);
 
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
@@ -297,7 +301,14 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<List<Announcement>> loader, List<Announcement> data) {
         // Update list.
         announcements = data;
-        listAdapter.setData(data);
+        Settings settings = new SettingsDatabaseManager(getContext()).getSettings();
+        if (settings.getMessageSettings().equals(OrderSettings.ASCENDING)) {
+            listAdapter.setData(data, true);
+            lvAnnouncements.setSelection(0);
+        } else {
+            listAdapter.setData(data, false);
+            lvAnnouncements.setSelection(listAdapter.getCount() - 1);
+        }
         listAdapter.notifyDataSetChanged();
 
         // Mark loaded and unread announcements as read after displaying.
@@ -311,6 +322,6 @@ public class AnnouncementFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<List<Announcement>> loader) {
         // Clear adapter data.
-        listAdapter.setData(null);
+        listAdapter.setData(null, false);
     }
 }
