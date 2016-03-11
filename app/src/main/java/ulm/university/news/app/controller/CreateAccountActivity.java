@@ -18,12 +18,18 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import java.util.List;
+
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventChannels;
+import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
+import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.enums.Platform;
+import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.SettingsDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.manager.push.PushTokenGenerationService;
@@ -53,8 +59,12 @@ public class CreateAccountActivity extends AppCompatActivity {
     private TextView tvError;
     private Button btnCreateAccount;
     private Button btnStart;
+    private Button btnRetry;
     private TextInputLabels tilUserName;
     private CheckBox chkTermsOfUse;
+
+    ChannelDatabaseManager channelDBM;
+    LocalUser localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +74,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_create_account_toolbar);
         setSupportActionBar(toolbar);
 
+        channelDBM = new ChannelDatabaseManager(this);
+        localUser = null;
+
         // Initialise GUI elements.
         initGUI();
         // Initialise the broadcast receiver.
         initReceiver();
-        // Display correct view elements.
-        if (Util.getInstance(this).getLocalUser() != null) {
-            showCreatedView();
-        }
     }
 
     @Override
@@ -88,6 +97,14 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        // Invalidate local user if creation wasn't completed successfully.
+        localUser = null;
+        Util.getInstance(this).setLocalUser(null);
+        super.onBackPressed();
+    }
+
     /**
      * Initialises all view elements of this activity.
      */
@@ -98,6 +115,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         tvError = (TextView) findViewById(R.id.activity_create_account_tv_error);
         btnCreateAccount = (Button) findViewById(R.id.activity_create_account_btn_create_account);
         btnStart = (Button) findViewById(R.id.activity_create_account_btn_start);
+        btnRetry = (Button) findViewById(R.id.activity_create_account_btn_retry);
         tilUserName = (TextInputLabels) findViewById(R.id.activity_create_account_til_name);
         chkTermsOfUse = (CheckBox) findViewById(R.id.activity_create_account_chk_terms_of_use);
 
@@ -108,9 +126,18 @@ public class CreateAccountActivity extends AppCompatActivity {
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvInfo.setVisibility(View.GONE);
                 tvError.setVisibility(View.GONE);
                 createAccount();
+            }
+        });
+
+        btnRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvError.setVisibility(View.GONE);
+                btnRetry.setVisibility(View.GONE);
+                pgrCreateAccount.setVisibility(View.VISIBLE);
+                loadChannelData();
             }
         });
 
@@ -168,28 +195,46 @@ public class CreateAccountActivity extends AppCompatActivity {
      * @param localUser The created localUser object retrieved from server.
      */
     public void onEventMainThread(LocalUser localUser) {
-        // Store localUser in database.
-        new UserDatabaseManager(this).storeLocalUser(localUser);
+        this.localUser = localUser;
         // Set the users server access token.
+        Util.getInstance(this).setLocalUser(localUser);
         Util.getInstance(this).setCurrentAccessToken();
-        // Create and store the default settings.
-        new SettingsDatabaseManager(this).createDefaultSettings();
-
+        // User created successfully. Start loading of channel data.
+        loadChannelData();
         // Update view.
         showCreatedView();
     }
 
+    /**
+     * This method will be called when a list of channels is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of channel objects.
+     */
+    public void onEventMainThread(BusEventChannels event) {
+        Log.d(TAG, event.toString());
+        // Channels loaded successfully. Save local user in database now.
+        new UserDatabaseManager(this).storeLocalUser(localUser);
+        // Create and store the default settings.
+        new SettingsDatabaseManager(this).createDefaultSettings();
+        // Store loaded channels in database.
+        List<Channel> channels = event.getChannels();
+        for (Channel channel : channels) {
+            channelDBM.storeChannel(channel);
+        }
+        // Account successfully created. Show button to start main application.
+        btnRetry.setVisibility(View.GONE);
+        pgrCreateAccount.setVisibility(View.GONE);
+        btnStart.setVisibility(View.VISIBLE);
+    }
+
     private void showCreatedView() {
-        // Update view.
         tvWelcome.setVisibility(View.GONE);
         chkTermsOfUse.setVisibility(View.GONE);
         tilUserName.setVisibility(View.GONE);
-        pgrCreateAccount.setVisibility(View.GONE);
         btnCreateAccount.setVisibility(View.GONE);
-        // Account successfully created. Show button to start main application.
-        btnStart.setVisibility(View.VISIBLE);
         tvInfo.setText(getString(R.string.activity_create_account_account_created));
         tvInfo.setVisibility(View.VISIBLE);
+        pgrCreateAccount.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -200,10 +245,8 @@ public class CreateAccountActivity extends AppCompatActivity {
     private void createLocalUser(String pushToken) {
         String name = tilUserName.getText();
         Platform platform = Platform.ANDROID;
-
         LocalUser localUser = new LocalUser(name, pushToken, platform);
-
-        // Sends POST /localUser
+        // Sends the created local user to the server.
         UserAPI.getInstance(this).createLocalUser(localUser);
     }
 
@@ -244,10 +287,13 @@ public class CreateAccountActivity extends AppCompatActivity {
      * @param se The error which occurred on the server.
      */
     public void handleServerError(ServerError se) {
-        // Update view.
-        pgrCreateAccount.setVisibility(View.GONE);
-        btnCreateAccount.setVisibility(View.VISIBLE);
-        tvInfo.setVisibility(View.GONE);
+        // Check if user account was created already. Display correct view elements.
+        if (Util.getInstance(this).getLocalUser() != null) {
+            showCreatedView();
+            btnRetry.setVisibility(View.VISIBLE);
+        } else {
+            btnCreateAccount.setVisibility(View.VISIBLE);
+        }
         // Show appropriate error message.
         switch (se.getErrorCode()) {
             case CONNECTION_FAILURE:
@@ -262,8 +308,11 @@ public class CreateAccountActivity extends AppCompatActivity {
             case USER_PUSH_TOKEN_INVALID:
                 tvError.setText(getString(R.string.general_error_something));
                 break;
+            default:
+                tvError.setText(getString(R.string.general_error_something));
         }
         tvError.setVisibility(View.VISIBLE);
+        pgrCreateAccount.setVisibility(View.GONE);
     }
 
     /**
@@ -284,5 +333,22 @@ public class CreateAccountActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Sends an initial request to the server to get all channel data.
+     */
+    private void loadChannelData() {
+        // Channel refresh is only possible if there is an internet connection.
+        if (Util.getInstance(this).isOnline()) {
+            // Update channels when activity is created. Request all channel data.
+            ChannelAPI.getInstance(this).getChannels(null, null);
+        } else {
+            String errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            tvError.setText(errorMessage);
+            tvError.setVisibility(View.VISIBLE);
+            btnRetry.setVisibility(View.VISIBLE);
+        }
     }
 }

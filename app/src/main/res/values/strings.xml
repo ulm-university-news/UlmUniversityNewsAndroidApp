@@ -37,15 +37,16 @@
     <string name="activity_start_title">StartActivity</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
-    <string name="activity_create_account_information">Welcome to the Ulm University News App.\n\nTo use this
-        app you need to create a user account. To do that you just have to enter a user name below and accept
-        the terms of use.These are:\nTODO</string>
+    <string name="activity_create_account_information">To use this app you need to create a user account. To do that
+        you just have to enter a user name below and accept the terms of use.These are:\nTODO</string>
+    <string name="activity_create_account_welcome">Welcome to the Ulm University News App!</string>
     <string name="activity_create_account_creating_account">Creating user account&#8230;</string>
     <string name="activity_create_account_checkbox">I accept the terms of use.</string>
     <string name="activity_create_account_button_create">Create account</string>
     <string name="activity_create_account_button_start">Start</string>
-    <string name="activity_create_account_account_created">User account has been created successfully. You\'re
-    now ready to use this app.</string>
+    <string name="activity_create_account_button_retry">Retry</string>
+    <string name="activity_create_account_account_created">Your user account has been created successfully. The app is
+        now loading the channel data. Once finished, click on the appearing start button to use the app.</string>
     <string name="activity_create_account_error_checkbox">You need to accept the terms of use.</string>
     <string name="activity_create_account_error_token">An error occurred while either fetching the InstanceID token,
         sending the fetched token to the server or subscribing to the PubSub topic. Please try again.</string>

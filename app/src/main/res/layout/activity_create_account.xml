@@ -25,13 +25,27 @@
             android:padding="10dp">
 
             <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
+                android:scrollbars="vertical"
+                android:text="@string/activity_create_account_welcome"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <TextView
                 android:id="@+id/activity_create_account_tv_welcome"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/border_info"
-                android:maxLines="10000"
-                android:padding="10dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
                 android:scrollbars="vertical"
                 android:text="@string/activity_create_account_information"/>
 
@@ -57,12 +71,16 @@
                 android:text="@string/activity_create_account_button_create"
                 android:textColor="@color/black"/>
 
-            <ProgressBar
-                android:id="@+id/activity_create_account_pgr_create_account"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/activity_create_account_tv_info"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
+                android:paddingBottom="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
                 android:visibility="gone"/>
 
             <TextView
@@ -74,13 +92,14 @@
                 android:padding="10dp"
                 android:visibility="gone"/>
 
-            <TextView
-                android:id="@+id/activity_create_account_tv_info"
-                android:layout_width="fill_parent"
+            <Button
+                android:id="@+id/activity_create_account_btn_retry"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/border_info"
-                android:padding="10dp"
+                android:text="@string/activity_create_account_button_retry"
+                android:textColor="@color/black"
                 android:visibility="gone"/>
 
             <Button
@@ -91,6 +110,14 @@
                 android:layout_marginBottom="10dp"
                 android:text="@string/activity_create_account_button_start"
                 android:textColor="@color/black"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/activity_create_account_pgr_create_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
                 android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
