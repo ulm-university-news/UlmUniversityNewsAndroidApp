@@ -15,7 +15,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_I
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TABLE;
-import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_ANNOUNCEMENT;
+import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_MESSAGE;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_BALLOT;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_CHANNEL;
 import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_CONVERSATION;
@@ -56,7 +56,7 @@ public class SettingsDatabaseManager {
         values.put(SETTINGS_CONVERSATION, OrderSettings.LATEST_DATE.ordinal());
         values.put(SETTINGS_GROUP, OrderSettings.ALPHABETICAL.ordinal());
         values.put(SETTINGS_BALLOT, OrderSettings.LATEST_DATE.ordinal());
-        values.put(SETTINGS_ANNOUNCEMENT, OrderSettings.ASCENDING.ordinal());
+        values.put(SETTINGS_MESSAGE, OrderSettings.ASCENDING.ordinal());
         values.put(SETTINGS_GENERAL, OrderSettings.ASCENDING.ordinal());
         values.put(SETTINGS_LANGUAGE, Language.GERMAN.ordinal());
         values.put(SETTINGS_NOTIFICATION, NotificationSettings.ALL.ordinal());
@@ -79,7 +79,7 @@ public class SettingsDatabaseManager {
         if (c != null && c.moveToFirst()) {
             settings = new Settings();
             settings.setChannelSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_CHANNEL))]);
-            settings.setAnnouncementSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_ANNOUNCEMENT))]);
+            settings.setMessageSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_MESSAGE))]);
             settings.setConversationSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_CONVERSATION))]);
             settings.setBallotSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_BALLOT))]);
             settings.setGeneralSettings(OrderSettings.values[c.getInt(c.getColumnIndex(SETTINGS_GENERAL))]);
@@ -104,7 +104,7 @@ public class SettingsDatabaseManager {
 
         ContentValues values = new ContentValues();
         values.put(SETTINGS_CHANNEL, settings.getChannelSettings().ordinal());
-        values.put(SETTINGS_ANNOUNCEMENT, settings.getAnnouncementSettings().ordinal());
+        values.put(SETTINGS_MESSAGE, settings.getMessageSettings().ordinal());
         values.put(SETTINGS_CONVERSATION, settings.getConversationSettings().ordinal());
         values.put(SETTINGS_BALLOT, settings.getBallotSettings().ordinal());
         values.put(SETTINGS_GENERAL, settings.getGeneralSettings().ordinal());

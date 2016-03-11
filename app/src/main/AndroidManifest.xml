@@ -182,7 +182,7 @@
         </activity>
         <activity
             android:name=".controller.SettingsListActivity"
-            android:label="@string/activity_settings_lists_title">
+            android:label="@string/activity_settings_list_title">
         </activity>
         <activity
             android:name=".controller.AboutActivity"

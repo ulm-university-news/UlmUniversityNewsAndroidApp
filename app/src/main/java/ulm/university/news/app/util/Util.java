@@ -7,6 +7,10 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.TypedValue;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -18,7 +22,9 @@ import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Lecture;
 import ulm.university.news.app.data.LocalUser;
 import ulm.university.news.app.data.Moderator;
+import ulm.university.news.app.data.Settings;
 import ulm.university.news.app.data.enums.ChannelType;
+import ulm.university.news.app.manager.database.SettingsDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 
 /**
@@ -131,7 +137,7 @@ public class Util {
      *
      * @return The hashed password.
      */
-    public String hashPassword(String password) {
+    public static String hashPassword(String password) {
         String passwordHash = null;
         try {
             // Calculate hash on the given password.
@@ -220,9 +226,48 @@ public class Util {
      */
     public void sortChannels(List<Channel> channels) {
         if (channels != null) {
-            // TODO Check settings for preferred channel order.
-            sortChannelsTypeFaculty(channels);
+            // Check settings for preferred channel order.
+            Settings settings = new SettingsDatabaseManager(context).getSettings();
+            switch (settings.getChannelSettings()){
+                case ALPHABETICAL:
+                    sortChannelsName(channels);
+                    break;
+                case TYPE:
+                    sortChannelsType(channels);
+                    break;
+                case TYPE_AND_FACULTY:
+                    sortChannelsTypeFaculty(channels);
+                    break;
+            }
         }
+    }
+
+    public String getFormattedDateShort(DateTime date) {
+        // Format the date for output.
+        String datePattern = context.getString(R.string.general_date_pattern_short);
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern(datePattern);
+        return dtfOut.print(date);
+    }
+
+    public String getFormattedDateLong(DateTime date) {
+        // Format the date for output.
+        String datePattern = context.getString(R.string.general_date_pattern_long);
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern(datePattern);
+        return dtfOut.print(date);
+    }
+
+    public String getFormattedDateOnly(DateTime date) {
+        // Format the date for output.
+        String datePattern = context.getString(R.string.general_date_pattern_date_only);
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern(datePattern);
+        return dtfOut.print(date);
+    }
+
+    public String getFormattedTimeOnly(DateTime date) {
+        // Format the time of the date for output.
+        String datePattern = context.getString(R.string.general_date_pattern_time_only);
+        DateTimeFormatter dtfOut = DateTimeFormat.forPattern(datePattern);
+        return dtfOut.print(date);
     }
 
     public int fetchAccentColor() {

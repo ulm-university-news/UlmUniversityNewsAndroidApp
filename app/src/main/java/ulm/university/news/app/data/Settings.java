@@ -14,7 +14,7 @@ public class Settings {
     public OrderSettings conversationSettings;
     public OrderSettings groupSettings;
     public OrderSettings ballotSettings;
-    public OrderSettings announcementSettings;
+    public OrderSettings messageSettings;
     public OrderSettings generalSettings;
     public Language language;
     public NotificationSettings notificationSettings;
@@ -29,7 +29,7 @@ public class Settings {
                 ", conversationSettings=" + conversationSettings +
                 ", groupSettings=" + groupSettings +
                 ", ballotSettings=" + ballotSettings +
-                ", announcementSettings=" + announcementSettings +
+                ", messageSettings=" + messageSettings +
                 ", generalSettings=" + generalSettings +
                 ", language=" + language +
                 ", notificationSettings=" + notificationSettings +
@@ -68,12 +68,12 @@ public class Settings {
         this.ballotSettings = ballotSettings;
     }
 
-    public OrderSettings getAnnouncementSettings() {
-        return announcementSettings;
+    public OrderSettings getMessageSettings() {
+        return messageSettings;
     }
 
-    public void setAnnouncementSettings(OrderSettings announcementSettings) {
-        this.announcementSettings = announcementSettings;
+    public void setMessageSettings(OrderSettings messageSettings) {
+        this.messageSettings = messageSettings;
     }
 
     public OrderSettings getGeneralSettings() {

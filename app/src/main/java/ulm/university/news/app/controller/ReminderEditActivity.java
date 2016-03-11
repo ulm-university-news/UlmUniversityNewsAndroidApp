@@ -255,9 +255,9 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
             spPriority.setSelection(1);
         }
         btnCreate.setText(getString(R.string.general_edit));
-        tvStartDateValue.setText(ChannelController.getFormattedDateOnly(startDate));
-        tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
-        tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+        tvStartDateValue.setText(Util.getInstance(this).getFormattedDateOnly(startDate));
+        tvEndDateValue.setText(Util.getInstance(this).getFormattedDateOnly(endDate));
+        tvTimeValue.setText(Util.getInstance(this).getFormattedTimeOnly(startDate));
         switch (intervalType) {
             case 0:
                 tvIntervalValue.setText(getString(R.string.reminder_interval_once_text));
@@ -390,13 +390,13 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
             startDate = startDate.monthOfYear().setCopy(month + 1);
             startDate = startDate.dayOfMonth().setCopy(day);
             reminder.setStartDate(startDate);
-            tvStartDateValue.setText(ChannelController.getFormattedDateOnly(startDate));
+            tvStartDateValue.setText(Util.getInstance(this).getFormattedDateOnly(startDate));
         } else {
             endDate = endDate.year().setCopy(year);
             endDate = endDate.monthOfYear().setCopy(month + 1);
             endDate = endDate.dayOfMonth().setCopy(day);
             reminder.setEndDate(endDate);
-            tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
+            tvEndDateValue.setText(Util.getInstance(this).getFormattedDateOnly(endDate));
         }
         setNextDate();
         tvError.setVisibility(View.GONE);
@@ -413,7 +413,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         reminder.setStartDate(startDate);
         reminder.setEndDate(endDate);
         isTimeSet = true;
-        tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+        tvTimeValue.setText(Util.getInstance(this).getFormattedTimeOnly(startDate));
         setNextDate();
         tvError.setVisibility(View.GONE);
     }
@@ -452,7 +452,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
             if (reminder.isExpired()) {
                 tvNextDateValue.setText(getString(R.string.reminder_expired));
             } else {
-                tvNextDateValue.setText(ChannelController.getFormattedDateLong(reminder.getNextDate()));
+                tvNextDateValue.setText(Util.getInstance(this).getFormattedDateLong(reminder.getNextDate()));
             }
         }
     }

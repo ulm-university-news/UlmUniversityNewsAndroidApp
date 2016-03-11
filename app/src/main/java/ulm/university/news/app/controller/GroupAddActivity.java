@@ -193,7 +193,7 @@ public class GroupAddActivity extends AppCompatActivity {
             }
 
             String password = tilPassword.getText();
-            password = Util.getInstance(this).hashPassword(password);
+            password = Util.hashPassword(password);
 
             Group group = new Group(tilName.getText(), tilDescription.getText(), groupType, term, password);
             GroupAPI.getInstance(this).createGroup(group);

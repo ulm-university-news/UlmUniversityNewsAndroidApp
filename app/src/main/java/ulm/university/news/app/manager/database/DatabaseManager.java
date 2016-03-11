@@ -32,7 +32,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String SETTINGS_CONVERSATION = "ConversationSettings";
     public static final String SETTINGS_GROUP = "GroupSettings";
     public static final String SETTINGS_BALLOT = "BallotSettings";
-    public static final String SETTINGS_ANNOUNCEMENT = "AnnouncementSettings";
+    public static final String SETTINGS_MESSAGE = "MessageSettings";
     public static final String SETTINGS_GENERAL = "GeneralSettings";
     public static final String SETTINGS_LANGUAGE = "LanguageSettings";
     public static final String SETTINGS_NOTIFICATION = "NotificationSettings";
@@ -44,7 +44,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + SETTINGS_CONVERSATION + " INTEGER NOT NULL, "
             + SETTINGS_GROUP + " INTEGER NOT NULL, "
             + SETTINGS_BALLOT + " INTEGER NOT NULL, "
-            + SETTINGS_ANNOUNCEMENT + " INTEGER NOT NULL, "
+            + SETTINGS_MESSAGE + " INTEGER NOT NULL, "
             + SETTINGS_GENERAL + " INTEGER NOT NULL, "
             + SETTINGS_LANGUAGE + " INTEGER NOT NULL, "
             + SETTINGS_NOTIFICATION + " INTEGER NOT NULL);";

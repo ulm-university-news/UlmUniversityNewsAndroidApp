@@ -171,11 +171,11 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
         ResourceDetail text = new ResourceDetail(getString(R.string.message_text), reminder.getText(),
                 R.drawable.ic_info_outline_black_36dp);
         ResourceDetail startDate = new ResourceDetail(getString(R.string.reminder_start_date),
-                ChannelController.getFormattedDateOnly(reminder.getStartDate()), R.drawable.ic_today_black_36dp);
+                Util.getInstance(this).getFormattedDateOnly(reminder.getStartDate()), R.drawable.ic_today_black_36dp);
         ResourceDetail endDate = new ResourceDetail(getString(R.string.reminder_end_date),
-                ChannelController.getFormattedDateOnly(reminder.getEndDate()), R.drawable.ic_event_black_36dp);
+                Util.getInstance(this).getFormattedDateOnly(reminder.getEndDate()), R.drawable.ic_event_black_36dp);
         ResourceDetail time = new ResourceDetail(getString(R.string.reminder_time),
-                ChannelController.getFormattedTimeOnly(reminder.getStartDate()), R.drawable.ic_schedule_black_36dp);
+                Util.getInstance(this).getFormattedTimeOnly(reminder.getStartDate()), R.drawable.ic_schedule_black_36dp);
         ResourceDetail nextDate = new ResourceDetail(getString(R.string.reminder_next_date_info),
                 computeNextDate(), R.drawable.ic_date_range_black_36dp);
 
@@ -266,7 +266,7 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
         if (reminder.isExpired()) {
             return getString(R.string.reminder_expired);
         } else {
-            return ChannelController.getFormattedDateLong(reminder.getNextDate());
+            return Util.getInstance(this).getFormattedDateLong(reminder.getNextDate());
         }
     }
 

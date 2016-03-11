@@ -12,6 +12,7 @@ import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Announcement;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -71,7 +72,7 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
 
             tvTitle.setText(announcement.getTitle());
             tvText.setText(announcement.getText());
-            tvDate.setText(ChannelController.getFormattedDateShort(announcement.getCreationDate()));
+            tvDate.setText(Util.getInstance(getContext()).getFormattedDateShort(announcement.getCreationDate()));
 
             // Mark unread announcements.
             if (!announcement.isRead()) {

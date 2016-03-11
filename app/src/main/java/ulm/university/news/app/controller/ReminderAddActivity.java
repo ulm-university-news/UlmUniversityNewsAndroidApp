@@ -335,13 +335,13 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             startDate = startDate.monthOfYear().setCopy(month + 1);
             startDate = startDate.dayOfMonth().setCopy(day);
             reminder.setStartDate(startDate);
-            tvStartDateValue.setText(ChannelController.getFormattedDateOnly(startDate));
+            tvStartDateValue.setText(Util.getInstance(this).getFormattedDateOnly(startDate));
         } else {
             endDate = endDate.year().setCopy(year);
             endDate = endDate.monthOfYear().setCopy(month + 1);
             endDate = endDate.dayOfMonth().setCopy(day);
             reminder.setEndDate(endDate);
-            tvEndDateValue.setText(ChannelController.getFormattedDateOnly(endDate));
+            tvEndDateValue.setText(Util.getInstance(this).getFormattedDateOnly(endDate));
         }
         setNextDate();
         tvError.setVisibility(View.GONE);
@@ -358,7 +358,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         reminder.setStartDate(startDate);
         reminder.setEndDate(endDate);
         isTimeSet = true;
-        tvTimeValue.setText(ChannelController.getFormattedTimeOnly(startDate));
+        tvTimeValue.setText(Util.getInstance(this).getFormattedTimeOnly(startDate));
         setNextDate();
         tvError.setVisibility(View.GONE);
     }
@@ -397,7 +397,7 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
             if (reminder.isExpired()) {
                 tvNextDateValue.setText(getString(R.string.reminder_expired));
             } else {
-                tvNextDateValue.setText(ChannelController.getFormattedDateLong(reminder.getNextDate()));
+                tvNextDateValue.setText(Util.getInstance(this).getFormattedDateLong(reminder.getNextDate()));
             }
         }
     }

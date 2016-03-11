@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             btnLogin.setVisibility(View.GONE);
 
             String password = tilPassword.getText();
-            password = Util.getInstance(this).hashPassword(password);
+            password = Util.hashPassword(password);
             ModeratorAPI.getInstance(this).login(tilName.getText(), password);
         }
     }

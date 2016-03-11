@@ -364,9 +364,11 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         ResourceDetail contacts = new ResourceDetail(getString(R.string.channel_contacts), channel.getContacts(),
                 R.drawable.ic_account_circle_black_36dp);
         ResourceDetail creationDate = new ResourceDetail(getString(R.string.channel_creation_date),
-                ChannelController.getFormattedDateLong(channel.getCreationDate()), R.drawable.ic_today_black_36dp);
+                Util.getInstance(getContext()).getFormattedDateLong(channel.getCreationDate()), R.drawable
+                .ic_today_black_36dp);
         ResourceDetail modificationDate = new ResourceDetail(getString(R.string.channel_modification_date),
-                ChannelController.getFormattedDateLong(channel.getModificationDate()), R.drawable.ic_event_black_36dp);
+                Util.getInstance(getContext()).getFormattedDateLong(channel.getModificationDate()), R.drawable
+                .ic_event_black_36dp);
         resourceDetails.add(contacts);
         resourceDetails.add(creationDate);
         resourceDetails.add(modificationDate);

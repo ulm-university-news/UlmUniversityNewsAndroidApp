@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -227,38 +223,9 @@ public class ChannelController {
         if (isSubscribed) {
             // If deleted channel is subscribed, just mark channel as deleted and keep in in local database.
             channelDBM.setChannelToDeleted(channelId);
-            // Create local announcement which describes that the channel was deleted from the server.
-            Announcement a = new Announcement();
         } else {
             // If deleted channel isn't subscribed, delete it from local database.
             channelDBM.deleteChannel(channelId);
         }
-    }
-
-    public static String getFormattedDateShort(DateTime date) {
-        // Format the date for output.
-        // TODO Language dependency.
-        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("HH:mm MM/dd/yy");
-        return dtfOut.print(date);
-    }
-
-    public static String getFormattedDateLong(DateTime date) {
-        // Format the date for output.
-        // TODO Language dependency.
-        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm");
-        return dtfOut.print(date);
-    }
-
-    public static String getFormattedDateOnly(DateTime date) {
-        // Format the date for output.
-        // TODO Language dependency.
-        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("MM/dd/yyyy");
-        return dtfOut.print(date);
-    }
-
-    public static String getFormattedTimeOnly(DateTime date) {
-        // Format the time of the date for output.
-        DateTimeFormatter dtfOut = DateTimeFormat.forPattern("HH:mm");
-        return dtfOut.print(date);
     }
 }

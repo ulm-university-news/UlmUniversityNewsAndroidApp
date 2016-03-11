@@ -11,6 +11,7 @@ import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Reminder;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -80,7 +81,7 @@ public class ReminderListAdapter extends ArrayAdapter<Reminder> {
             if (reminder.isExpired()) {
                 nextDateText = getContext().getString(R.string.reminder_expired);
             } else {
-                nextDateText = ChannelController.getFormattedDateLong(reminder.getNextDate());
+                nextDateText = Util.getInstance(getContext()).getFormattedDateLong(reminder.getNextDate());
                 nextDateText = String.format(getContext().getString(R.string.reminder_next_date_on), nextDateText);
             }
             tvDate.setText(nextDateText);
