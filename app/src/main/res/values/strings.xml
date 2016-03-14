@@ -245,10 +245,13 @@
     <string name="channel_delete_dialog_text">This channel will be deleted completely. This includes all channel
         data on the server. All subscribers of the channel will be notified that the channel no longer exists. They
         will be able to keep a local copy of the channel.\nDo you really want to delete the channel?</string>
-    <string name="channel_deleted_dialog_title">Channel deleted</string>
-    <string name="channel_deleted_dialog_text">The channel \"%1$s\" has been deleted. There won\'t be any further
-        activities. Since you subscribed this channel you still have a local copy on your device. If you
+    <string name="channel_deleted_subscribed_dialog_title">Channel deleted</string>
+    <string name="channel_deleted_subscribed_dialog_text">The channel \"%1$s\" has been deleted. There won\'t be any
+        further activities. Since you subscribed this channel you still have a local copy on your device. If you
         unsubscribe, the local channel data will be deleted and can\'t be restored.</string>
+    <string name="channel_deleted_dialog_title">Channel deleted</string>
+    <string name="channel_deleted_dialog_text">The channel \"%1$s\" no longer exists. You can\'t subscribe. The local
+        channel data will be deleted.</string>
 
     <!-- Lecture ################################################################################################### -->
     <string name="lecture_symbol">L</string>

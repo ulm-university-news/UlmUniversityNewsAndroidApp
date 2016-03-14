@@ -27,13 +27,14 @@ import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.ResourceDetail;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.ResourceDetail;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.CHANNEL_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
 /**
@@ -512,6 +513,19 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             case CONNECTION_FAILURE:
                 toast.setText(errorMessage);
                 toast.show();
+                break;
+            case CHANNEL_NOT_FOUND:
+                // Channel was deleted on the server, so delete it on the local database too.
+                channelDBM.deleteChannel(channelId);
+                // Show channel deleted dialog.
+                InfoDialogFragment dialog = new InfoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.channel_deleted_dialog_title));
+                String text = String.format(getString(R.string.channel_deleted_dialog_text), channel.getName());
+                args.putString(InfoDialogFragment.DIALOG_TEXT, text);
+                dialog.setArguments(args);
+                dialog.show(getActivity().getSupportFragmentManager(), InfoDialogFragment
+                        .DIALOG_SUBSCRIBE_DELETED_CHANNEL);
                 break;
         }
     }

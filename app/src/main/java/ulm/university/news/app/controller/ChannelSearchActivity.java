@@ -91,6 +91,16 @@ public class ChannelSearchActivity extends AppCompatActivity implements LoaderMa
         refreshChannels();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update channel list to make changes like deleted channels visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.activity_channel_search_menu, menu);

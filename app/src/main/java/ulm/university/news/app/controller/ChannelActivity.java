@@ -60,8 +60,8 @@ public class ChannelActivity extends AppCompatActivity {
             // Show channel deleted dialog if it wasn't shown before.
             InfoDialogFragment dialog = new InfoDialogFragment();
             Bundle args = new Bundle();
-            args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.channel_deleted_dialog_title));
-            String text = String.format(getString(R.string.channel_deleted_dialog_text), channel.getName());
+            args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.channel_deleted_subscribed_dialog_title));
+            String text = String.format(getString(R.string.channel_deleted_subscribed_dialog_text), channel.getName());
             args.putString(InfoDialogFragment.DIALOG_TEXT, text);
             dialog.setArguments(args);
             dialog.show(getSupportFragmentManager(), "channelDeleted");

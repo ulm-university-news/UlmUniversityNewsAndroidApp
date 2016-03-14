@@ -134,11 +134,11 @@
     <string name="channel_creation_date">Erstellungsdatum</string>
     <string name="channel_dates">Zeiten</string>
     <string name="channel_delete_dialog_title">Kanal löschen</string>
-    <string name="channel_deleted_dialog_title">Kanal gelöscht</string>
+    <string name="channel_deleted_subscribed_dialog_title">Kanal gelöscht</string>
     <string name="channel_description">Beschreibung</string>
     <string name="channel_description_error">Die Beschreibung ist ungültig.</string>
     <string name="channel_delete_dialog_text">Dieser Kanal wird komplett geöscht. Dies beinhaltet alle Kanaldaten auf dem Server. Alle Abonnenten werden benachrichtigt, dass der Kanal nicht länger existiert. Sie können allerdings ihre aktuelle lokale Kopie des Kanals behalten.\nMöchtest du den Kanal wirklich löschen?</string>
-    <string name="channel_deleted_dialog_text">Der Kanal \"%1$s\" wurde gelöscht. Es wird keine weiteren Aktivitäten geben. Da du den Kanal abonniert hast, sind die Kanaldaten immer noch lokal auf dem Gerät gespeichert. Wenn du den Kanal deabonnierst werden die lokalen Daten unwiederbringlich gelöscht.</string>
+    <string name="channel_deleted_subscribed_dialog_text">Der Kanal \"%1$s\" wurde gelöscht. Es wird keine weiteren Aktivitäten geben. Da du den Kanal abonniert hast, sind die Kanaldaten immer noch lokal auf dem Gerät gespeichert. Wenn du den Kanal deabonnierst werden die lokalen Daten unwiederbringlich gelöscht.</string>
     <string name="channel_edited">Kanal erfolgreich geändert.</string>
     <string name="channel_info_up_to_date">Kanaldaten bereits aktuell.</string>
     <string name="channel_info_updated">Kanaldaten aktualisiert.</string>
@@ -248,4 +248,6 @@
     <string name="student_group_symbol">G</string>
     <string name="user_edited">Nutzer erfolgreich bearbeitet.</string>
     <string name="user_name_not_changed">Der Nutzername wurde nicht verändert.</string>
+    <string name="channel_deleted_dialog_title">Kanal gelöscht</string>
+    <string name="channel_deleted_dialog_text">Der Kanal \"%1$s\" existert nicht länger. Er kann nicht abonniert werden. Die lokalen Daten werden gelöscht.</string>
 </resources>
