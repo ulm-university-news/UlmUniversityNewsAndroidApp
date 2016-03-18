@@ -34,8 +34,7 @@
     <string name="push_message_channel_deleted">Channel has been deleted.</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
-    <string name="activity_create_account_information">To use this app you need to create a user account. To do that
-        you just have to enter a user name below and accept the terms of use.These are:\nTODO</string>
+    <string name="activity_create_account_information">To use this app you need to create a user account. To do that you just have to enter a user name below and accept the terms of use. You can find them on www.google.de</string>
     <string name="activity_create_account_welcome">Welcome to the Ulm University News App!</string>
     <string name="activity_create_account_creating_account">Creating user account&#8230;</string>
     <string name="activity_create_account_checkbox">I accept the terms of use.</string>
@@ -133,21 +132,21 @@
 
     <!-- AboutActivity ############################################################################################# -->
     <string name="activity_about_title">About this app</string>
-    <string name="activity_about_info">This app &#8230; TODO</string>
+    <string name="activity_about_info">This app has been created in 2016 in the focus project Advanced Mobile Application Engineering at the Institute of Databases and Information Systems at the University of Ulm.\nThis app and associated components were developed by Matthias Mak and Philipp Speidel. Manager of the project is Marc Schickler.\nThis software is provided without any specific or implied warranties. For more information, please visit www.google.de \nFor questions or suggestions, please contact ulm.university.news@gmail.com</string>
 
     <!-- MainActivity ############################################################################################## -->
-    <string name="activity_main_channel_tab">My Channels</string>
+    <string name="activity_main_channel_tab">My channels</string>
     <string name="activity_main_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
     <string name="activity_main_channel_list_loading">Loading channel data&#8230;</string>
-    <string name="activity_main_group_tap">My Groups</string>
+    <string name="activity_main_group_tap">My groups</string>
     <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for groups and join or create a new one.</string>
     <string name="activity_main_group_list_loading">Loading group data&#8230;</string>
-    <string name="activity_main_channel_menu_search">Search Channel</string>
+    <string name="activity_main_channel_menu_search">Search channel</string>
     <string name="activity_main_channel_menu_settings">Settings</string>
     <string name="activity_main_group_menu_settings">Settings</string>
-    <string name="activity_main_group_menu_search">Search Group</string>
-    <string name="activity_main_group_menu_add">Add Group</string>
+    <string name="activity_main_group_menu_search">Search group</string>
+    <string name="activity_main_group_menu_add">Add group</string>
     <string name="activity_main_nav_settings">Settings</string>
     <string name="activity_main_nav_settings_user">User</string>
     <string name="activity_main_nav_settings_notification">Notifications</string>
@@ -160,13 +159,13 @@
     <!-- ModeratorMainActivity ##################################################################################### -->
     <string name="activity_moderator_main_nav_moderator">Moderator</string>
     <string name="activity_moderator_main_nav_logout">Logout</string>
-    <string name="activity_moderator_main_title">My channels</string>
+    <string name="activity_moderator_main_title">Managed channels</string>
     <string name="activity_moderator_main_menu_add_channel">Add channel</string>
     <string name="activity_moderator_main_channel_list_empty">You\'re currently not moderating any channel.</string>
 
     <!-- ChannelAddActivity ######################################################################################## -->
     <string name="activity_channel_add_title">Add channel</string>
-    <string name="activity_channel_add_info">The channel type defines which fields are shown. All shown fields with * are mandatory. Some fields do not allow all special characters.</string>
+    <string name="activity_channel_add_info">Please enter the data for the new channel. The channel type defines which fields are shown. All shown fields with * are mandatory. Some fields do not allow all special characters.</string>
 
     <!-- ChannelEditActivity ####################################################################################### -->
     <string name="activity_channel_edit_title">Edit channel</string>
@@ -178,7 +177,7 @@
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
     <string name="activity_reminder_add_select_interval">Click to select interval</string>
-    <string name="activity_reminder_add_ignore_flag">Skip next upcoming reminder event</string>
+    <string name="activity_reminder_add_ignore_flag">Skip next reminder message</string>
     <string name="activity_reminder_add_error_not_set">Select dates, time and interval.</string>
     <string name="activity_reminder_add_error_invalid_dates">The selected dates are invalid.</string>
 
@@ -198,11 +197,11 @@
     <string name="activity_moderator_channel_menu_edit_channel">Edit channel</string>
     <string name="activity_moderator_channel_menu_delete_channel">Delete channel</string>
     <string name="activity_moderator_channel_menu_edit_reminder">Edit reminder</string>
-    <string name="activity_moderator_channel_menu_delete_reminder">Delete Reminder</string>
+    <string name="activity_moderator_channel_menu_delete_reminder">Delete reminder</string>
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
-    <string name="activity_channel_channel_details_tab">Details</string>
+    <string name="activity_channel_channel_details_tab">Channel information</string>
     <string name="activity_channel_channel_details_list_loading">Loading channel data&#8230;</string>
 
     <!-- GroupFragment ############################################################################################# -->
@@ -225,12 +224,12 @@
     <string name="channel_term_summer_short">S</string>
     <string name="channel_term_winter_short">W</string>
     <string name="channel_term_year_error">The year is invalid.</string>
-    <string name="channel_dates">Times</string>
-    <string name="channel_type">Type</string>
+    <string name="channel_dates">Dates</string>
+    <string name="channel_type">Channel type</string>
     <string name="channel_type_lecture">Lecture</string>
     <string name="channel_type_event">Event</string>
-    <string name="channel_type_sports">Sports</string>
-    <string name="channel_type_student_group">Student Group</string>
+    <string name="channel_type_sports">Sports group</string>
+    <string name="channel_type_student_group">Student group</string>
     <string name="channel_type_other">Other</string>
     <string name="channel_creation_date">Creation date</string>
     <string name="channel_modification_date">Modification date</string>
@@ -263,7 +262,7 @@
     <string name="lecture_start_date">Start date</string>
     <string name="lecture_end_date">End date</string>
     <string name="lecture_lecturer">Lecturer</string>
-    <string name="lecture_assistant">Assistant</string>
+    <string name="lecture_assistant">Assistants</string>
 
     <!-- Event ##################################################################################################### -->
     <string name="event_symbol">E</string>
@@ -289,7 +288,7 @@
     <string name="announcement_created">Announcement created successfully.</string>
 
     <!-- Message ################################################################################################### -->
-    <string name="message_text">Text</string>
+    <string name="message_text">Message</string>
     <string name="message_text_invalid">The text is invalid.</string>
     <string name="message_priority">Priority</string>
     <string name="message_priority_high">High</string>
@@ -319,8 +318,7 @@
     <string name="reminder_created">Reminder created successfully.</string>
     <string name="reminder_edited">Reminder changed successfully.</string>
     <string name="reminder_delete_dialog_title">Delete reminder</string>
-    <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder events will be sent
-        afterwards.\nDo you really want to delete the reminder?</string>
+    <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder messages will be sent afterwards.\nDo you really want to delete the reminder?</string>
     <string name="reminder_last_edited_by">Last edited by</string>
 
     <!-- Moderator ################################################################################################# -->

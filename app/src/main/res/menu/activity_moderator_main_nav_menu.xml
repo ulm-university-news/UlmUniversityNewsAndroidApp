@@ -14,21 +14,21 @@
         </menu>
     </item>
 
-    <item android:title="@string/activity_main_nav_moderator">
-        <menu>
-            <item
-                android:id="@+id/activity_moderator_main_nav_logout"
-                android:icon="@drawable/ic_person_black_36dp"
-                android:title="@string/activity_moderator_main_nav_logout"/>
-        </menu>
-    </item>
-
     <item android:title="@string/activity_main_nav_information">
         <menu>
             <item
                 android:id="@+id/activity_moderator_main_nav_about"
                 android:icon="@drawable/ic_info_black_36dp"
                 android:title="@string/activity_main_nav_about"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/activity_main_nav_moderator">
+        <menu>
+            <item
+                android:id="@+id/activity_moderator_main_nav_logout"
+                android:icon="@drawable/ic_person_black_36dp"
+                android:title="@string/activity_moderator_main_nav_logout"/>
         </menu>
     </item>
 
