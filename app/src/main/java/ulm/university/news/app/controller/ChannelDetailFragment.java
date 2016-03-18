@@ -500,12 +500,15 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         Log.d(TAG, serverError.toString());
         // Hide loading animation on server response.
         swipeRefreshLayout.setRefreshing(false);
+        boolean isSubscribed;
         if (channelDBM.isSubscribedChannel(channel.getId())) {
             btnSubscribe.setVisibility(View.GONE);
             btnUnsubscribe.setVisibility(View.VISIBLE);
+            isSubscribed = true;
         } else {
             btnSubscribe.setVisibility(View.VISIBLE);
             btnUnsubscribe.setVisibility(View.GONE);
+            isSubscribed = false;
         }
         pgrSending.setVisibility(View.GONE);
         // Show appropriate error message.
@@ -515,17 +518,20 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
                 toast.show();
                 break;
             case CHANNEL_NOT_FOUND:
-                // Channel was deleted on the server, so delete it on the local database too.
-                channelDBM.deleteChannel(channelId);
-                // Show channel deleted dialog.
-                InfoDialogFragment dialog = new InfoDialogFragment();
-                Bundle args = new Bundle();
-                args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.channel_deleted_dialog_title));
-                String text = String.format(getString(R.string.channel_deleted_dialog_text), channel.getName());
-                args.putString(InfoDialogFragment.DIALOG_TEXT, text);
-                dialog.setArguments(args);
-                dialog.show(getActivity().getSupportFragmentManager(), InfoDialogFragment
-                        .DIALOG_SUBSCRIBE_DELETED_CHANNEL);
+                // If channel is subscribed, do nothing.
+                if (!isSubscribed) {
+                    // Channel was deleted on the server, so delete it on the local database too.
+                    channelDBM.deleteChannel(channelId);
+                    // Show channel deleted dialog.
+                    InfoDialogFragment dialog = new InfoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.channel_deleted_dialog_title));
+                    String text = String.format(getString(R.string.channel_deleted_dialog_text), channel.getName());
+                    args.putString(InfoDialogFragment.DIALOG_TEXT, text);
+                    dialog.setArguments(args);
+                    dialog.show(getActivity().getSupportFragmentManager(), InfoDialogFragment
+                            .DIALOG_SUBSCRIBE_DELETED_CHANNEL);
+                }
                 break;
         }
     }

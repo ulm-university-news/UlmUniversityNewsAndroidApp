@@ -73,7 +73,6 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
 
         resourceDetails = new ArrayList<>();
         initView();
-        Log.e(TAG, "********" + new TextView(this).getTextSize());
     }
 
     @Override
