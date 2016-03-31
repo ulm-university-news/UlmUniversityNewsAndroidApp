@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import ulm.university.news.app.R;
-import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.util.Util;
 
 
@@ -31,17 +30,6 @@ public class StartActivity extends Activity {
         // Show no activity change animation.
         overridePendingTransition(0, 0);
         Intent intent;
-
-        // TODO Remove this code later. Used for development to auto login as moderator.
-        Moderator loggedInModerator = new Moderator();
-        loggedInModerator.setServerAccessToken("510e4f3dafa2568c59d94787030292f81a37e5a4baf6a727cd5274db79d0b17d");
-        loggedInModerator.setId(1);
-        loggedInModerator.setName("mmak");
-        loggedInModerator.setFirstName("Matthias");
-        loggedInModerator.setLastName("Mak");
-        Util.getInstance(this).setLoggedInModerator(loggedInModerator);
-        Util.getInstance(this).setCurrentAccessToken();
-        // TODO Remove this code later. Used for development to auto login as moderator.
 
         if (Util.getInstance(this).getLoggedInModerator() != null) {
             // User is logged in as local moderator.

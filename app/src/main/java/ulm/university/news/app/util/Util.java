@@ -228,7 +228,7 @@ public class Util {
         if (channels != null) {
             // Check settings for preferred channel order.
             Settings settings = new SettingsDatabaseManager(context).getSettings();
-            switch (settings.getChannelSettings()){
+            switch (settings.getChannelSettings()) {
                 case ALPHABETICAL:
                     sortChannelsName(channels);
                     break;
@@ -268,6 +268,17 @@ public class Util {
         String datePattern = context.getString(R.string.general_date_pattern_time_only);
         DateTimeFormatter dtfOut = DateTimeFormat.forPattern(datePattern);
         return dtfOut.print(date);
+    }
+
+    public String getTermLong(String term) {
+        String termLong;
+        if (term.charAt(0) == context.getString(R.string.channel_term_summer_short).charAt(0)) {
+            termLong = context.getString(R.string.channel_term_summer);
+        } else {
+            termLong = context.getString(R.string.channel_term_winter);
+        }
+        termLong += " " + term.substring(1);
+        return termLong;
     }
 
     public int fetchAccentColor() {

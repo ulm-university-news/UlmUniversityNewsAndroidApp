@@ -260,8 +260,8 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         }
         ResourceDetail type = new ResourceDetail(getString(R.string.channel_type), typeName,
                 R.drawable.ic_details_black_36dp);
-        ResourceDetail term = new ResourceDetail(getString(R.string.channel_term), channel.getTerm(),
-                R.drawable.ic_date_range_black_36dp);
+        ResourceDetail term = new ResourceDetail(getString(R.string.channel_term), Util.getInstance(getContext())
+                .getTermLong(channel.getTerm()), R.drawable.ic_date_range_black_36dp);
         resourceDetails.add(name);
         resourceDetails.add(type);
         resourceDetails.add(term);

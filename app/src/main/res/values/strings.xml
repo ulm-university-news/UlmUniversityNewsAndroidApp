@@ -35,7 +35,7 @@
 
     <!-- CreateAccountActivity ##################################################################################### -->
     <string name="activity_create_account_information">To use this app you need to create a user account. To do that you just have to enter a user name below and accept the terms of use. You can find them on www.google.de</string>
-    <string name="activity_create_account_welcome">Welcome to the Ulm University News App!</string>
+    <string name="activity_create_account_welcome">Welcome to the University News Ulm App!</string>
     <string name="activity_create_account_creating_account">Creating user account&#8230;</string>
     <string name="activity_create_account_checkbox">I accept the terms of use.</string>
     <string name="activity_create_account_button_create">Create account</string>
@@ -173,7 +173,7 @@
 
     <!-- ReminderAddActivity ####################################################################################### -->
     <string name="activity_reminder_add_title">Add reminder</string>
-    <string name="activity_reminder_add_info">All shown fields are mandatory. TODO</string>
+    <string name="activity_reminder_add_info">Configure a reminder, which sends announcements automatically at a specified interval. All shown fields are mandatory.</string>
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
     <string name="activity_reminder_add_select_interval">Click to select interval</string>
@@ -189,6 +189,9 @@
 
     <!-- AnnouncementAddActivity ################################################################################### -->
     <string name="activity_announcement_add_title">Add announcement</string>
+    <string name="activity_announcement_add_info">Fill out the fields below. Then click the send button to send the
+        notification to the subscribers of the channel.</string>
+    <string name="activity_announcement_add_bnt_send">Send</string>
 
     <!-- ModeratorChannelActivity ################################################################################## -->
     <string name="activity_moderator_channel_reminder_tab">Reminders</string>

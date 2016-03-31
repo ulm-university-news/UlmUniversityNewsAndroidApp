@@ -28,7 +28,7 @@
     <string name="activity_create_account_error_token">Bei der Erstellung des Nutzerkontos ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.</string>
     <string name="activity_create_account_information">Um diese App benutzen zu können müssen Sie ein Nutzerkonto anlegen. Dazu müssen Sie unten einen Nutzernamen eingeben und die Nutzungsbedingungen akzepiteren. Diese können Sie unter folgendem Link abrufen: www.google.de</string>
     <string name="activity_create_account_name_hint">Nutzername</string>
-    <string name="activity_create_account_welcome">Wilkommen zur Ulm University News App!</string>
+    <string name="activity_create_account_welcome">Wilkommen zur University News Ulm App!</string>
     <string name="activity_group_add_group_type">Gruppentyp</string>
     <string name="activity_group_add_title">Gruppe hinzufügen</string>
     <string name="activity_group_search_btn_search">Gruppe suchen</string>
@@ -88,7 +88,7 @@
     <string name="activity_reminder_add_error_invalid_dates">Die gewählten Daten sind ungültig.</string>
     <string name="activity_reminder_add_error_not_set">Wähle Daten, Uhrzeit und Intervall.</string>
     <string name="activity_reminder_add_ignore_flag">Nächste Remindernachricht überspringen</string>
-    <string name="activity_reminder_add_info">Alle dargestellten Felder sind Pflichtfelder. TODO</string>
+    <string name="activity_reminder_add_info">Konfigurieren Sie einen Reminder, welcher Benachrichtigungen automatisch in einem festgelegten Intervall verschickt. Alle dargestellten Felder sind Pflichtfelder.</string>
     <string name="activity_reminder_add_select_date">Kicke um ein Datum zu wählen</string>
     <string name="activity_reminder_add_select_interval">Klicke um ein Intervall zu wählen</string>
     <string name="activity_reminder_add_select_time">Klicke um eine Uhrzeit zu wählen</string>
@@ -250,4 +250,6 @@
     <string name="user_name_not_changed">Der Nutzername wurde nicht verändert.</string>
     <string name="channel_deleted_dialog_title">Kanal gelöscht</string>
     <string name="channel_deleted_dialog_text">Der Kanal \"%1$s\" existert nicht länger. Er kann nicht abonniert werden. Die lokalen Daten werden gelöscht.</string>
+    <string name="activity_announcement_add_info">Füllen Sie die unten aufgeführten Felder aus und klicken Sie anschließend auf senden um die Benachrichtigung an die Abonnenten des Kanals zu verschicken.</string>
+    <string name="activity_announcement_add_bnt_send">Senden</string>
 </resources>

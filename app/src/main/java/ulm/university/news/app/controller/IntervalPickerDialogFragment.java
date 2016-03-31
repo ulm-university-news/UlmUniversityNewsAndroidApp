@@ -44,7 +44,7 @@ public class IntervalPickerDialogFragment extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String dialogTitle = "Choose Interval";
+        String dialogTitle = getString(R.string.reminder_interval);
         // Use the Builder class for convenient dialog construction
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(dialogTitle)

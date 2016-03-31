@@ -30,9 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:autoLink="web"
-                android:background="@drawable/border_info"
                 android:maxLines="10000"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:scrollbars="vertical"
                 android:text="@string/activity_login_info"/>
 

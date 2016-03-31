@@ -30,8 +30,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/border_info"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:text="@string/activity_reminder_add_info"/>
 
             <TextView

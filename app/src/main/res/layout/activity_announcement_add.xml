@@ -26,6 +26,14 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <TextView
+                android:id="@+id/activity_channel_add_tv_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:text="@string/activity_announcement_add_info"/>
+
             <ulm.university.news.app.util.TextInputLabels
                 android:id="@+id/activity_announcement_add_til_title"
                 android:layout_width="match_parent"
@@ -73,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="@string/general_create"
+                android:text="@string/activity_announcement_add_bnt_send"
                 android:textColor="@color/black"/>
         </LinearLayout>
     </ScrollView>
