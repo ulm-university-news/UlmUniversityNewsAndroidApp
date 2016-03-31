@@ -192,6 +192,22 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
         // Reminders were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
+        // Remove deleted reminders from list.
+        for(Reminder localReminder: this.reminders){
+            boolean deleted = true;
+            for(Reminder loadedReminder: reminders){
+                if(localReminder.getId() == loadedReminder.getId()){
+                    deleted = false;
+                    break;
+                }
+            }
+            if(deleted){
+                this.reminders.remove(localReminder);
+                listAdapter.setData(this.reminders);
+                listAdapter.notifyDataSetChanged();
+            }
+        }
+
         if (newReminders) {
             // If reminder data was updated show message no matter if it was a manual or auto refresh.
             String message = getString(R.string.reminders_info_updated);

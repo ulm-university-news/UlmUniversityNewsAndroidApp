@@ -132,7 +132,7 @@
 
     <!-- AboutActivity ############################################################################################# -->
     <string name="activity_about_title">About this app</string>
-    <string name="activity_about_info">This app has been created in 2016 in the focus project Advanced Mobile Application Engineering at the Institute of Databases and Information Systems at the University of Ulm.\nThis app and associated components were developed by Matthias Mak and Philipp Speidel. Manager of the project is Marc Schickler.\nThis software is provided without any specific or implied warranties. For more information, please visit www.google.de \nFor questions or suggestions, please contact ulm.university.news@gmail.com</string>
+    <string name="activity_about_info">This app has been created in 2016 in the focus project Advanced Mobile Application Engineering at the Institute of Databases and Information Systems at the University of Ulm.\n\nThis app and associated components were developed by Matthias Mak and Philipp Speidel. Manager of the project is Marc Schickler.\n\nThis software is provided without any specific or implied warranties. For more information, please visit www.google.de \n\nFor questions or suggestions, please contact ulm.university.news@gmail.com</string>
 
     <!-- MainActivity ############################################################################################## -->
     <string name="activity_main_channel_tab">My channels</string>
