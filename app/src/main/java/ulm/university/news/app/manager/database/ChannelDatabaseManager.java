@@ -63,6 +63,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_T
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_AUTHOR;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_END_DATE;
@@ -1005,6 +1006,7 @@ public class ChannelDatabaseManager {
         reminderValues.put(REMINDER_INTERVAL, reminder.getInterval());
         reminderValues.put(REMINDER_AUTHOR, reminder.getAuthorModerator());
         reminderValues.put(CHANNEL_ID_FOREIGN, reminder.getChannelId());
+        reminderValues.put(REMINDER_ACTIVE, reminder.isActive());
         db.insert(REMINDER_TABLE, null, reminderValues);
 
         // Notify observers that specific database content has changed.
@@ -1033,6 +1035,7 @@ public class ChannelDatabaseManager {
         reminderValues.put(REMINDER_IGNORE, reminder.isIgnore());
         reminderValues.put(REMINDER_INTERVAL, reminder.getInterval());
         reminderValues.put(REMINDER_AUTHOR, reminder.getAuthorModerator());
+        reminderValues.put(REMINDER_ACTIVE, reminder.isActive());
         String where = REMINDER_ID + "=?";
         String[] args = {String.valueOf(reminder.getId())};
         db.update(REMINDER_TABLE, reminderValues, where, args);
@@ -1060,7 +1063,7 @@ public class ChannelDatabaseManager {
         Reminder reminder;
         String text, title;
         int id, author, interval;
-        boolean ignore;
+        boolean ignore, active;
         Priority priority;
         DateTime creationDate, modificationDate, startDate, endDate;
 
@@ -1073,6 +1076,7 @@ public class ChannelDatabaseManager {
             title = cReminder.getString(cReminder.getColumnIndex(REMINDER_TITLE));
             priority = Priority.values[(cReminder.getInt(cReminder.getColumnIndex(REMINDER_PRIORITY)))];
             ignore = cReminder.getInt(cReminder.getColumnIndex(REMINDER_IGNORE)) != 0;
+            active = cReminder.getInt(cReminder.getColumnIndex(REMINDER_ACTIVE)) != 0;
             author = cReminder.getInt(cReminder.getColumnIndex(REMINDER_AUTHOR));
             creationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_CREATION_DATE)), TIME_ZONE);
             modificationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_MODIFICATION_DATE)),
@@ -1083,6 +1087,7 @@ public class ChannelDatabaseManager {
             // Add new reminder to the reminder list.
             reminder = new Reminder(id, creationDate, modificationDate, startDate, endDate, interval, ignore,
                     channelId, author, title, text, priority);
+            reminder.setActive(active);
             reminders.add(reminder);
         }
         if (cReminder != null) {
@@ -1108,7 +1113,7 @@ public class ChannelDatabaseManager {
         Reminder reminder = null;
         String text, title;
         int id, author, interval, channelId;
-        boolean ignore;
+        boolean ignore, active;
         Priority priority;
         DateTime creationDate, modificationDate, startDate, endDate;
 
@@ -1121,6 +1126,7 @@ public class ChannelDatabaseManager {
             title = cReminder.getString(cReminder.getColumnIndex(REMINDER_TITLE));
             priority = Priority.values[(cReminder.getInt(cReminder.getColumnIndex(REMINDER_PRIORITY)))];
             ignore = cReminder.getInt(cReminder.getColumnIndex(REMINDER_IGNORE)) != 0;
+            active = cReminder.getInt(cReminder.getColumnIndex(REMINDER_ACTIVE)) != 0;
             author = cReminder.getInt(cReminder.getColumnIndex(REMINDER_AUTHOR));
             creationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_CREATION_DATE)), TIME_ZONE);
             modificationDate = new DateTime(cReminder.getLong(cReminder.getColumnIndex(REMINDER_MODIFICATION_DATE)),
@@ -1132,6 +1138,7 @@ public class ChannelDatabaseManager {
             // Add new reminder to the reminder list.
             reminder = new Reminder(id, creationDate, modificationDate, startDate, endDate, interval, ignore,
                     channelId, author, title, text, priority);
+            reminder.setActive(active);
         }
         if (cReminder != null) {
             cReminder.close();

@@ -27,6 +27,11 @@
     <string name="general_date_pattern_long">MM/dd/yyyy HH:mm</string>
     <string name="general_date_pattern_date_only">MM/dd/yyyy</string>
     <string name="general_date_pattern_time_only">HH:mm</string>
+    <string name="general_leave_page_title">Leave page</string>
+    <string name="general_leave_page">If you leave this page, your entered data is discarded. Do you really
+        want to leave?</string>
+    <string name="general_leave_page_edited">If you leave this page, your edited data is discarded. Do you really
+        want to leave?</string>
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
@@ -318,6 +323,7 @@
     <string name="reminder_interval_once">Single event</string>
     <string name="reminder_interval_once_text">Send reminder only once.</string>
     <string name="reminder_expired">The reminder is expired.</string>
+    <string name="reminder_disabled">The reminder is disabled.</string>
     <string name="reminder_created">Reminder created successfully.</string>
     <string name="reminder_edited">Reminder changed successfully.</string>
     <string name="reminder_delete_dialog_title">Delete reminder</string>

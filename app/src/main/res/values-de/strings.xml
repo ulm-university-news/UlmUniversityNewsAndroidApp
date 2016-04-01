@@ -222,7 +222,7 @@
     <string name="reminder_delete_dialog_title">Reminder löschen</string>
     <string name="reminder_edited">Reminder erfolgreich geändert.</string>
     <string name="reminder_end_date">Enddatum</string>
-    <string name="reminder_expired">Der reminder ist abgelaufen.</string>
+    <string name="reminder_expired">Der Reminder ist abgelaufen.</string>
     <string name="reminder_info_up_to_date">Reminder bereits aktuell.</string>
     <string name="reminder_info_updated">Reminder aktualisiert.</string>
     <string name="reminder_interval">Intervall</string>
@@ -252,4 +252,8 @@
     <string name="channel_deleted_dialog_text">Der Kanal \"%1$s\" existert nicht länger. Er kann nicht abonniert werden. Die lokalen Daten werden gelöscht.</string>
     <string name="activity_announcement_add_info">Füllen Sie die unten aufgeführten Felder aus und klicken Sie anschließend auf senden um die Benachrichtigung an die Abonnenten des Kanals zu verschicken.</string>
     <string name="activity_announcement_add_bnt_send">Senden</string>
+    <string name="reminder_disabled">Der Reminder ist deaktiviert.</string>
+    <string name="general_leave_page">Wenn Sie diese Seite verlassen, werden Ihre eingegebenen Daten verworfen. Möchte Sie die Seite wirklich verlassen?</string>
+    <string name="general_leave_page_title">Seite verlassen</string>
+    <string name="general_leave_page_edited">Wenn Sie diese Seite verlassen, werden Ihre geänderten Daten verworfen. Möchte Sie die Seite wirklich verlassen?</string>
 </resources>

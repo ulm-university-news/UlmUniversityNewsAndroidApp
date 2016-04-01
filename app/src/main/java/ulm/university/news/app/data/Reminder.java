@@ -41,7 +41,7 @@ public class Reminder {
     /** The priority of the Announcement. */
     Priority priority;
     /** Indicates whether the reminder is active or not. */
-    Boolean active;
+    boolean active;
 
     /**
      * Empty constructor. Needed values are set with corresponding set methods. Useful for Reminder update.
@@ -312,11 +312,11 @@ public class Reminder {
         this.priority = priority;
     }
 
-    public Boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 

@@ -32,7 +32,7 @@ import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
 import static ulm.university.news.app.util.Constants.PASSWORD_PATTERN;
 
-public class GroupAddActivity extends AppCompatActivity {
+public class GroupAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "GroupAddActivity";
 
@@ -83,9 +83,12 @@ public class GroupAddActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = NavUtils.getParentActivityIntent(this);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                NavUtils.navigateUpTo(this, intent);
+                YesNoDialogFragment dialog = new YesNoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
                 return true;
             case R.id.activity_group_add_add:
                 addGroup();
@@ -93,6 +96,22 @@ public class GroupAddActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        YesNoDialogFragment dialog = new YesNoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+        args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK);
+    }
+
+    private void navigateUp() {
+        Intent intent = NavUtils.getParentActivityIntent(this);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NavUtils.navigateUpTo(this, intent);
     }
 
     private void initView() {
@@ -235,6 +254,15 @@ public class GroupAddActivity extends AppCompatActivity {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
                 break;
+        }
+    }
+
+    @Override
+    public void onDialogPositiveClick(String tag) {
+        if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP)) {
+            navigateUp();
+        }else if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK)){
+            super.onBackPressed();
         }
     }
 }

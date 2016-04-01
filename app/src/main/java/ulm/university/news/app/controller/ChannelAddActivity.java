@@ -37,7 +37,7 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class ChannelAddActivity extends AppCompatActivity {
+public class ChannelAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "ChannelAddActivity";
 
@@ -84,11 +84,26 @@ public class ChannelAddActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                navigateUp();
+                YesNoDialogFragment dialog = new YesNoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        YesNoDialogFragment dialog = new YesNoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+        args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK);
     }
 
     private void navigateUp() {
@@ -484,6 +499,15 @@ public class ChannelAddActivity extends AppCompatActivity {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
                 break;
+        }
+    }
+
+    @Override
+    public void onDialogPositiveClick(String tag) {
+        if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP)) {
+            navigateUp();
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK)) {
+            super.onBackPressed();
         }
     }
 }

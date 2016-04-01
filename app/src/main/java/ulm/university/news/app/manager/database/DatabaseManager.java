@@ -242,6 +242,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String REMINDER_TITLE = "Title";
     public static final String REMINDER_TEXT = "Text";
     public static final String REMINDER_PRIORITY = "Priority";
+    public static final String REMINDER_ACTIVE = "Active";
 
     /** SQL statement to create the Reminder table. */
     private static final String CREATE_TABLE_REMINDER = "CREATE TABLE " + REMINDER_TABLE + "("
@@ -252,6 +253,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + REMINDER_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + REMINDER_INTERVAL + " INTEGER, "
             + REMINDER_IGNORE + " INTEGER NOT NULL, "
+            + REMINDER_ACTIVE + " INTEGER NOT NULL, "
             + REMINDER_TITLE + " TEXT NOT NULL, "
             + REMINDER_TEXT + " TEXT NOT NULL, "
             + REMINDER_PRIORITY + " INTEGER NOT NULL, "

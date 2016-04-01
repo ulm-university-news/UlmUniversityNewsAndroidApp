@@ -61,7 +61,7 @@ public class ReminderListAdapter extends ArrayAdapter<Reminder> {
             vi = LayoutInflater.from(getContext());
             convertView = vi.inflate(R.layout.reminder_list_item, parent, false);
         }
-        
+
         Reminder reminder = getItem(position);
 
         if (reminder != null) {
@@ -78,8 +78,11 @@ public class ReminderListAdapter extends ArrayAdapter<Reminder> {
                 // If ignored, compute new next date.
                 reminder.computeNextDate();
             }
+            // Show current reminder state.
             if (reminder.isExpired()) {
                 nextDateText = getContext().getString(R.string.reminder_expired);
+            } else if (!reminder.isActive()) {
+                nextDateText = getContext().getString(R.string.reminder_disabled);
             } else {
                 nextDateText = Util.getInstance(getContext()).getFormattedDateLong(reminder.getNextDate());
                 nextDateText = String.format(getContext().getString(R.string.reminder_next_date_on), nextDateText);

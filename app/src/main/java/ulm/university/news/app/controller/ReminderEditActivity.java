@@ -38,7 +38,7 @@ import ulm.university.news.app.util.Util;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
 public class ReminderEditActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
-        IntervalPickerListener {
+        IntervalPickerListener, DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "ReminderEditActivity";
 
@@ -96,11 +96,26 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                navigateUp();
+                YesNoDialogFragment dialog = new YesNoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page_edited));
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        YesNoDialogFragment dialog = new YesNoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+        args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page_edited));
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK);
     }
 
     private void navigateUp() {
@@ -454,6 +469,15 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
             } else {
                 tvNextDateValue.setText(Util.getInstance(this).getFormattedDateLong(reminder.getNextDate()));
             }
+        }
+    }
+
+    @Override
+    public void onDialogPositiveClick(String tag) {
+        if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP)) {
+            navigateUp();
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK)) {
+            super.onBackPressed();
         }
     }
 }
