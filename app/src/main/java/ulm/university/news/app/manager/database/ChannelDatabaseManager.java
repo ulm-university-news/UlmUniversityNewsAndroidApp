@@ -611,8 +611,8 @@ public class ChannelDatabaseManager {
     }
 
     /**
-     * Gets all channels for which the local moderator is responsible from the database. The returned channel objects
-     * may be a subclasses of channel.
+     * Gets all channels for which the local moderator is actively responsible from the database. The returned channel
+     * objects may be a subclasses of channel.
      *
      * @return A list of channel objects.
      */
@@ -621,10 +621,12 @@ public class ChannelDatabaseManager {
         List<Channel> channels = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + CHANNEL_TABLE + " AS c INNER JOIN " + MODERATOR_CHANNEL_TABLE
                 + " AS mc ON c." + CHANNEL_ID + "=mc." + CHANNEL_ID_FOREIGN
-                + " WHERE mc." + MODERATOR_ID_FOREIGN + "=? AND c." + CHANNEL_DELETED + "=?";
-        String[] args = new String[2];
+                + " WHERE mc." + MODERATOR_ID_FOREIGN + "=? AND c." + CHANNEL_DELETED + "=?"
+                + " AND mc." + MODERATOR_CHANNEL_ACTIVE + "=?";
+        String[] args = new String[3];
         args[0] = String.valueOf(Util.getInstance(appContext).getLoggedInModerator().getId());
         args[1] = String.valueOf(0);
+        args[2] = String.valueOf(1);
         Log.d(TAG, selectQuery);
 
         // Create fields before while loop, not within every pass.
@@ -801,6 +803,29 @@ public class ChannelDatabaseManager {
                 e.printStackTrace();
             }
         }
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(MODERATE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Sets the moderator with given id as active or inactive responsible moderator to the channel with given id.
+     *
+     * @param channelId The channel id.
+     * @param moderatorId The moderator id.
+     * @param active Whether the moderator actively moderates the channel or not.
+     */
+    public void moderateChannel(int channelId, int moderatorId, boolean active) {
+        Log.d(TAG, "Moderate channel " + channelId + " by moderator " + moderatorId + " actively: " + active);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(MODERATOR_CHANNEL_ACTIVE, active);
+        String where = MODERATOR_ID_FOREIGN + "=? AND " + CHANNEL_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(moderatorId), String.valueOf(channelId)};
+
+        db.update(MODERATOR_CHANNEL_TABLE, values, where, args);
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(MODERATE_CHANNEL);

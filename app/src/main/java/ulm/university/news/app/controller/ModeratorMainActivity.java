@@ -287,11 +287,11 @@ public class ModeratorMainActivity extends AppCompatActivity
      * @param channels The channel list to process.
      */
     public void processChannelData(List<Channel> channels) {
-        // TODO Check which channels are not moderated actively anymore.
         // Store or update channels in the database and update local channel list.
+        int moderatorId = Util.getInstance(this).getLoggedInModerator().getId();
         Integer localChannelListId = null;
         boolean newChannels = false;
-        List<Channel> channelsDB = databaseLoader.getChannelDBM().getChannels();
+        List<Channel> channelsDB = databaseLoader.getChannelDBM().getResponsibleChannels();
         for (Channel channel : channels) {
             for (int i = 0; i < channelsDB.size(); i++) {
                 if (channelsDB.get(i).getId() == channel.getId()) {
@@ -304,12 +304,28 @@ public class ModeratorMainActivity extends AppCompatActivity
                 newChannels = true;
             } else {
                 databaseLoader.getChannelDBM().updateChannel(channel);
-                channelsDB.remove(localChannelListId.intValue());
                 localChannelListId = null;
             }
             // Mark local moderator as responsible for this channel.
-            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), Util.getInstance(this)
-                    .getLoggedInModerator().getId());
+            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), moderatorId);
+            // Set moderator as active moderator for this channel.
+            databaseLoader.getChannelDBM().moderateChannel(channel.getId(), moderatorId, true);
+        }
+
+        // Check which channels are not moderated actively anymore.
+        for (Channel localChannel : channelsDB) {
+            Log.e(TAG, localChannel.toString());
+            boolean notActive = true;
+            for (Channel loadedChannel : channels) {
+                if (localChannel.getId() == loadedChannel.getId()) {
+                    notActive = false;
+                    break;
+                }
+            }
+            if (notActive) {
+                databaseLoader.getChannelDBM().moderateChannel(localChannel.getId(), moderatorId, false);
+                // The database observer will notify changes and reload moderated channels.
+            }
         }
 
         // Channels were refreshed. Hide loading animation.
