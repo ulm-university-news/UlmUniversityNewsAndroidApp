@@ -35,53 +35,9 @@
                 android:paddingRight="5dp"
                 android:paddingStart="5dp"
                 android:scrollbars="vertical"
-                android:text="@string/activity_settings_list_general_info_title"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:paddingEnd="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingStart="5dp"
-                android:scrollbars="vertical"
-                android:text="@string/activity_settings_list_general_info"/>
-
-            <RadioGroup
-                android:id="@+id/activity_settings_list_rg_settings_general"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/activity_settings_list_rb_general_asc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/activity_settings_list_rb_general_asc"/>
-
-                <RadioButton
-                    android:id="@+id/activity_settings_list_rb_general_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/activity_settings_list_rb_general_desc"/>
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:paddingEnd="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingStart="5dp"
-                android:scrollbars="vertical"
                 android:text="@string/activity_settings_list_messages_info_title"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:layout_width="fill_parent"

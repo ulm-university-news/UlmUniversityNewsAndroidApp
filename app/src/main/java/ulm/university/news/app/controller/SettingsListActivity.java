@@ -54,26 +54,6 @@ public class SettingsListActivity extends AppCompatActivity {
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
-        RadioGroup rgSettingsGeneral = (RadioGroup) findViewById(R.id.activity_settings_list_rg_settings_general);
-        RadioButton rbGeneralAsc = (RadioButton) findViewById(R.id.activity_settings_list_rb_general_asc);
-        RadioButton rbGeneralDesc = (RadioButton) findViewById(R.id.activity_settings_list_rb_general_desc);
-
-        switch (settings.getGeneralSettings()) {
-            case ASCENDING:
-                rbGeneralAsc.setChecked(true);
-                break;
-            case DESCENDING:
-                rbGeneralDesc.setChecked(true);
-                break;
-        }
-
-        rgSettingsGeneral.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                onRbGeneralClicked(checkedId);
-            }
-        });
-
         RadioGroup rgSettingsMessages = (RadioGroup) findViewById(R.id.activity_settings_list_rg_settings_messages);
         RadioButton rbMessagesAsc = (RadioButton) findViewById(R.id.activity_settings_list_rb_messages_asc);
         RadioButton rbMessagesDesc = (RadioButton) findViewById(R.id.activity_settings_list_rb_messages_desc);
@@ -174,23 +154,6 @@ public class SettingsListActivity extends AppCompatActivity {
                 break;
             case R.id.activity_settings_list_rb_group_messages:
                 settings.setGroupSettings(OrderSettings.NEW_MESSAGES);
-                break;
-        }
-        // Update settings in the database.
-        settingsDBM.updateSettings(settings);
-
-        // Show updated message.
-        toast.show();
-    }
-
-    private void onRbGeneralClicked(int checkedId) {
-        // Check which radio button is selected.
-        switch (checkedId) {
-            case R.id.activity_settings_list_rb_general_asc:
-                settings.setGeneralSettings(OrderSettings.ASCENDING);
-                break;
-            case R.id.activity_settings_list_rb_general_desc:
-                settings.setGeneralSettings(OrderSettings.DESCENDING);
                 break;
         }
         // Update settings in the database.
