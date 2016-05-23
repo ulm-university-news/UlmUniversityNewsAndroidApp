@@ -28,8 +28,10 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.ResourceDetail;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
+import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
@@ -181,7 +183,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             @Override
             public void onClick(View v) {
                 if (Util.getInstance(v.getContext()).isOnline()) {
-                    if(tilPassword.isValid()) {
+                    if (tilPassword.isValid()) {
                         String password = tilPassword.getText();
                         password = Util.hashPassword(password);
                         GroupAPI.getInstance(v.getContext()).joinGroup(groupId, password);
@@ -271,7 +273,12 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
 
         // Include group admin detail only if local user is a group member.
         if (groupDBM.isGroupMember(groupId)) {
-            String adminName = groupDBM.getUserName(group.getGroupAdmin());
+            UserDatabaseManager userDBM = new UserDatabaseManager(getContext());
+            User user = userDBM.getUser(group.getGroupAdmin());
+            String adminName = "Unknown";
+            if (user != null) {
+                adminName = user.getName();
+            }
             ResourceDetail groupAdmin = new ResourceDetail(getString(R.string.group_admin), adminName,
                     R.drawable.ic_person_black_36dp);
             resourceDetails.add(groupAdmin);

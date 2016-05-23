@@ -104,7 +104,7 @@
     <string name="activity_settings_notification_title">Notification settings</string>
     <string name="activity_settings_notification_info">Define the behaviour of the app on incoming messages.
         These settings are used for the whole app. You are able to choose other announcement settings for single
-        channels and groups.</string>
+        channels and users.</string>
     <string name="activity_settings_notification_rb_all">Announce all incoming messages</string>
     <string name="activity_settings_notification_rb_priority">Announce high priority messages only.</string>
     <string name="activity_settings_notification_rb_none">Announce no incoming messages.</string>
@@ -146,8 +146,8 @@
     <string name="activity_main_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
     <string name="activity_main_channel_list_loading">Loading channel data&#8230;</string>
-    <string name="activity_main_group_tap">My groups</string>
-    <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for groups and join or create a new one.</string>
+    <string name="activity_main_group_tap">My users</string>
+    <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for users and join or create a new one.</string>
     <string name="activity_main_group_list_loading">Loading group data&#8230;</string>
     <string name="activity_main_channel_menu_search">Search channel</string>
     <string name="activity_main_channel_menu_settings">Settings</string>
@@ -219,6 +219,11 @@
     <!-- ChannelDetailActivity ##################################################################################### -->
     <string name="activity_channel_detail_button_subscribe">Subscribe</string>
     <string name="activity_channel_detail_button_unsubscribe">Unsubscribe</string>
+
+    <!-- GroupActivity ############################################################################################# -->
+    <string name="activity_group_tab_conversations">Conversations</string>
+    <string name="activity_group_tab_ballots">Ballots</string>
+    <string name="activity_group_tab_information">Group information</string>
 
     <!-- GroupDetailActivity ##################################################################################### -->
     <string name="activity_group_detail_button_join">Join</string>
@@ -363,6 +368,10 @@
     <string name="group_info_up_to_date">Group data already up to date.</string>
     <string name="group_deleted_dialog_title">Group deleted</string>
     <string name="group_deleted_dialog_text">The group \"%1$s\" no longer exists. You can\'t join.</string>
+    <string name="group_deleted_member_dialog_title">Group deleted</string>
+    <string name="group_deleted_member_dialog_text">The group \"%1$s\" has been deleted. There won\'t be any
+        further activities. Since you are a group member you still have a local copy on your device. If you
+        leave, the local group data will be deleted and can\'t be restored.</string>
 
     <!-- User ###################################################################################################### -->
     <string name="user_edited">User updated successfully.</string>

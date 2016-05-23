@@ -3,6 +3,7 @@ package ulm.university.news.app.manager.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -114,7 +115,11 @@ public class UserDatabaseManager {
         values.put(USER_ID, user.getId());
         values.put(USER_NAME, user.getName());
         values.put(USER_OLD_NAME, user.getOldName());
-        db.insert(USER_TABLE, null, values);
+        try {
+            db.insertOrThrow(USER_TABLE, null, values);
+        } catch (SQLException e) {
+            Log.i(TAG, "User " + user.getId() + " is already stored.");
+        }
     }
 
     /**

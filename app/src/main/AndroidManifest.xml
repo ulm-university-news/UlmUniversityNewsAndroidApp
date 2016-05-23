@@ -188,8 +188,14 @@
             android:label="@string/activity_about_title">
         </activity>
         <activity android:name=".controller.GroupDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.GroupSearchActivity"/>
         </activity>
         <activity android:name=".controller.GroupActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.MainActivity"/>
         </activity>
     </application>
 

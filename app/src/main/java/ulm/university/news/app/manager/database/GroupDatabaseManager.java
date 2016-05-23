@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -17,6 +18,7 @@ import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ADMIN;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_DELETED;
@@ -51,7 +53,9 @@ public class GroupDatabaseManager {
 
     public static final String STORE_GROUP = "storeGroup";
     public static final String JOIN_GROUP = "joinGroup";
+    public static final String ADD_USER_TO_GROUP = "addUserToGroup";
     public static final String LEAVE_GROUP = "leaveGroup";
+    public static final String UPDATE_GROUP = "updateGroup";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -150,7 +154,7 @@ public class GroupDatabaseManager {
             // TODO Get number of unread conversation messages / ballots.
             groups.add(group);
         }
-        if(c != null){
+        if (c != null) {
             c.close();
         }
         Log.d(TAG, "End with " + group);
@@ -219,6 +223,30 @@ public class GroupDatabaseManager {
     }
 
     /**
+     * Adds a user as a group member to the group identified by id.
+     *
+     * @param groupId The id of the group.
+     */
+    public void addUserToGroup(int groupId, int userId) {
+        Log.d(TAG, "Add user " + userId + " to group " + groupId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(GROUP_ID_FOREIGN, groupId);
+        values.put(USER_ID_FOREIGN, userId);
+        values.put(USER_GROUP_ACTIVE, true);
+        try {
+            db.insertOrThrow(USER_GROUP_TABLE, null, values);
+        } catch (SQLException e) {
+            Log.i(TAG, "User " + userId + " is already set as group member for group " + groupId);
+        }
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(ADD_USER_TO_GROUP);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
      * The local user leaves the group identified by id.
      *
      * @param groupId The id of the group that should be left.
@@ -261,30 +289,22 @@ public class GroupDatabaseManager {
     }
 
     /**
-     * Checks if the local user is a group member of the group identified by given id.
+     * Marks a deleted group. When a group is marked this way, no group deleted dialog will show again.
      *
-     * @param userId The id of the group member that should be checked.
-     * @return the user name of the group member with given id.
+     * @param groupId The id of the deleted group which should be set to read.
      */
-    public String getUserName(int userId) {
-        String userName = "Unknown";
-        // TODO
-        /*
-        SQLiteDatabase db = dbm.getReadableDatabase();
-        boolean isGroupMember = false;
+    public void setGroupDeletedToRead(int groupId) {
+        Log.d(TAG, "Set deleted group with id " + groupId + " to read.");
+        SQLiteDatabase db = dbm.getWritableDatabase();
 
-        String selectQuery = "SELECT * FROM " + USER_GROUP_TABLE
-                + " WHERE " + GROUP_ID_FOREIGN + "=? AND " + USER_ID_FOREIGN + "=?";
-        String[] args = {String.valueOf(userId), String.valueOf(Util.getInstance(appContext).getLocalUser().getId())};
-        Log.d(TAG, selectQuery + " -> " + userId);
+        ContentValues values = new ContentValues();
+        values.put(GROUP_DELETED_READ, true);
+        String where = GROUP_ID + "=?";
+        String[] args = {String.valueOf(groupId)};
+        db.update(CHANNEL_TABLE, values, where, args);
 
-        Cursor c = db.rawQuery(selectQuery, args);
-        if (c != null && c.moveToFirst()) {
-            isGroupMember = true;
-            c.close();
-        }
-        Log.d(TAG, "End with " + isGroupMember);
-        */
-        return userName;
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_GROUP);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 }

@@ -41,9 +41,9 @@ public class Group {
     /** A list of ballots which belong to the group.  */
     private List<Ballot> ballots;
     /** Indicates weather the group is delete on server or not. */
-    Boolean deleted;
+    private Boolean deleted;
     /** Indicates weather the group deletion dialog was read or not. */
-    Boolean deletedRead;
+    private Boolean deletedRead;
 
     /**
      * Creates an instance of the Group class.

@@ -263,7 +263,8 @@
     <string name="activity_group_detail_button_leave">Verlassen</string>
     <string name="group_type">Gruppentyp</string>
     <string name="group_leave_dialog_title">Gruppe verlassen</string>
-    <string name="group_leave_dialog_text">Diese Gruppe wird von deiner Gruppenliste entfernt. Sie können nicht länger an der Gruppe teilnehmen. Wollen Sie die Gruppe wirklich verlassen?</string>
+    <string name="group_leave_dialog_text">Diese Gruppe wird von Ihrer Gruppenliste entfernt. Sie können nicht länger
+        an der Gruppe teilnehmen. Wollen Sie die Gruppe wirklich verlassen?</string>
     <string name="general_error_leave">Verlassen fehlgeschlagen.</string>
     <string name="group_admin">Gruppenadministrator</string>
     <string name="group_info_updated">Gruppendaten aktualisiert.</string>

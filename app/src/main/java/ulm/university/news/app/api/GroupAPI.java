@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.util.Util;
 
 /**
@@ -210,6 +211,26 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getGroupMembers(int groupId) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/user";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of groups as deserialization type.
+                Type listType = new TypeToken<List<User>>() {
+                }.getType();
+                List<User> users = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventGroupMembers(users));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
