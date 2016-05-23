@@ -13,6 +13,7 @@
     <string name="general_error_refresh"> Can\'t refresh.</string>
     <string name="general_error_subscribe"> Can\'t subscribe.</string>
     <string name="general_error_unsubscribe"> Can\'t unsubscribe.</string>
+    <string name="general_error_leave"> Can\'t leave.</string>
     <string name="general_error_delete"> Can\'t delete.</string>
     <string name="general_year_format">YYYY</string>
     <string name="general_create">Create</string>
@@ -88,6 +89,7 @@
     <string name="activity_group_search_error_search_name">This group name is invalid. It may include invalid characters or is to long.</string>
     <string name="activity_group_search_error_search_numbers">This group id is invalid. Use numbers only to search for id.</string>
     <string name="activity_group_search_error_not_found">No group found.</string>
+    <string name="activity_group_search_updating">No group data found. Swipe down to refresh.</string>
 
     <!-- GroupAddActivity ########################################################################################## -->
     <string name="activity_group_add_title">Add group</string>
@@ -218,6 +220,10 @@
     <string name="activity_channel_detail_button_subscribe">Subscribe</string>
     <string name="activity_channel_detail_button_unsubscribe">Unsubscribe</string>
 
+    <!-- GroupDetailActivity ##################################################################################### -->
+    <string name="activity_group_detail_button_join">Join</string>
+    <string name="activity_group_detail_button_leave">Leave</string>
+
     <!-- Channel ################################################################################################### -->
     <string name="channel_name">Name</string>
     <string name="channel_name_error">The channel name is invalid. Use 3 &#8211; 45 characters.</string>
@@ -342,17 +348,26 @@
     <!-- Group ##################################################################################################### -->
     <string name="group_name">Name</string>
     <string name="group_description">Description</string>
-    <string name="group_password">Password</string>
+    <string name="group_password">Group password</string>
+    <string name="group_password_invalid">Group password invalid</string>
     <string name="group_tutorial_symbol">T</string>
     <string name="group_working_symbol">W</string>
     <string name="group_tutorial_name">Tutorial group</string>
     <string name="group_working_name">Working group</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="group_type">Group type</string>
+    <string name="group_admin">Group administrator</string>
+    <string name="group_leave_dialog_title">Leave group</string>
+    <string name="group_leave_dialog_text">This group will be deleted from your group list. You
+        won\'t be able to participate in this group anymore.\nDo you really want to leave this group?</string>
+    <string name="group_info_updated">Group data updated.</string>
+    <string name="group_info_up_to_date">Group data already up to date.</string>
+    <string name="group_deleted_dialog_title">Group deleted</string>
+    <string name="group_deleted_dialog_text">The group \"%1$s\" no longer exists. You can\'t join.</string>
 
     <!-- User ###################################################################################################### -->
     <string name="user_edited">User updated successfully.</string>
     <string name="user_name_not_changed">The user name hasn\'t changed.</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

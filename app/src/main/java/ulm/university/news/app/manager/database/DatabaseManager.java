@@ -273,6 +273,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String GROUP_MODIFICATION_DATE = "ModificationDate";
     public static final String GROUP_TERM = "Term";
     public static final String GROUP_DELETED = "Deleted";
+    public static final String GROUP_DELETED_READ = "DeletedRead";
     public static final String GROUP_ADMIN = "GroupAdmin_User_Id";
 
     /** SQL statement to create the Group table. */
@@ -285,9 +286,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + GROUP_MODIFICATION_DATE + " INTEGER NOT NULL, "
             + GROUP_TERM + " TEXT, "
             + GROUP_DELETED + " INTEGER NOT NULL, "
+            + GROUP_DELETED_READ + " INTEGER NOT NULL, "
             + GROUP_ADMIN + " INTEGER NOT NULL, "
-            + SETTINGS_NOTIFICATION + " INTEGER, "
-            + "FOREIGN KEY(" + GROUP_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+            + SETTINGS_NOTIFICATION + " INTEGER);";
+    // Don't use constraints to allow an easy group storage process with a later user update process.
+    // + "FOREIGN KEY(" + GROUP_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
 
     // Column of the UserGroup table.
     public static final String USER_GROUP_TABLE = "UserGroup";

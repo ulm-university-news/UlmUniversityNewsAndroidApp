@@ -40,6 +40,10 @@ public class Group {
     private List<User> participants;
     /** A list of ballots which belong to the group.  */
     private List<Ballot> ballots;
+    /** Indicates weather the group is delete on server or not. */
+    Boolean deleted;
+    /** Indicates weather the group deletion dialog was read or not. */
+    Boolean deletedRead;
 
     /**
      * Creates an instance of the Group class.
@@ -212,6 +216,22 @@ public class Group {
         this.participants = participants;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Boolean getDeletedRead() {
+        return deletedRead;
+    }
+
+    public void setDeletedRead(Boolean deletedRead) {
+        this.deletedRead = deletedRead;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
@@ -222,10 +242,13 @@ public class Group {
                 ", creationDate=" + creationDate +
                 ", modificationDate=" + modificationDate +
                 ", term='" + term + '\'' +
+                ", password='" + password + '\'' +
                 ", groupAdmin=" + groupAdmin +
                 ", conversations=" + conversations +
                 ", participants=" + participants +
                 ", ballots=" + ballots +
+                ", deleted=" + deleted +
+                ", deletedRead=" + deletedRead +
                 '}';
     }
 }

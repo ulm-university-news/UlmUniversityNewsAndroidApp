@@ -28,6 +28,7 @@ import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.Platform;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.SettingsDatabaseManager;
@@ -214,6 +215,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         Log.d(TAG, event.toString());
         // Channels loaded successfully. Save local user in database now.
         new UserDatabaseManager(this).storeLocalUser(localUser);
+        // Save local user in normal user database as well so that groups can be joined.
+        User user = new User(localUser.getId(), localUser.getName());
+        new UserDatabaseManager(this).storeUser(user);
         // Create and store the default settings.
         new SettingsDatabaseManager(this).createDefaultSettings();
         // Store loaded channels in database.

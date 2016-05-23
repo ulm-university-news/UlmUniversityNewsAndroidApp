@@ -16,7 +16,9 @@
     <string name="activity_channel_search_title">Kanalsuche</string>
     <string name="activity_about_info">Diese App wurde im Rahmen des Anwendungsfachs Advanced Mobile Application Engineering am Institut für Datenbanken und Informationssysteme an der Universität Ulm erstellt.\n\nDiese App und zugehörige Komponenten wurden von Matthias Mak und Philipp Speidel entwickelt. Betreuer des Projekts ist Marc Schickler.\n\nDiese Software wird ohne jegliche spezielle oder implizierte Garantien zur Verfügung gestellt. Weitere Informationen erhalten Sie unter www.google.de \n\nBei Fragen oder Verbesserungsvorschlägen wenden Sie sich bitte an ulm.university.news@gmail.com</string>
     <string name="activity_channel_search_updating">Keine Kanaldaten gefunden. Zum aktualisieren nach unten wischen.</string>
-    <string name="activity_create_account_account_created">Dein Nutzerkonto wurde erfolgreich erstellt. Die App lädt nun die Kanaldaten. Wenn der Download abgeschlossen ist, klicken Sie auf den erscheinenden Start-Button um die App zu nutzen.</string>
+    <string name="activity_create_account_account_created">Ihr Nutzerkonto wurde erfolgreich erstellt. Die App lädt
+        nun die Kanaldaten. Klicken Sie auf den erscheinenden Start-Button wenn der Download abgeschlossen ist um die
+        App zu nutzen.</string>
     <string name="activity_create_account_button_create">Konto erstellen</string>
     <string name="activity_create_account_button_retry">Wiederholen</string>
     <string name="activity_create_account_button_start">Start</string>
@@ -190,7 +192,7 @@
     <string name="general_yes">Ja</string>
     <string name="group_description">Beschreibung</string>
     <string name="group_name">Name</string>
-    <string name="group_password">Passwort</string>
+    <string name="group_password">Gruppenpasswort</string>
     <string name="group_tutorial_name">Tutoriumsgruppe</string>
     <string name="group_tutorial_symbol">T</string>
     <string name="group_working_name">Arbeitsgruppe</string>
@@ -256,4 +258,17 @@
     <string name="general_leave_page">Wenn Sie diese Seite verlassen, werden Ihre eingegebenen Daten verworfen. Möchte Sie die Seite wirklich verlassen?</string>
     <string name="general_leave_page_title">Seite verlassen</string>
     <string name="general_leave_page_edited">Wenn Sie diese Seite verlassen, werden Ihre geänderten Daten verworfen. Möchte Sie die Seite wirklich verlassen?</string>
+    <string name="activity_group_search_updating">Keine Gruppendaten gefunden. Zum Aktualisieren nach unten wischen.</string>
+    <string name="activity_group_detail_button_join">Beitreten</string>
+    <string name="activity_group_detail_button_leave">Verlassen</string>
+    <string name="group_type">Gruppentyp</string>
+    <string name="group_leave_dialog_title">Gruppe verlassen</string>
+    <string name="group_leave_dialog_text">Diese Gruppe wird von deiner Gruppenliste entfernt. Sie können nicht länger an der Gruppe teilnehmen. Wollen Sie die Gruppe wirklich verlassen?</string>
+    <string name="general_error_leave">Verlassen fehlgeschlagen.</string>
+    <string name="group_admin">Gruppenadministrator</string>
+    <string name="group_info_updated">Gruppendaten aktualisiert.</string>
+    <string name="group_info_up_to_date">Gruppendaten bereits aktuell.</string>
+    <string name="group_deleted_dialog_text">Die Gruppe \"%1$s\" gibt es nicht mehr. Sie können nicht beitreten.</string>
+    <string name="group_deleted_dialog_title">Gruppe gelöscht</string>
+    <string name="group_password_invalid">Gruppenpasswort ungültig</string>
 </resources>

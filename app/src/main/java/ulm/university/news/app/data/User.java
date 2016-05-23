@@ -35,12 +35,13 @@ public class User {
     /**
      * Creates an instance of the User class.
      *
-     * @param id                The id of the user.
-     * @param name              The username of the user.
+     * @param id The id of the user.
+     * @param name The username of the user.
      */
     public User(Integer id, String name) {
         this.id = id;
         this.name = name;
+        this.oldName = name;
     }
 
     @Override
@@ -62,11 +63,7 @@ public class User {
     }
 
     public Boolean isNameChanged() {
-        return nameChanged;
-    }
-
-    public void setNameChanged(Boolean nameChanged) {
-        this.nameChanged = nameChanged;
+        return !name.equals(oldName);
     }
 
     public Integer getId() {

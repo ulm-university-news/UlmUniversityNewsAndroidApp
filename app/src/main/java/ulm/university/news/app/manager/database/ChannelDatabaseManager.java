@@ -99,7 +99,7 @@ public class ChannelDatabaseManager {
 
     public static final String STORE_CHANNEL = "storeChannel";
     public static final String UPDATE_CHANNEL = "updateChannel";
-    public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
+    public static final String SUBSCRIBE_CHANNEL = "joinGroup";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
     public static final String STORE_REMINDER = "storeReminder";

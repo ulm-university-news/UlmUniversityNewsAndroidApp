@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -32,6 +33,7 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.Util;
 
@@ -51,6 +53,7 @@ public class GroupSearchActivity extends AppCompatActivity {
     private SearchView searchView;
     private ListView lvGroups;
     private ProgressBar pgrSearching;
+    private AdapterView.OnItemClickListener itemClickListener;
 
     private boolean isInputValid;
     private int groupId;
@@ -84,13 +87,13 @@ public class GroupSearchActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-        // lvChannels.setOnItemClickListener(itemClickListener);
+        lvGroups.setOnItemClickListener(itemClickListener);
     }
 
     @Override
     protected void onStop() {
         EventBus.getDefault().unregister(this);
-        // lvChannels.setOnItemClickListener(null);
+        lvGroups.setOnItemClickListener(null);
         super.onStop();
     }
 
@@ -181,6 +184,17 @@ public class GroupSearchActivity extends AppCompatActivity {
                 }
             }
         });
+
+        itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Group group = (Group) lvGroups.getItemAtPosition(position);
+                new GroupDatabaseManager(arg1.getContext()).storeGroup(group);
+                Intent intent = new Intent(arg0.getContext(), GroupDetailActivity.class);
+                intent.putExtra("groupId", group.getId());
+                startActivity(intent);
+            }
+        };
     }
 
     private void validateTextInput(String input) {

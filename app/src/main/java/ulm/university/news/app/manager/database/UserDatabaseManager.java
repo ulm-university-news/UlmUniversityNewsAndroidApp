@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.Platform;
 
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_ID;
@@ -15,6 +16,10 @@ import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USE
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_PUSH_ACCESS_TOKEN;
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_SERVER_ACCESS_TOKEN;
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_OLD_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_TABLE;
 
 /**
  * TODO
@@ -94,5 +99,62 @@ public class UserDatabaseManager {
         // values.put(LOCAL_USER_PLATFORM, localUser.getPlatform().ordinal());
 
         db.update(LOCAL_USER_TABLE, values, null, null);
+    }
+
+    /**
+     * Stores a user in the database.
+     *
+     * @param user A user object.
+     */
+    public void storeUser(User user) {
+        Log.d(TAG, "Store " + user);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USER_ID, user.getId());
+        values.put(USER_NAME, user.getName());
+        values.put(USER_OLD_NAME, user.getOldName());
+        db.insert(USER_TABLE, null, values);
+    }
+
+    /**
+     * Updates the user with given id in the database. The users id can't be updated.
+     *
+     * @param user The updated user.
+     */
+    public void updateUser(User user) {
+        Log.d(TAG, "Update " + user);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USER_NAME, user.getName());
+        values.put(USER_OLD_NAME, user.getOldName());
+
+        db.update(USER_TABLE, values, null, null);
+    }
+
+    /**
+     * Retrieves the user with given id from the database.
+     *
+     * @return The user with specified id.
+     */
+    public User getUser(int userId) {
+        User user = null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USER_TABLE + " WHERE " + USER_ID + "=?";
+        String[] args = {String.valueOf(userId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        if (c != null && c.moveToFirst()) {
+            user = new User();
+            user.setId(c.getInt(c.getColumnIndex(USER_ID)));
+            user.setName(c.getString(c.getColumnIndex(USER_NAME)));
+            user.setOldName(c.getString(c.getColumnIndex(USER_OLD_NAME)));
+            c.close();
+        }
+        Log.d(TAG, "End with " + user);
+        return user;
     }
 }

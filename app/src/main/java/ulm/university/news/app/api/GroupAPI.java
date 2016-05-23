@@ -31,6 +31,12 @@ public class GroupAPI extends MainAPI {
     /** The REST servers internet address pointing to the group resource. */
     private String serverAddressGroup;
 
+    // Constants.
+    public static final String JOIN_GROUP = "joinGroup";
+    public static final String LEAVE_GROUP = "leaveGroup";
+    public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
+    public static final String DELETE_GROUP = "deleteGroup";
+
     /**
      * Get the instance of the GroupAPI class.
      *
@@ -117,6 +123,93 @@ public class GroupAPI extends MainAPI {
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, serverAddressGroup);
         rTask.setBody(jsonGroup);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Deletes the group with given id from the server.
+     *
+     * @param groupId The id of the group which should be deleted.
+     */
+    public void deleteGroup(int groupId) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId;
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(DELETE_GROUP, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Adds the local user to the group with given id.
+     *
+     * @param groupId The group id.
+     * @param password The group password which is required to enter the group.
+     */
+    public void joinGroup(int groupId, String password) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/user";
+        String body = "{\"password\":\"" + password + "\"}";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(JOIN_GROUP, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        rTask.setBody(body);
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Deletes the local user as a group member from the group with given id.
+     *
+     * @param groupId The group id.
+     */
+    public void leaveGroup(int groupId) {
+        // Add channel id to url.
+        String url = serverAddressGroup + "/" + groupId + "/user/" + Util.getInstance(context).getLocalUser().getId();
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(LEAVE_GROUP, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Deletes the user identified by id as a group member from the group with given id.
+     *
+     * @param groupId The group id.
+     * @param userId The user who should be removed from the group.
+     */
+    public void removeUserFromGroup(int groupId, int userId) {
+        // Add channel id to url.
+        String url = serverAddressGroup + "/" + groupId + "/user/" + userId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(REMOVE_USER_FROM_GROUP, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
