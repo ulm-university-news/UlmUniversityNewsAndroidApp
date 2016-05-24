@@ -8,11 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -24,6 +23,7 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
@@ -44,6 +44,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
     private Spinner spTerm;
     private TextView tvError;
     private ProgressBar pgrSearching;
+    private Button btnCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +73,6 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         super.onStop();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_group_add_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -89,9 +84,6 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
                 args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
                 dialog.setArguments(args);
                 dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
-                return true;
-            case R.id.activity_group_add_add:
-                addGroup();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -123,6 +115,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         spTerm = (Spinner) findViewById(R.id.activity_group_add_sp_term);
         tvError = (TextView) findViewById(R.id.activity_group_add_tv_error);
         pgrSearching = (ProgressBar) findViewById(R.id.activity_group_add_pgr_adding);
+        btnCreate = (Button) findViewById(R.id.activity_group_add_btn_create);
 
         tilName.setNameAndHint(getString(R.string.group_name));
         tilName.setLength(3, 35);
@@ -164,6 +157,14 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
                 tvError.setVisibility(View.GONE);
             }
         });
+
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "ButtonClick");
+                addGroup();
+            }
+        });
     }
 
     private void addGroup() {
@@ -175,12 +176,12 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         if (!tilPassword.isValid()) {
             valid = false;
         }
-        if (tilDescription.isValid()) {
+        if (!tilDescription.isValid()) {
             valid = false;
         }
         try {
             int y = Integer.parseInt(year);
-            if(y < 2016){
+            if (y < 2016) {
                 tvError.setText(getString(R.string.channel_term_year_error));
                 tvError.setVisibility(View.VISIBLE);
                 valid = false;
@@ -225,10 +226,16 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
      * @param group The group object.
      */
     public void onEventMainThread(Group group) {
-        Log.d(TAG, "EventBus: List<Group>");
+        Log.d(TAG, "EventBus: Group");
         Log.d(TAG, group.toString());
         pgrSearching.setVisibility(View.GONE);
-        // TODO Save group in database. Then show GroupActivity.
+        // Store group and add local user as a group member.
+        GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
+        groupDBM.storeGroup(group);
+        groupDBM.joinGroup(group.getId());
+        Intent intent = new Intent(this, GroupActivity.class);
+        intent.putExtra("groupId", group.getId());
+        startActivity(intent);
     }
 
     /**
@@ -261,7 +268,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
     public void onDialogPositiveClick(String tag) {
         if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP)) {
             navigateUp();
-        }else if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK)){
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK)) {
             super.onBackPressed();
         }
     }
