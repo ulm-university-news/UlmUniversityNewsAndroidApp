@@ -302,8 +302,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + GROUP_ID_FOREIGN + " INTEGER NOT NULL, "
             + USER_GROUP_ACTIVE + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + USER_ID_FOREIGN + ", " + GROUP_ID_FOREIGN + "), "
-            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "), "
-            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "));";
+            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + ") ON DELETE CASCADE, "
+            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + ") "
+            + "ON DELETE CASCADE);";
 
     // Columns of the Conversation table.
     public static final String CONVERSATION_TABLE = "Conversation";

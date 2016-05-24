@@ -125,21 +125,22 @@ public class GroupDatabaseManager {
     }
 
     /**
-     * Retrieves the group with given id from the database.
+     * Retrieves the groups of the local user from the database.
      *
-     * @return The group with given id.
+     * @return The groups of the local user.
      */
-    public List<Group> getMyGroups(int groupId) {
+    public List<Group> getMyGroups() {
         List<Group> groups = new ArrayList<>();
         Group group = null;
         SQLiteDatabase db = dbm.getReadableDatabase();
 
-        String selectQuery = "SELECT * FROM " + GROUP_TABLE + " WHERE " + GROUP_ID + "=?";
-        String[] args = {String.valueOf(groupId)};
+        String selectQuery = "SELECT * FROM " + GROUP_TABLE + " AS g INNER JOIN " + USER_GROUP_TABLE
+                + " AS ug ON g." + GROUP_ID + "=ug." + GROUP_ID_FOREIGN + " WHERE ug." + USER_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(Util.getInstance(appContext).getLocalUser().getId())};
         Log.d(TAG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, args);
-        if (c != null && c.moveToNext()) {
+        while (c != null && c.moveToNext()) {
             group = new Group();
             group.setId(c.getInt(c.getColumnIndex(GROUP_ID)));
             group.setName((c.getString(c.getColumnIndex(GROUP_NAME))));

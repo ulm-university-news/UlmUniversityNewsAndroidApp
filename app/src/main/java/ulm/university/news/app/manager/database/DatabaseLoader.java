@@ -31,6 +31,7 @@ public class DatabaseLoader<T extends List<?>> extends AsyncTaskLoader<T> {
     // References to the database managers.
     private ChannelDatabaseManager channelDBM;
     private UserDatabaseManager userDBM;
+    private GroupDatabaseManager groupDBM;
 
     /**
      * Instantiates a new DatabaseLoader.
@@ -176,5 +177,13 @@ public class DatabaseLoader<T extends List<?>> extends AsyncTaskLoader<T> {
 
     public void setUserDBM(UserDatabaseManager userDBM) {
         this.userDBM = userDBM;
+    }
+
+    public GroupDatabaseManager getGroupDBM() {
+        return groupDBM;
+    }
+
+    public void setGroupDBM(GroupDatabaseManager groupDBM) {
+        this.groupDBM = groupDBM;
     }
 }

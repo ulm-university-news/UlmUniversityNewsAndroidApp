@@ -51,7 +51,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="#fff"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:visibility="gone"/>
         </LinearLayout>
 
@@ -67,8 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
-                android:singleLine="true"
-                android:textSize="12sp"/>
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/group_list_item_tv_term"
@@ -77,8 +76,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.5"
                 android:gravity="end"
-                android:singleLine="true"
-                android:textSize="12sp"/>
+                android:singleLine="true"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

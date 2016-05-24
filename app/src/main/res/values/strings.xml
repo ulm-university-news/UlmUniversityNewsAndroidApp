@@ -146,7 +146,7 @@
     <string name="activity_main_channel_list_empty">You haven\'t subscribed to any channel.\nSearch for channels
         and subscribe.</string>
     <string name="activity_main_channel_list_loading">Loading channel data&#8230;</string>
-    <string name="activity_main_group_tap">My users</string>
+    <string name="activity_main_group_tap">My groups</string>
     <string name="activity_main_group_list_empty">You aren\'t a member of any group.\nSearch for users and join or create a new one.</string>
     <string name="activity_main_group_list_loading">Loading group data&#8230;</string>
     <string name="activity_main_channel_menu_search">Search channel</string>

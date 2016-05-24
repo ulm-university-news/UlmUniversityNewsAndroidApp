@@ -6,17 +6,18 @@
              tools:context="ulm.university.news.app.controller.GroupFragment">
 
     <ListView
-        android:id="@+id/fragment_group_lv_channels"
+        android:id="@+id/fragment_group_lv_groups"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/fragment_group_tv_info"
+        android:id="@+id/fragment_group_tv_list_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:padding="10dp"
-        android:text="@string/activity_main_group_list_empty"/>
+        android:text="@string/activity_main_group_list_empty"
+        android:visibility="gone"/>
 
 </FrameLayout>
