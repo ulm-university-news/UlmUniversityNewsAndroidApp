@@ -14,8 +14,6 @@ public class User {
     private String name;
     /** The old username of the user after name change. */
     private String oldName;
-    /** Identifies weather the users name has changed or not. */
-    private Boolean nameChanged;
 
     /**
      * Creates an instance of the LocalUser class.
@@ -50,7 +48,6 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", oldName='" + oldName + '\'' +
-                ", nameChanged=" + nameChanged +
                 '}';
     }
 
@@ -62,7 +59,7 @@ public class User {
         this.oldName = oldName;
     }
 
-    public Boolean isNameChanged() {
+    public Boolean hasNameChanged() {
         return !name.equals(oldName);
     }
 

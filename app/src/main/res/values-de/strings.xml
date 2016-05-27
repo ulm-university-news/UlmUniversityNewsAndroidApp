@@ -272,4 +272,11 @@
     <string name="group_deleted_dialog_text">Die Gruppe \"%1$s\" gibt es nicht mehr. Sie können nicht beitreten.</string>
     <string name="group_deleted_dialog_title">Gruppe gelöscht</string>
     <string name="group_password_invalid">Gruppenpasswort ungültig</string>
+    <string name="activity_group_tab_ballots">Abstimmungen</string>
+    <string name="activity_group_tab_conversations">Konversationen</string>
+    <string name="activity_group_tab_events">Ereignisse</string>
+    <string name="activity_group_tab_information">Gruppeninformationen</string>
+    <string name="group_deleted_member_dialog_text">Die Gruppe \"%1$s\" wurde gelöscht. Es wird keine weiteren Aktivitäten geben. Da Sie ein Gruppenmitglied sind, sind die Gruppendaten noch lokal auf Ihrem Gerät gespeichert. Wenn Sie die Gruppe verlassen werden die Daten unwiederruflich gelöscht.</string>
+    <string name="group_deleted_member_dialog_title">Gruppe gelöscht</string>
+    <string name="group_members">Gruppenmitglieder (%1$s)</string>
 </resources>

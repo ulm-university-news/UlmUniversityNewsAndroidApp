@@ -223,6 +223,7 @@
     <!-- GroupActivity ############################################################################################# -->
     <string name="activity_group_tab_conversations">Conversations</string>
     <string name="activity_group_tab_ballots">Ballots</string>
+    <string name="activity_group_tab_events">Events</string>
     <string name="activity_group_tab_information">Group information</string>
 
     <!-- GroupDetailActivity ##################################################################################### -->
@@ -361,6 +362,7 @@
     <string name="group_working_name">Working group</string>
     <string name="group_type">Group type</string>
     <string name="group_admin">Group administrator</string>
+    <string name="group_members">Group members (%1$s)</string>
     <string name="group_leave_dialog_title">Leave group</string>
     <string name="group_leave_dialog_text">This group will be deleted from your group list. You
         won\'t be able to participate in this group anymore.\nDo you really want to leave this group?</string>

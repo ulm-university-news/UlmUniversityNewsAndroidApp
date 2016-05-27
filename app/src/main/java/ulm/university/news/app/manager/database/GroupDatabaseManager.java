@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.util.Util;
 
@@ -34,7 +35,11 @@ import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TYP
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_OLD_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_TABLE;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
 /**
@@ -54,7 +59,7 @@ public class GroupDatabaseManager {
     public static final String STORE_GROUP = "storeGroup";
     public static final String JOIN_GROUP = "joinGroup";
     public static final String ADD_USER_TO_GROUP = "addUserToGroup";
-    public static final String LEAVE_GROUP = "leaveGroup";
+    public static final String LEAVE_GROUP = "removeUserFromGroup";
     public static final String UPDATE_GROUP = "updateGroup";
 
     /** Creates a new instance of GroupDatabaseManager. */
@@ -204,26 +209,6 @@ public class GroupDatabaseManager {
     }
 
     /**
-     * The local user joins the group identified by id.
-     *
-     * @param groupId The id of the group that should be joined.
-     */
-    public void joinGroup(int groupId) {
-        Log.d(TAG, "Join group " + groupId);
-        SQLiteDatabase db = dbm.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(GROUP_ID_FOREIGN, groupId);
-        values.put(USER_ID_FOREIGN, Util.getInstance(appContext).getLocalUser().getId());
-        values.put(USER_GROUP_ACTIVE, true);
-        db.insert(USER_GROUP_TABLE, null, values);
-
-        // Notify observers that database content has changed.
-        Intent databaseChanged = new Intent(JOIN_GROUP);
-        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
-    }
-
-    /**
      * Adds a user as a group member to the group identified by id.
      *
      * @param groupId The id of the group.
@@ -248,16 +233,17 @@ public class GroupDatabaseManager {
     }
 
     /**
-     * The local user leaves the group identified by id.
+     * The specified user leaves the group identified by id.
      *
      * @param groupId The id of the group that should be left.
+     * @param userId The id of the user who leaves.
      */
-    public void leaveGroup(int groupId) {
-        Log.d(TAG, "Leave group " + groupId);
+    public void removeUserFromGroup(int groupId, int userId) {
+        Log.d(TAG, "User " + userId + " leaves group " + groupId);
         SQLiteDatabase db = dbm.getWritableDatabase();
 
         String where = GROUP_ID_FOREIGN + "=? AND " + USER_ID_FOREIGN + "=?";
-        String[] args = {String.valueOf(groupId), String.valueOf(Util.getInstance(appContext).getLocalUser().getId())};
+        String[] args = {String.valueOf(groupId), String.valueOf(userId)};
         db.delete(USER_GROUP_TABLE, where, args);
 
         // Notify observers that database content has changed.
@@ -287,6 +273,36 @@ public class GroupDatabaseManager {
         }
         Log.d(TAG, "End with " + isGroupMember);
         return isGroupMember;
+    }
+
+    /**
+     * Retrieves all group members of the group with given id from the database.
+     *
+     * @return The group members of the group.
+     */
+    public List<User> getGroupMembers(int groupId) {
+        List<User> users = new ArrayList<>();
+        User user = null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USER_TABLE + " AS u INNER JOIN " + USER_GROUP_TABLE
+                + " AS ug ON u." + USER_ID + "=ug." + USER_ID_FOREIGN + " WHERE ug." + GROUP_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(groupId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        while (c != null && c.moveToNext()) {
+            user = new User();
+            user.setId(c.getInt(c.getColumnIndex(USER_ID)));
+            user.setName((c.getString(c.getColumnIndex(USER_NAME))));
+            user.setOldName((c.getString(c.getColumnIndex(USER_OLD_NAME))));
+            users.add(user);
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with " + users);
+        return users;
     }
 
     /**

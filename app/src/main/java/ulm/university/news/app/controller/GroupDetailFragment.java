@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import ulm.university.news.app.data.ResourceDetail;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
-import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
@@ -271,16 +271,35 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             resourceDetails.add(description);
         }
 
-        // Include group admin detail only if local user is a group member.
+        // Include group admin and group member information only if local user has joined the group.
         if (groupDBM.isGroupMember(groupId)) {
-            UserDatabaseManager userDBM = new UserDatabaseManager(getContext());
-            User user = userDBM.getUser(group.getGroupAdmin());
+            List<User> users = groupDBM.getGroupMembers(groupId);
+            User user;
+            int numberOfUsers = 1;
+            String groupMemberNames = "";
             String adminName = "Unknown";
-            if (user != null) {
-                adminName = user.getName();
+            if (users != null) {
+                numberOfUsers = users.size();
+                for (int i = 0; i < numberOfUsers; i++) {
+                    user = users.get(i);
+                    groupMemberNames += user.getName();
+                    if (i < numberOfUsers - 1) {
+                        groupMemberNames += " " + Html.fromHtml("&#8211; ").toString();
+                    }
+                    if(user.getId() == group.getGroupAdmin()){
+                        adminName = user.getName();
+                    }
+                }
+            } else {
+                groupMemberNames = "-";
             }
-            ResourceDetail groupAdmin = new ResourceDetail(getString(R.string.group_admin), adminName,
+
+            String groupMembersText = String.format(getString(R.string.group_members), numberOfUsers);
+            ResourceDetail groupMembers = new ResourceDetail(groupMembersText, groupMemberNames,
                     R.drawable.ic_person_black_36dp);
+            resourceDetails.add(groupMembers);
+            ResourceDetail groupAdmin = new ResourceDetail(getString(R.string.group_admin), adminName,
+                    R.drawable.ic_person_outline_black_36dp);
             resourceDetails.add(groupAdmin);
         }
 
@@ -378,7 +397,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         Log.d(TAG, "EventBus: BusEvent");
         String action = busEvent.getAction();
         if (GroupAPI.JOIN_GROUP.equals(action)) {
-            groupDBM.joinGroup(groupId);
+            groupDBM.addUserToGroup(groupId, Util.getInstance(getContext()).getLocalUser().getId());
             // TODO Get group members.
             // ChannelAPI.getInstance(getContext()).getResponsibleModerators(channel.getId());
             Intent intent = new Intent(getActivity(), GroupActivity.class);
@@ -386,7 +405,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             startActivity(intent);
             getActivity().finish();
         } else if (GroupAPI.LEAVE_GROUP.equals(action)) {
-            groupDBM.leaveGroup(groupId);
+            groupDBM.removeUserFromGroup(groupId, Util.getInstance(getContext()).getLocalUser().getId());
             // Delete group from local database.
             groupDBM.deleteGroup(groupId);
             getActivity().finish();

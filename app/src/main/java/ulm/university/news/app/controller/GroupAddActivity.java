@@ -232,7 +232,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         // Store group and add local user as a group member.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         groupDBM.storeGroup(group);
-        groupDBM.joinGroup(group.getId());
+        groupDBM.addUserToGroup(group.getId(), Util.getInstance(this).getLocalUser().getId());
         Intent intent = new Intent(this, GroupActivity.class);
         intent.putExtra("groupId", group.getId());
         startActivity(intent);

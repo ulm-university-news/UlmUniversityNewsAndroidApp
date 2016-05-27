@@ -34,7 +34,7 @@ public class GroupAPI extends MainAPI {
 
     // Constants.
     public static final String JOIN_GROUP = "joinGroup";
-    public static final String LEAVE_GROUP = "leaveGroup";
+    public static final String LEAVE_GROUP = "removeUserFromGroup";
     public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String DELETE_GROUP = "deleteGroup";
 

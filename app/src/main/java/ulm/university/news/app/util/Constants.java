@@ -41,7 +41,7 @@ public class Constants {
     public static final String PASSWORD_PATTERN = "^[a-zA-Z0-9]{8,20}$";
 
     /** A pattern which describes the valid form of a group password. */
-    public static final String PASSWORD_GROUP_PATTERN = "^[a-zA-Z0-9]{6,20}$";
+    public static final String PASSWORD_GROUP_PATTERN = "^[a-zA-Z0-9]{1,20}$";
 
     /** A pattern which describes the valid form of an user access token. */
     public static final String USER_TOKEN_PATTERN = "^[a-fA-F0-9]{56}$";

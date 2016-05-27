@@ -135,7 +135,10 @@ public class UserDatabaseManager {
         values.put(USER_NAME, user.getName());
         values.put(USER_OLD_NAME, user.getOldName());
 
-        db.update(USER_TABLE, values, null, null);
+        String where = USER_ID + "=?";
+        String[] args = {String.valueOf(user.getId())};
+
+        db.update(USER_TABLE, values, where, args);
     }
 
     /**

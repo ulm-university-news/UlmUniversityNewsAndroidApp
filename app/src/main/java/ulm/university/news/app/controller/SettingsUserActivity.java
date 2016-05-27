@@ -16,6 +16,7 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.api.UserAPI;
 import ulm.university.news.app.data.LocalUser;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.TextInputLabels;
@@ -140,9 +141,15 @@ public class SettingsUserActivity extends AppCompatActivity {
         pgrEditName.setVisibility(View.GONE);
         btnEdit.setVisibility(View.VISIBLE);
         // Update local user object in database.
-        new UserDatabaseManager(this).updateLocalUser(localUser);
+        UserDatabaseManager userDBM = new UserDatabaseManager(this);
+        userDBM.updateLocalUser(localUser);
         // Update the cached local user.
         Util.getInstance(this).setLocalUser(localUser);
+        // TODO Update local user as normal user in database.
+        User user = userDBM.getUser(localUser.getId());
+        user.setOldName(user.getName());
+        user.setName(localUser.getName());
+        userDBM.updateUser(user);
         // Update new user name in info text.
         String info = String.format(getString(R.string.activity_settings_user_info), localUser.getName());
         tvInfo.setText(info);
