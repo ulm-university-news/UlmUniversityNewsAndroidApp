@@ -33,10 +33,11 @@
         want to leave?</string>
     <string name="general_leave_page_edited">If you leave this page, your edited data is discarded. Do you really
         want to leave?</string>
+    <string name="general_unknown">Unknown</string>
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
-    <string name="push_message_new_announcements">New announcements posted.</string>
+    <string name="push_message_new_announcements">New conversations posted.</string>
     <string name="push_message_channel_deleted">Channel has been deleted.</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
@@ -119,7 +120,7 @@
     <string name="activity_settings_list_channel_info">Choose the arrangement criterion for channel lists here.</string>
     <string name="activity_settings_list_rb_channel_alphabetical">Alphabetical</string>
     <string name="activity_settings_list_rb_channel_type">Channel type and faculty</string>
-    <string name="activity_settings_list_rb_channel_messages">Number of unread announcements</string>
+    <string name="activity_settings_list_rb_channel_messages">Number of unread conversations</string>
     <string name="activity_settings_list_group_info_title">Group settings</string>
     <string name="activity_settings_list_group_info">Choose the arrangement criterion for group lists here.</string>
     <string name="activity_settings_list_rb_group_alphabetical">Alphabetical</string>
@@ -133,7 +134,7 @@
     <string name="activity_settings_list_messages_info_title">Messages settings</string>
     <string name="activity_settings_list_messages_info">The arrangement of the messages is exempt from the general
         list settings and can be set separately here. Choose the arrangement criterion for all message
-         lists like announcements.</string>
+         lists like conversations.</string>
     <string name="activity_settings_list_rb_messages_asc">Latest message at the top</string>
     <string name="activity_settings_list_rb_messages_desc">Latest message at the bottom</string>
 
@@ -180,7 +181,7 @@
 
     <!-- ReminderAddActivity ####################################################################################### -->
     <string name="activity_reminder_add_title">Add reminder</string>
-    <string name="activity_reminder_add_info">Configure a reminder, which sends announcements automatically at a specified interval. All shown fields are mandatory.</string>
+    <string name="activity_reminder_add_info">Configure a reminder, which sends conversations automatically at a specified interval. All shown fields are mandatory.</string>
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
     <string name="activity_reminder_add_select_interval">Click to select interval</string>
@@ -226,6 +227,9 @@
     <string name="activity_group_tab_events">Events</string>
     <string name="activity_group_tab_information">Group information</string>
 
+    <!-- ConversationAddActivity ################################################################################### -->
+    <string name="activity_conversation_add_title">Add conversation</string>
+
     <!-- GroupDetailActivity ##################################################################################### -->
     <string name="activity_group_detail_button_join">Join</string>
     <string name="activity_group_detail_button_leave">Leave</string>
@@ -257,7 +261,7 @@
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
     <string name="channel_unsubscribe_dialog_title">Unsubscribe channel</string>
     <string name="channel_unsubscribe_dialog_text">This channel will be deleted from your subscribed channels. You
-        won\'t be able to receive or read announcements of this channel.\nDo you really want to unsubscribe?</string>
+        won\'t be able to receive or read conversations of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
     <string name="channel_edited">Channel changed successfully.</string>
     <string name="channel_delete_dialog_title">Delete channel</string>
@@ -346,7 +350,7 @@
     <string name="moderator_unknown">Unknown</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
-    <string name="fragment_announcement_list_empty">There are no announcements yet.</string>
+    <string name="fragment_announcement_list_empty">There are no conversations yet.</string>
 
     <!-- ReminderFragment ########################################################################################## -->
     <string name="fragment_reminder_list_empty">There are no reminders yet.</string>
@@ -374,6 +378,15 @@
     <string name="group_deleted_member_dialog_text">The group \"%1$s\" has been deleted. There won\'t be any
         further activities. Since you are a group member you still have a local copy on your device. If you
         leave, the local group data will be deleted and can\'t be restored.</string>
+
+    <!-- Conversation ############################################################################################## -->
+    <string name="conversation_no_data">There are no conversations yet.</string>
+    <string name="conversation_add">Add conversation</string>
+    <string name="conversation_info_updated">New conversations loaded.</string>
+    <string name="conversation_info_up_to_date">No new conversations.</string>
+    <string name="conversation_created">Conversation created successfully.</string>
+    <string name="conversation_add_info">Fill out the title field below. Then click the create button to submit the
+        new conversation.</string>
 
     <!-- User ###################################################################################################### -->
     <string name="user_edited">User updated successfully.</string>

@@ -197,6 +197,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.MainActivity"/>
         </activity>
+        <activity
+            android:name=".controller.ConversationAddActivity"
+            android:label="@string/activity_conversation_add_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.GroupActivity"/>
+        </activity>
     </application>
 
 </manifest>

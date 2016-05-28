@@ -8,8 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -77,11 +75,7 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.activity_channel_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -92,13 +86,6 @@ public class GroupActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 NavUtils.navigateUpTo(this, intent);
                 return true;
-            /* TODO
-            case R.id.activity_channel_menu_settings:
-                intent = new Intent(this, SettingsChannelActivity.class);
-                intent.putExtra("channelId", getIntent().getIntExtra("channelId", 0));
-                startActivity(intent);
-                return true;
-                */
             default:
                 return super.onOptionsItemSelected(item);
         }

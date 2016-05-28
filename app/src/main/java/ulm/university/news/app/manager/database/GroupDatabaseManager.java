@@ -14,12 +14,18 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ADMIN;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_CLOSED;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_TITLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ADMIN;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_DELETED;
@@ -61,6 +67,8 @@ public class GroupDatabaseManager {
     public static final String ADD_USER_TO_GROUP = "addUserToGroup";
     public static final String LEAVE_GROUP = "removeUserFromGroup";
     public static final String UPDATE_GROUP = "updateGroup";
+    public static final String STORE_CONVERSATION = "storeConversation";
+    public static final String UPDATE_CONVERSATION = "updateConversation";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -90,7 +98,11 @@ public class GroupDatabaseManager {
         groupValues.put(GROUP_MODIFICATION_DATE, group.getModificationDate().getMillis());
         groupValues.put(GROUP_ADMIN, group.getGroupAdmin());
 
-        db.insert(GROUP_TABLE, null, groupValues);
+        try {
+            db.insertOrThrow(GROUP_TABLE, null, groupValues);
+        } catch (SQLException e) {
+            Log.i(TAG, "Group " + group.getId() + " already stored in database.");
+        }
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(STORE_GROUP);
@@ -188,6 +200,10 @@ public class GroupDatabaseManager {
         String[] args = {String.valueOf(group.getId())};
 
         db.update(LOCAL_USER_TABLE, groupValues, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_GROUP);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
     /**
@@ -323,5 +339,85 @@ public class GroupDatabaseManager {
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_GROUP);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Stores the given conversation in the database.
+     *
+     * @param conversation The conversation which should be stored.
+     */
+    public void storeConversation(int groupId, Conversation conversation) {
+        Log.d(TAG, "Store " + conversation);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Conversation values.
+        ContentValues conversationValues = new ContentValues();
+        conversationValues.put(CONVERSATION_ID, conversation.getId());
+        conversationValues.put(CONVERSATION_TITLE, conversation.getTitle());
+        conversationValues.put(CONVERSATION_CLOSED, conversation.getClosed());
+        conversationValues.put(CONVERSATION_ADMIN, conversation.getAdmin());
+        conversationValues.put(GROUP_ID_FOREIGN, groupId);
+        db.insert(CONVERSATION_TABLE, null, conversationValues);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(STORE_CONVERSATION);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Updates the given conversation in the database. Some fields can't be updated.
+     *
+     * @param conversation The updated conversation.
+     */
+    public void updateConversation(Conversation conversation) {
+        Log.d(TAG, "Update " + conversation);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Conversation values.
+        ContentValues conversationValues = new ContentValues();
+        conversationValues.put(CONVERSATION_TITLE, conversation.getTitle());
+        conversationValues.put(CONVERSATION_CLOSED, conversation.getClosed());
+        conversationValues.put(CONVERSATION_ADMIN, conversation.getAdmin());
+
+        String where = CONVERSATION_ID + "=?";
+        String[] args = {String.valueOf(conversation.getId())};
+
+        db.update(CONVERSATION_TABLE, conversationValues, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_CONVERSATION);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Retrieves the conversations of the specified group from the database.
+     *
+     * @param groupId The id of the group.
+     * @return The conversations of the group.
+     */
+    public List<Conversation> getConversations(int groupId) {
+        List<Conversation> conversations = new ArrayList<>();
+        Conversation conversation = null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + CONVERSATION_TABLE + " WHERE " + GROUP_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(groupId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        while (c != null && c.moveToNext()) {
+            conversation = new Conversation();
+            conversation.setId(c.getInt(c.getColumnIndex(CONVERSATION_ID)));
+            conversation.setTitle((c.getString(c.getColumnIndex(CONVERSATION_TITLE))));
+            conversation.setClosed(c.getInt(c.getColumnIndex(CONVERSATION_CLOSED)) == 1);
+            conversation.setAdmin((c.getInt(c.getColumnIndex(CONVERSATION_ADMIN))));
+            // TODO Get number of unread conversation messages.
+            conversations.add(conversation);
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with " + conversation);
+        return conversations;
     }
 }

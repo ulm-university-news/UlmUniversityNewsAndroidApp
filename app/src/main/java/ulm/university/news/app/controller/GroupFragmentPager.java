@@ -38,7 +38,7 @@ public class GroupFragmentPager extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return GroupDetailFragment.newInstance(groupId);
+                return ConversationFragment.newInstance(groupId);
             case 1:
                 return GroupDetailFragment.newInstance(groupId);
             case 2:

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.List;
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
-import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -63,25 +63,19 @@ public class GroupListAdapter extends ArrayAdapter<Group> {
             TextView tvName = (TextView) convertView.findViewById(R.id.group_list_item_tv_name);
             TextView tvType = (TextView) convertView.findViewById(R.id.group_list_item_tv_type);
             TextView tvTerm = (TextView) convertView.findViewById(R.id.group_list_item_tv_term);
-            TextView tvIcon = (TextView) convertView.findViewById(R.id.group_list_item_tv_icon);
+            ImageView ivIcon = (ImageView) convertView.findViewById(R.id.group_list_item_iv_icon);
             TextView tvNew = (TextView) convertView.findViewById(R.id.group_list_item_tv_new);
 
             String typeName;
             // Set appropriate group name and symbol.
             if (GroupType.TUTORIAL.equals(group.getGroupType())) {
                 typeName = getContext().getString(R.string.group_tutorial_name);
-                tvIcon.setText(getContext().getString(R.string.group_tutorial_symbol));
             } else {
                 typeName = getContext().getString(R.string.group_working_name);
-                tvIcon.setText(getContext().getString(R.string.group_working_symbol));
             }
 
             // Set appropriate group symbol.
-            if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())) {
-                tvIcon.setBackgroundResource(R.drawable.circle_group_admin);
-            } else {
-                tvIcon.setBackgroundResource(R.drawable.circle_group);
-            }
+            ivIcon.setImageResource(GroupController.getGroupIcon(group, convertView.getContext()));
 
             tvName.setText(group.getName());
             tvType.setText(typeName);

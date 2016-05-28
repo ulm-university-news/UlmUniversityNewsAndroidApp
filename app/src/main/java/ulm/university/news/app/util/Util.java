@@ -271,13 +271,15 @@ public class Util {
     }
 
     public String getTermLong(String term) {
-        String termLong;
-        if (term.charAt(0) == context.getString(R.string.channel_term_summer_short).charAt(0)) {
-            termLong = context.getString(R.string.channel_term_summer);
-        } else {
-            termLong = context.getString(R.string.channel_term_winter);
+        String termLong = context.getString(R.string.general_unknown);
+        if(term != null) {
+            if (term.charAt(0) == context.getString(R.string.channel_term_summer_short).charAt(0)) {
+                termLong = context.getString(R.string.channel_term_summer);
+            } else {
+                termLong = context.getString(R.string.channel_term_winter);
+            }
+            termLong += " " + term.substring(1);
         }
-        termLong += " " + term.substring(1);
         return termLong;
     }
 

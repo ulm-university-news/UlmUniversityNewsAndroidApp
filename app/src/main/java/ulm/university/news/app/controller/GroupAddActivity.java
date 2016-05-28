@@ -30,7 +30,7 @@ import ulm.university.news.app.util.Util;
 import static ulm.university.news.app.util.Constants.ACCOUNT_NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
-import static ulm.university.news.app.util.Constants.PASSWORD_PATTERN;
+import static ulm.university.news.app.util.Constants.PASSWORD_GROUP_PATTERN;
 
 public class GroupAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
@@ -125,8 +125,8 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
 
         tilPassword.setNameAndHint(getString(R.string.group_password));
-        tilPassword.setLength(8, 20);
-        tilPassword.setPattern(PASSWORD_PATTERN);
+        tilPassword.setLength(1, 20);
+        tilPassword.setPattern(PASSWORD_GROUP_PATTERN);
         tilPassword.setToPasswordField();
 
         // Create an ArrayAdapter using the string array and a default spinner layout.

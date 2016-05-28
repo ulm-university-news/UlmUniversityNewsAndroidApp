@@ -277,7 +277,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             User user;
             int numberOfUsers = 1;
             String groupMemberNames = "";
-            String adminName = "Unknown";
+            String adminName = getString(R.string.general_unknown);
             if (users != null) {
                 numberOfUsers = users.size();
                 for (int i = 0; i < numberOfUsers; i++) {

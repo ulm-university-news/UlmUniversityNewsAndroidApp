@@ -20,7 +20,8 @@ import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 
 /**
- * This class provides static util methods which are often used across different activities.
+ * This class provides static util methods regarding the channel resource and subresources which are often used across
+ * different activities.
  *
  * @author Matthias Mak
  */
