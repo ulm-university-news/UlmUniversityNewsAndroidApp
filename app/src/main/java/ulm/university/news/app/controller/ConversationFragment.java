@@ -102,7 +102,7 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Conversation conversation = (Conversation) lvConversations.getItemAtPosition(position);
-                Intent intent = new Intent(arg0.getContext(), GroupActivity.class);
+                Intent intent = new Intent(arg0.getContext(), ConversationActivity.class);
                 intent.putExtra("groupId", groupId);
                 intent.putExtra("conversationId", conversation.getId());
                 startActivity(intent);

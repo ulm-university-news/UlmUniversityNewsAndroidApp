@@ -287,4 +287,7 @@
     <string name="general_unknown">Unbekannt</string>
     <string name="conversation_add_info">Füllen Sie das Titelfeld aus. Danach können Sie die neue Konversation erstellen.</string>
     <string name="activity_conversation_add_title">Konversation hinzufügen</string>
+    <string name="conversation_message_no_data">Es gibt noch keine Nachrichten.</string>
+    <string name="conversation_close">Konversation schließen</string>
+    <string name="conversation_close_text">Wenn Sie diese Konversation schließen, können dort keine weiteren Nachrichten gesendet werden. Möchten Sie die Konversation wirklich schließen?</string>
 </resources>

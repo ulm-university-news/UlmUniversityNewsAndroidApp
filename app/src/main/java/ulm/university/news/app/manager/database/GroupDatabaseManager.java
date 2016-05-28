@@ -390,6 +390,36 @@ public class GroupDatabaseManager {
     }
 
     /**
+     * Retrieves the conversation with given id from the database.
+     *
+     * @param conversationId The id of the conversation.
+     * @return The specific conversation of the group.
+     */
+    public Conversation getConversation(int conversationId) {
+        Conversation conversation = null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + CONVERSATION_TABLE + " WHERE " + CONVERSATION_ID + "=?";
+        String[] args = {String.valueOf(conversationId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        if (c != null && c.moveToFirst()) {
+            conversation = new Conversation();
+            conversation.setId(c.getInt(c.getColumnIndex(CONVERSATION_ID)));
+            conversation.setTitle((c.getString(c.getColumnIndex(CONVERSATION_TITLE))));
+            conversation.setClosed(c.getInt(c.getColumnIndex(CONVERSATION_CLOSED)) == 1);
+            conversation.setAdmin((c.getInt(c.getColumnIndex(CONVERSATION_ADMIN))));
+            // TODO Get conversation messages.
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with " + conversation);
+        return conversation;
+    }
+
+    /**
      * Retrieves the conversations of the specified group from the database.
      *
      * @param groupId The id of the group.
@@ -417,7 +447,7 @@ public class GroupDatabaseManager {
         if (c != null) {
             c.close();
         }
-        Log.d(TAG, "End with " + conversation);
+        Log.d(TAG, "End with " + conversations);
         return conversations;
     }
 }

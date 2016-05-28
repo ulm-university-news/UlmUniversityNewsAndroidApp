@@ -204,6 +204,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.GroupActivity"/>
         </activity>
+        <activity android:name=".controller.ConversationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.GroupActivity"/>
+        </activity>
     </application>
 
 </manifest>

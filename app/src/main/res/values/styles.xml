@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -14,9 +12,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
-    <!-- extend one of the Theme.AppCompat themes -->
     <style name="UlmUniversity.Main" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_main_primary</item>
         <item name="colorAccent">@color/uni_main_accent</item>
         <item name="colorPrimaryDark">@color/uni_main_dark</item>
@@ -25,11 +21,9 @@
         <item name="android:textColorHint">@color/light_grey</item>
         <item name="android:dialogTheme">@style/UlmUniversity.Main.Dialog</item>
         <item name="alertDialogTheme">@style/UlmUniversity.Main.Dialog</item>
-        <!--<item name="android:dropDownListViewStyle">@style/spinnerStyle</item>-->
     </style>
 
     <style name="UlmUniversity.Medicines" parent="UlmUniversity.Main">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_medicines_primary</item>
         <item name="colorAccent">@color/uni_medicines_accent</item>
         <item name="colorPrimaryDark">@color/uni_medicines_dark</item>
@@ -38,7 +32,6 @@
     </style>
 
     <style name="UlmUniversity.Science" parent="UlmUniversity.Main">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_sciences_primary</item>
         <item name="colorAccent">@color/uni_sciences_accent</item>
         <item name="colorPrimaryDark">@color/uni_sciences_dark</item>
@@ -47,7 +40,6 @@
     </style>
 
     <style name="UlmUniversity.Informatics" parent="UlmUniversity.Main">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_informatics_primary</item>
         <item name="colorAccent">@color/uni_informatics_accent</item>
         <item name="colorPrimaryDark">@color/uni_informatics_dark</item>
@@ -56,7 +48,6 @@
     </style>
 
     <style name="UlmUniversity.Mathematics" parent="UlmUniversity.Main">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/uni_mathematics_primary</item>
         <item name="colorAccent">@color/uni_mathematics_accent</item>
         <item name="colorPrimaryDark">@color/uni_mathematics_dark</item>
@@ -65,7 +56,6 @@
     </style>
 
     <style name="UlmUniversity.Deleted" parent="UlmUniversity.Main">
-        <!-- customize the color palette -->
         <item name="colorPrimary">@color/dark_grey</item>
         <item name="colorAccent">@color/grey</item>
         <item name="colorPrimaryDark">@color/darker_grey</item>
@@ -73,7 +63,14 @@
         <item name="alertDialogTheme">@style/UlmUniversity.Deleted.Dialog</item>
     </style>
 
-    <!-- extend one of the Theme.AppCompat themes -->
+    <style name="UlmUniversity.Conversation" parent="UlmUniversity.Main">
+        <item name="colorPrimary">@color/uni_conversation_primary</item>
+        <item name="colorAccent">@color/uni_conversation_accent</item>
+        <item name="colorPrimaryDark">@color/uni_conversation_dark</item>
+        <item name="android:dialogTheme">@style/UlmUniversity.Conversation.Dialog</item>
+        <item name="alertDialogTheme">@style/UlmUniversity.Conversation.Dialog</item>
+    </style>
+
     <style name="UlmUniversity.Main.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/uni_main_primary</item>
     </style>
@@ -92,6 +89,10 @@
 
     <style name="UlmUniversity.Mathematics.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/uni_mathematics_primary</item>
+    </style>
+
+    <style name="UlmUniversity.Conversation.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/uni_conversation_primary</item>
     </style>
 
     <style name="UlmUniversity.Deleted.Dialog" parent="Base.Theme.AppCompat.Light.Dialog">

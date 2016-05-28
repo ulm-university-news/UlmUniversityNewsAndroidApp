@@ -20,12 +20,17 @@
     <item name="uni_informatics_accent" type="color">#c77c87</item>
     <item name="uni_informatics_dark" type="color">#821e2c</item>
 
+    <item name="uni_conversation_primary" type="color">#ffcf05</item>
+    <item name="uni_conversation_accent" type="color">#ffe269</item>
+    <item name="uni_conversation_dark" type="color">#cca504</item>
+
     <item name="error" type="color">#ee0000</item>
     <item name="hyperlink" type="color">#1919ff</item>
 
     <item name="white" type="color">#ffffff</item>
     <item name="black" type="color">#000000</item>
     <item name="light_grey" type="color">#eeeeee</item>
+    <item name="light_light_grey" type="color">#f4f4f4</item>
     <item name="grey" type="color">#888888</item>
     <item name="dark_grey" type="color">#666666</item>
     <item name="darker_grey" type="color">#444444</item>

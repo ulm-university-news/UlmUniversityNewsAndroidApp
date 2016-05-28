@@ -382,11 +382,17 @@
     <!-- Conversation ############################################################################################## -->
     <string name="conversation_no_data">There are no conversations yet.</string>
     <string name="conversation_add">Add conversation</string>
+    <string name="conversation_close">Close conversation</string>
+    <string name="conversation_close_text">If you close this conversation, no further messages can be send. Do you
+        really want to close this conversation?</string>
     <string name="conversation_info_updated">New conversations loaded.</string>
     <string name="conversation_info_up_to_date">No new conversations.</string>
     <string name="conversation_created">Conversation created successfully.</string>
     <string name="conversation_add_info">Fill out the title field below. Then click the create button to submit the
         new conversation.</string>
+
+    <!-- ConversationMessage ####################################################################################### -->
+    <string name="conversation_message_no_data">There are no messages yet.</string>
 
     <!-- User ###################################################################################################### -->
     <string name="user_edited">User updated successfully.</string>
