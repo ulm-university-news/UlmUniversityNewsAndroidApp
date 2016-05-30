@@ -293,4 +293,7 @@
     <string name="message_text_to_long">Der Text is zu lang.</string>
     <string name="conversation_open">Konversation öffnen</string>
     <string name="conversation_open_text">Möchten Sie diese Konversation wieder öffnen?</string>
+    <string name="conversation_delete">Konversation löschen</string>
+    <string name="conversation_delete_text">Die Konversation wird unwiederbringlich gelöscht. Möchten Sie die Konversation wirklich löschen?</string>
+    <string name="conversation_delete_server">Diese Konversation wurde gelöscht.</string>
 </resources>

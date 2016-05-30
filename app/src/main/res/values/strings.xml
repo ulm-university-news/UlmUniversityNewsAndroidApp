@@ -388,6 +388,10 @@
     <string name="conversation_close_text">If you close this conversation, no further messages can be send. Do you
         really want to close this conversation?</string>
     <string name="conversation_open_text">Do you want to open this conversation again?</string>
+    <string name="conversation_delete">Delete conversation</string>
+    <string name="conversation_delete_text">If you delete the conversation, the data can\'t be restored. Do you
+        really want to delete this conversation?</string>
+    <string name="conversation_delete_server">This conversation has been deleted.</string>
     <string name="conversation_info_updated">New conversationMessages loaded.</string>
     <string name="conversation_info_up_to_date">No new conversationMessages.</string>
     <string name="conversation_created">Conversation created successfully.</string>

@@ -20,7 +20,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     /** The name of the database. */
     private static final String DATABASE_NAME = "ulm_university_news.db";
     /** The version of the database. */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     /** SQL statement to enable foreign key support. */
     private static final String FOREIGN_KEYS_ON = "PRAGMA foreign_keys=ON;";
@@ -321,8 +321,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + CONVERSATION_CLOSED + " INTEGER NOT NULL, "
             + CONVERSATION_ADMIN + " INTEGER NOT NULL, "
             + GROUP_ID_FOREIGN + " INTEGER NOT NULL, "
-            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + "), "
-            + "FOREIGN KEY(" + CONVERSATION_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+            + "FOREIGN KEY(" + GROUP_ID_FOREIGN + ") REFERENCES " + GROUP_TABLE + "(" + GROUP_ID + ") ON DELETE CASCADE, "
+            + "FOREIGN KEY(" + CONVERSATION_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + ") ON DELETE CASCADE);";
 
     // Columns of the ConversationMessage table.
     public static final String CONVERSATION_MESSAGE_TABLE = "ConversationMessage";

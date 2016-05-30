@@ -39,6 +39,7 @@ public class GroupAPI extends MainAPI {
     public static final String LEAVE_GROUP = "removeUserFromGroup";
     public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String DELETE_GROUP = "deleteGroup";
+    public static final String DELETE_CONVERSATION = "deleteConversation";
 
     /**
      * Get the instance of the GroupAPI class.
@@ -268,6 +269,7 @@ public class GroupAPI extends MainAPI {
      * close or open the conversation.
      *
      * @param conversation The conversation object including the data of the updated conversation.
+     * @param groupId The id of the group.
      */
     public void changeConversation(int groupId, Conversation conversation) {
         // Add group id to url.
@@ -284,6 +286,28 @@ public class GroupAPI extends MainAPI {
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
         rTask.setBody(jsonConversation);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Deletes a conversation on the server.
+     *
+     * @param conversationId The id of the conversation that should be deleted.
+     * @param groupId The id of the group.
+     */
+    public void deleteConversation(int groupId, int conversationId) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/conversation/" + conversationId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(DELETE_CONVERSATION, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();

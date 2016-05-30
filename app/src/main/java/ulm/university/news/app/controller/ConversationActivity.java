@@ -25,6 +25,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.BusEventConversationChange;
 import ulm.university.news.app.api.BusEventConversationMessages;
 import ulm.university.news.app.api.GroupAPI;
@@ -38,6 +39,7 @@ import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.CONVERSATION_NOT_FOUND;
 
 public class ConversationActivity extends AppCompatActivity implements DialogListener, LoaderManager
         .LoaderCallbacks<List<ConversationMessage>> {
@@ -62,6 +64,8 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     private Toast toast;
     private MenuItem menuItemClose;
     private MenuItem menuItemOpen;
+    private MenuItem menuItemEdit;
+    private MenuItem menuItemDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +101,15 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
             menuInflater.inflate(R.menu.activity_conversation_menu, menu);
             menuItemClose = menu.findItem(R.id.activity_conversation_menu_close);
             menuItemOpen = menu.findItem(R.id.activity_conversation_menu_open);
+            menuItemEdit = menu.findItem(R.id.activity_conversation_menu_edit);
+            menuItemDelete = menu.findItem(R.id.activity_conversation_menu_delete);
             if (conversation.getClosed()) {
                 menuItemClose.setVisible(false);
+                menuItemEdit.setVisible(false);
                 menuItemOpen.setVisible(true);
             } else {
                 menuItemClose.setVisible(true);
+                menuItemEdit.setVisible(true);
                 menuItemOpen.setVisible(false);
             }
         }
@@ -130,6 +138,15 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
                 args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.conversation_open_text));
                 dialog.setArguments(args);
                 dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_CONVERSATION_OPEN);
+                return true;
+            case R.id.activity_conversation_menu_edit:
+                // TODO Go to edit conversation activity.
+                return true;
+            case R.id.activity_conversation_menu_delete:
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.conversation_delete));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.conversation_delete_text));
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_CONVERSATION_DELETE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -240,6 +257,9 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
             conversation.setClosed(false);
             GroupAPI.getInstance(this).changeConversation(groupId, conversation);
             menuItemOpen.setActionView(pgrSending);
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_CONVERSATION_DELETE)) {
+            GroupAPI.getInstance(this).deleteConversation(groupId, conversation.getId());
+            menuItemDelete.setActionView(pgrSending);
         }
     }
 
@@ -297,12 +317,32 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         conversation = event.getConversation();
         databaseLoader.getGroupDBM().updateConversation(conversation);
         if (conversation.getClosed()) {
+            etMessage.setVisibility(View.GONE);
+            ivSend.setVisibility(View.GONE);
+            menuItemClose.setVisible(false);
+            menuItemEdit.setVisible(false);
+            menuItemOpen.setVisible(true);
             finish();
         } else {
             etMessage.setVisibility(View.VISIBLE);
             ivSend.setVisibility(View.VISIBLE);
             menuItemClose.setVisible(true);
+            menuItemEdit.setVisible(true);
             menuItemOpen.setVisible(false);
+        }
+    }
+
+    /**
+     * This method will be called when a BusEvent is posted to the EventBus.
+     *
+     * @param event The event containing an action.
+     */
+    public void onEventMainThread(BusEvent event) {
+        Log.d(TAG, "EventBus: BusEvent");
+        Log.d(TAG, event.toString());
+        if (GroupAPI.DELETE_CONVERSATION.equals(event.getAction())) {
+            databaseLoader.getGroupDBM().deleteConversation(conversation.getId());
+            finish();
         }
     }
 
@@ -364,6 +404,10 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
                 toast.setText(errorMessage);
                 toast.show();
                 break;
+            case CONVERSATION_NOT_FOUND:
+                databaseLoader.getGroupDBM().deleteConversation(conversation.getId());
+                toast.setText(getString(R.string.conversation_created));
+                toast.show();
         }
     }
 }

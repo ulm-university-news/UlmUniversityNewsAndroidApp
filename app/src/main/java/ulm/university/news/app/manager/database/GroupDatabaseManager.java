@@ -83,6 +83,7 @@ public class GroupDatabaseManager {
     public static final String STORE_CONVERSATION = "storeConversation";
     public static final String UPDATE_CONVERSATION = "updateConversation";
     public static final String STORE_CONVERSATION_MESSAGE = "storeConversationMessage";
+    public static final String CONVERSATION_DELETED = "conversationDeleted";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -400,6 +401,24 @@ public class GroupDatabaseManager {
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_CONVERSATION);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Deletes the conversation identified by id.
+     *
+     * @param conversationId The id of the conversation that should be deleted.
+     */
+    public void deleteConversation(int conversationId) {
+        Log.d(TAG, "Delete conversation " + conversationId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        String where = CONVERSATION_ID + "=?";
+        String[] args = {String.valueOf(conversationId)};
+        db.delete(CONVERSATION_TABLE, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(CONVERSATION_DELETED);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
