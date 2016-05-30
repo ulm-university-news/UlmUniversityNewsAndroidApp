@@ -4,7 +4,12 @@
 
 
     <item android:id="@+id/activity_conversation_menu_close"
-          android:title="@string/conversation_add"
+          android:title="@string/conversation_close"
           android:icon="@drawable/ic_block_white_24dp"
+          app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/activity_conversation_menu_open"
+          android:title="@string/conversation_open"
+          android:icon="@drawable/ic_create_white_24dp"
           app:showAsAction="ifRoom"/>
 </menu>

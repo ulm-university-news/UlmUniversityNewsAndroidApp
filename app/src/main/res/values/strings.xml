@@ -384,8 +384,10 @@
     <string name="conversation_no_data">There are no conversationMessages yet.</string>
     <string name="conversation_add">Add conversation</string>
     <string name="conversation_close">Close conversation</string>
+    <string name="conversation_open">Open conversation</string>
     <string name="conversation_close_text">If you close this conversation, no further messages can be send. Do you
         really want to close this conversation?</string>
+    <string name="conversation_open_text">Do you want to open this conversation again?</string>
     <string name="conversation_info_updated">New conversationMessages loaded.</string>
     <string name="conversation_info_up_to_date">No new conversationMessages.</string>
     <string name="conversation_created">Conversation created successfully.</string>

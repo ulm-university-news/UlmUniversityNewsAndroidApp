@@ -263,6 +263,32 @@ public class GroupAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
+    /**
+     * Changes a conversation on the server. This method can be used to change the title of the conversation or to
+     * close or open the conversation.
+     *
+     * @param conversation The conversation object including the data of the updated conversation.
+     */
+    public void changeConversation(int groupId, Conversation conversation) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/conversation/" + conversation.getId();
+        // Parse conversation object to JSON String.
+        String jsonConversation = gson.toJson(conversation, Conversation.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Conversation conversationResponse = gson.fromJson(json, Conversation.class);
+                EventBus.getDefault().post(new BusEventConversationChange(conversationResponse));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setBody(jsonConversation);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
     public void getConversations(int groupId) {
         // Add group id to url.
         String url = serverAddressGroup + "/" + groupId + "/conversation";

@@ -60,13 +60,16 @@
             android:paddingRight="10dp"
             android:paddingTop="10dp"
             android:src="@drawable/ic_send_icon_white"/>
-    </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/activity_conversation_pgr_sending"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:visibility="gone"/>
+        <ProgressBar
+            android:id="@+id/activity_conversation_pgr_sending"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|end"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:visibility="gone"/>
+    </LinearLayout>
 </LinearLayout>

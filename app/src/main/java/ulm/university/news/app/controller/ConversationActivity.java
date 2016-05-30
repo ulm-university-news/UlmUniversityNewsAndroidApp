@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventConversationChange;
 import ulm.university.news.app.api.BusEventConversationMessages;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
@@ -52,11 +54,14 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     private Conversation conversation;
     private int groupId;
 
+    private ProgressBar pgrSending;
     private ListView lvConversationMessages;
     private EditText etMessage;
     private ImageView ivSend;
     private String errorMessage;
     private Toast toast;
+    private MenuItem menuItemClose;
+    private MenuItem menuItemOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,9 +92,18 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (conversation.isAdmin(Util.getInstance(this).getLocalUser().getId()) && !conversation.getClosed()) {
+        if (conversation.isAdmin(Util.getInstance(this).getLocalUser().getId())) {
             MenuInflater menuInflater = getMenuInflater();
             menuInflater.inflate(R.menu.activity_conversation_menu, menu);
+            menuItemClose = menu.findItem(R.id.activity_conversation_menu_close);
+            menuItemOpen = menu.findItem(R.id.activity_conversation_menu_open);
+            if (conversation.getClosed()) {
+                menuItemClose.setVisible(false);
+                menuItemOpen.setVisible(true);
+            } else {
+                menuItemClose.setVisible(true);
+                menuItemOpen.setVisible(false);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -97,6 +111,8 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        Bundle args = new Bundle();
+        YesNoDialogFragment dialog = new YesNoDialogFragment();
         switch (item.getItemId()) {
             case android.R.id.home:
                 intent = NavUtils.getParentActivityIntent(this);
@@ -104,12 +120,16 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
                 NavUtils.navigateUpTo(this, intent);
                 return true;
             case R.id.activity_conversation_menu_close:
-                YesNoDialogFragment dialog = new YesNoDialogFragment();
-                Bundle args = new Bundle();
                 args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.conversation_close));
                 args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.conversation_close_text));
                 dialog.setArguments(args);
                 dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_CONVERSATION_CLOSE);
+                return true;
+            case R.id.activity_conversation_menu_open:
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.conversation_open));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.conversation_open_text));
+                dialog.setArguments(args);
+                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_CONVERSATION_OPEN);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -146,6 +166,7 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         lvConversationMessages = (ListView) findViewById(R.id.activity_conversation_lv_conversation_messages);
         etMessage = (EditText) findViewById(R.id.activity_conversation_et_message);
         ivSend = (ImageView) findViewById(R.id.activity_conversation_iv_send);
+        pgrSending = (ProgressBar) findViewById(R.id.activity_conversation_pgr_sending);
         TextView tvListEmpty = (TextView) findViewById(R.id.activity_conversation_tv_list_empty);
 
         toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
@@ -165,6 +186,12 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     }
 
     private void sendMessage() {
+        if (!Util.getInstance(this).isOnline()) {
+            errorMessage = getString(R.string.general_error_no_connection);
+            toast.setText(errorMessage);
+            toast.show();
+            return;
+        }
         String message = etMessage.getText().toString();
         if (message.isEmpty()) {
             return;
@@ -176,6 +203,8 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
             return;
         }
         // Send message to the server.
+        ivSend.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.VISIBLE);
         ConversationMessage conversationMessage = new ConversationMessage();
         conversationMessage.setText(message);
         conversationMessage.setConversationId(conversation.getId());
@@ -204,10 +233,13 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     @Override
     public void onDialogPositiveClick(String tag) {
         if (tag.equals(YesNoDialogFragment.DIALOG_CONVERSATION_CLOSE)) {
-            // TODO send close request to server.
             conversation.setClosed(true);
-            databaseLoader.getGroupDBM().updateConversation(conversation);
-            finish();
+            GroupAPI.getInstance(this).changeConversation(groupId, conversation);
+            menuItemClose.setActionView(pgrSending);
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_CONVERSATION_OPEN)) {
+            conversation.setClosed(false);
+            GroupAPI.getInstance(this).changeConversation(groupId, conversation);
+            menuItemOpen.setActionView(pgrSending);
         }
     }
 
@@ -252,6 +284,28 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         listAdapter.setData(null);
     }
 
+
+    /**
+     * This method will be called when a updated conversation is posted to the EventBus.
+     *
+     * @param event The event containing the updated conversation.
+     */
+    public void onEventMainThread(BusEventConversationChange event) {
+        Log.d(TAG, event.toString());
+        menuItemClose.setActionView(null);
+        menuItemOpen.setActionView(null);
+        conversation = event.getConversation();
+        databaseLoader.getGroupDBM().updateConversation(conversation);
+        if (conversation.getClosed()) {
+            finish();
+        } else {
+            etMessage.setVisibility(View.VISIBLE);
+            ivSend.setVisibility(View.VISIBLE);
+            menuItemClose.setVisible(true);
+            menuItemOpen.setVisible(false);
+        }
+    }
+
     /**
      * This method will be called when a conversation message is posted to the EventBus.
      *
@@ -260,6 +314,9 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     public void onEventMainThread(ConversationMessage conversationMessage) {
         Log.d(TAG, "EventBus: ConversationMessage");
         Log.d(TAG, conversationMessage.toString());
+        // Hide progress bar and show send button again.
+        ivSend.setVisibility(View.VISIBLE);
+        pgrSending.setVisibility(View.GONE);
         // Clear text input field.
         etMessage.setText(null);
         // Store new conversation message in database.
@@ -297,6 +354,9 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
+        // Hide progress bar and show send button again.
+        ivSend.setVisibility(View.VISIBLE);
+        pgrSending.setVisibility(View.GONE);
 
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {

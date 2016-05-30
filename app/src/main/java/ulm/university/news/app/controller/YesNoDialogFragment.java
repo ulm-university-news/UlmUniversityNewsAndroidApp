@@ -24,6 +24,7 @@ public class YesNoDialogFragment extends AppCompatDialogFragment {
     public static final String DIALOG_LEAVE_PAGE_UP = "dialogLeavePageUp";
     public static final String DIALOG_LEAVE_PAGE_BACK = "dialogLeavePageBack";
     public static final String DIALOG_CONVERSATION_CLOSE = "dialogCloseConversation";
+    public static final String DIALOG_CONVERSATION_OPEN = "dialogOpenConversation";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
