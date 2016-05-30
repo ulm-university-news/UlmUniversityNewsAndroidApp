@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventConversationChange;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Conversation;
@@ -26,9 +27,9 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 
-public class ConversationAddActivity extends AppCompatActivity implements DialogListener {
+public class ConversationEditActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
-    private static final String TAG = "ConversationAddActivity";
+    private static final String TAG = "ConversationEditAct";
 
     private TextInputLabels tilTitle;
     private ProgressBar pgrAdding;
@@ -38,15 +39,20 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
 
     private GroupDatabaseManager groupDBM;
     private int groupId;
+    private Conversation conversation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set color scheme to conversation yellow.
+        setTheme(R.style.UlmUniversity_Conversation);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_conversation_add);
+        setContentView(R.layout.activity_conversation_edit);
         groupId = getIntent().getIntExtra("groupId", 0);
+        int conversationId = getIntent().getIntExtra("conversationId", 0);
         groupDBM = new GroupDatabaseManager(this);
+        conversation = groupDBM.getConversation(conversationId);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_conversation_add_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_conversation_edit_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -59,7 +65,7 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!tilTitle.getText().isEmpty()) {
+                if (!tilTitle.getText().isEmpty() && !tilTitle.getText().equals(conversation.getTitle())) {
                     YesNoDialogFragment dialog = new YesNoDialogFragment();
                     Bundle args = new Bundle();
                     args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
@@ -78,7 +84,7 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
 
     @Override
     public void onBackPressed() {
-        if (!tilTitle.getText().isEmpty()) {
+        if (!tilTitle.getText().isEmpty() && !tilTitle.getText().equals(conversation.getTitle())) {
             YesNoDialogFragment dialog = new YesNoDialogFragment();
             Bundle args = new Bundle();
             args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
@@ -109,18 +115,19 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
     }
 
     private void initView() {
-        tilTitle = (TextInputLabels) findViewById(R.id.activity_conversation_add_til_title);
-        tvError = (TextView) findViewById(R.id.activity_conversation_add_tv_error);
-        btnCreate = (Button) findViewById(R.id.activity_conversation_add_btn_create);
-        pgrAdding = (ProgressBar) findViewById(R.id.activity_conversation_add_pgr_adding);
+        tilTitle = (TextInputLabels) findViewById(R.id.activity_conversation_edit_til_title);
+        tvError = (TextView) findViewById(R.id.activity_conversation_edit_tv_error);
+        btnCreate = (Button) findViewById(R.id.activity_conversation_edit_btn_create);
+        pgrAdding = (ProgressBar) findViewById(R.id.activity_conversation_edit_pgr_adding);
 
         tilTitle.setNameAndHint(getString(R.string.announcement_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
+        tilTitle.setText(conversation.getTitle());
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addConversation();
+                editConversation();
             }
         });
 
@@ -129,7 +136,7 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
         if (v != null) v.setGravity(Gravity.CENTER);
     }
 
-    private void addConversation() {
+    private void editConversation() {
         boolean valid = true;
         if (!tilTitle.isValid()) {
             valid = false;
@@ -140,37 +147,37 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
             toast.show();
             valid = false;
         }
+        if (conversation.getTitle().equals(tilTitle.getText())) {
+            // Title not changed. Do nothing.
+            return;
+        }
 
         if (valid) {
-            // All checks passed. Create new conversation.
+            // All checks passed. Edit conversation.
             tvError.setVisibility(View.GONE);
             btnCreate.setVisibility(View.GONE);
             pgrAdding.setVisibility(View.VISIBLE);
-
-            Conversation conversation = new Conversation();
             conversation.setTitle(tilTitle.getText());
-            conversation.setClosed(false);
 
             // Send conversation data to the server.
-            GroupAPI.getInstance(this).createConversation(groupId, conversation);
+            GroupAPI.getInstance(this).changeConversation(groupId, conversation);
         }
     }
 
     /**
-     * This method will be called when an conversation is posted to the EventBus.
+     * This method will be called when an changed conversation is posted to the EventBus.
      *
-     * @param conversation The conversation object.
+     * @param event The event object containing the changed conversation.
      */
-    public void onEventMainThread(Conversation conversation) {
-        Log.d(TAG, "EventBus: Conversation");
-        Log.d(TAG, conversation.toString());
+    public void onEventMainThread(BusEventConversationChange event) {
+        Log.d(TAG, event.toString());
 
-        // Store conversation in database and show created message.
-        groupDBM.storeConversation(groupId, conversation);
-        toast.setText(getString(R.string.conversation_created));
+        // Update conversation in database and show edited message.
+        groupDBM.updateConversation(event.getConversation());
+        toast.setText(getString(R.string.conversation_edited));
         toast.show();
 
-        // Go back to group view.
+        // Go back to conversation view.
         navigateUp();
     }
 

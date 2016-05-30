@@ -140,7 +140,10 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
                 dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_CONVERSATION_OPEN);
                 return true;
             case R.id.activity_conversation_menu_edit:
-                // TODO Go to edit conversation activity.
+                intent = new Intent(this, ConversationEditActivity.class);
+                intent.putExtra("groupId", groupId);
+                intent.putExtra("conversationId", conversation.getId());
+                startActivity(intent);
                 return true;
             case R.id.activity_conversation_menu_delete:
                 args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.conversation_delete));
@@ -156,6 +159,9 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     @Override
     public void onResume() {
         super.onResume();
+        // Update activity title in case the conversation was edited.
+        conversation = databaseLoader.getGroupDBM().getConversation(conversation.getId());
+        getSupportActionBar().setTitle(conversation.getTitle());
         // Check for new messages whenever the conversation is shown.
         refreshConversationMessages();
         // Update channel list to make new conversation messages visible.

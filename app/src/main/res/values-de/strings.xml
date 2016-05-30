@@ -296,4 +296,7 @@
     <string name="conversation_delete">Konversation löschen</string>
     <string name="conversation_delete_text">Die Konversation wird unwiederbringlich gelöscht. Möchten Sie die Konversation wirklich löschen?</string>
     <string name="conversation_delete_server">Diese Konversation wurde gelöscht.</string>
+    <string name="conversation_edit_info">Ändern Sie den Titel der Konversation im Feld unten. Bestätigen Sie die Änderung mit einem Klick auf den Bearbeiten-Button.</string>
+    <string name="conversation_edited">Konversation erfolgreich geändert.</string>
+    <string name="activity_conversation_edit_title">Konversation bearbeiten</string>
 </resources>

@@ -230,6 +230,9 @@
     <!-- ConversationAddActivity ################################################################################### -->
     <string name="activity_conversation_add_title">Add conversation</string>
 
+    <!-- ConversationEditActivity ################################################################################## -->
+    <string name="activity_conversation_edit_title">Edit conversation</string>
+
     <!-- GroupDetailActivity ##################################################################################### -->
     <string name="activity_group_detail_button_join">Join</string>
     <string name="activity_group_detail_button_leave">Leave</string>
@@ -395,8 +398,11 @@
     <string name="conversation_info_updated">New conversationMessages loaded.</string>
     <string name="conversation_info_up_to_date">No new conversationMessages.</string>
     <string name="conversation_created">Conversation created successfully.</string>
+    <string name="conversation_edited">Conversation edited successfully.</string>
     <string name="conversation_add_info">Fill out the title field below. Then click the create button to submit the
         new conversation.</string>
+    <string name="conversation_edit_info">Change the title field below. Then click the edit button to submit the
+        new conversation title.</string>
 
     <!-- ConversationMessage ####################################################################################### -->
     <string name="conversation_message_no_data">There are no messages yet.</string>
