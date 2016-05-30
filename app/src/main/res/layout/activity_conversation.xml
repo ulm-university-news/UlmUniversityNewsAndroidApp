@@ -24,8 +24,9 @@
     <TextView
         android:id="@+id/activity_conversation_tv_list_empty"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
         android:text="@string/conversation_message_no_data"
         android:visibility="gone"/>
@@ -38,26 +39,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/light_light_grey">
+        android:background="@color/light_light_grey"
+        android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/activity_conversation_et_message"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:textColor="@color/black"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"            />
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:textColor="@color/black"/>
 
         <ImageView
+            android:id="@+id/activity_conversation_iv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:src="@drawable/ic_send_icon_white"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="5dp"/>
+            android:src="@drawable/ic_send_icon_white"/>
     </LinearLayout>
 
     <ProgressBar

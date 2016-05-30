@@ -55,6 +55,7 @@ public class ConversationMessage extends Message {
      * @param creationDate The date and time when the message was created.
      * @param authorUser The id of the user who is the author of the message.
      * @param conversationId The id of the conversation to which the message belongs.
+     * @param read Identifies if the conversation message has been read.
      */
     public ConversationMessage(int id, String text, int messageNumber, Priority priority, DateTime creationDate,
                                int authorUser, int conversationId, boolean read){

@@ -12,7 +12,6 @@ import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Conversation;
-import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 
@@ -82,10 +81,9 @@ public class ConversationListAdapter extends ArrayAdapter<Conversation> {
             tvAdmin.setText(adminName);
 
             // Show number of unread conversation messages.
-            List<ConversationMessage> conversationMessages = conversation.getConversationMessages();
-            int number = 0;
-            if (conversationMessages != null) {
-                number = conversationMessages.size();
+            Integer number = conversation.getNumberOfUnreadConversationMessages();
+            if (number == null) {
+                number = 0;
             }
             if (number > 0) {
                 if (number > 99) {

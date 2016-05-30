@@ -15,15 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ulm.university.news.app.data.Conversation;
+import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.data.enums.Priority;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ADMIN;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_CLOSED;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_MESSAGE_AUTHOR;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_MESSAGE_MESSAGE_NUMBER;
+import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_MESSAGE_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_TITLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ADMIN;
@@ -39,6 +45,13 @@ import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TAB
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TERM;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TYPE;
 import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_CREATION_DATE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_PRIORITY;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_READ;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
@@ -69,6 +82,7 @@ public class GroupDatabaseManager {
     public static final String UPDATE_GROUP = "updateGroup";
     public static final String STORE_CONVERSATION = "storeConversation";
     public static final String UPDATE_CONVERSATION = "updateConversation";
+    public static final String STORE_CONVERSATION_MESSAGE = "storeConversationMessage";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -410,7 +424,7 @@ public class GroupDatabaseManager {
             conversation.setTitle((c.getString(c.getColumnIndex(CONVERSATION_TITLE))));
             conversation.setClosed(c.getInt(c.getColumnIndex(CONVERSATION_CLOSED)) == 1);
             conversation.setAdmin((c.getInt(c.getColumnIndex(CONVERSATION_ADMIN))));
-            // TODO Get conversation messages.
+            conversation.setNumberOfUnreadConversationMessages(getNumberOfUnreadConversationMessages(conversationId));
         }
         if (c != null) {
             c.close();
@@ -427,21 +441,23 @@ public class GroupDatabaseManager {
      */
     public List<Conversation> getConversations(int groupId) {
         List<Conversation> conversations = new ArrayList<>();
-        Conversation conversation = null;
+        Conversation conversation;
         SQLiteDatabase db = dbm.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + CONVERSATION_TABLE + " WHERE " + GROUP_ID_FOREIGN + "=?";
         String[] args = {String.valueOf(groupId)};
         Log.d(TAG, selectQuery);
+        int conversationId;
 
         Cursor c = db.rawQuery(selectQuery, args);
         while (c != null && c.moveToNext()) {
             conversation = new Conversation();
-            conversation.setId(c.getInt(c.getColumnIndex(CONVERSATION_ID)));
+            conversationId = c.getInt(c.getColumnIndex(CONVERSATION_ID));
+            conversation.setId(conversationId);
             conversation.setTitle((c.getString(c.getColumnIndex(CONVERSATION_TITLE))));
             conversation.setClosed(c.getInt(c.getColumnIndex(CONVERSATION_CLOSED)) == 1);
             conversation.setAdmin((c.getInt(c.getColumnIndex(CONVERSATION_ADMIN))));
-            // TODO Get number of unread conversation messages.
+            conversation.setNumberOfUnreadConversationMessages(getNumberOfUnreadConversationMessages(conversationId));
             conversations.add(conversation);
         }
         if (c != null) {
@@ -449,5 +465,170 @@ public class GroupDatabaseManager {
         }
         Log.d(TAG, "End with " + conversations);
         return conversations;
+    }
+
+    /**
+     * Stores the given conversation message in the database.
+     *
+     * @param conversationMessage The conversation message which should be stored.
+     */
+    public void storeConversationMessage(ConversationMessage conversationMessage) {
+        Log.d(TAG, "Store " + conversationMessage);
+        SQLiteDatabase db = null;
+        try {
+            db = dbm.getWritableDatabase();
+
+            // Message values.
+            ContentValues messageValues = new ContentValues();
+            messageValues.put(MESSAGE_ID, conversationMessage.getId());
+            messageValues.put(MESSAGE_TEXT, conversationMessage.getText());
+            messageValues.put(MESSAGE_CREATION_DATE, conversationMessage.getCreationDate().getMillis());
+            messageValues.put(MESSAGE_PRIORITY, conversationMessage.getPriority().ordinal());
+            messageValues.put(MESSAGE_READ, false);
+
+            // Conversation message values.
+            ContentValues conversationMessageValues = new ContentValues();
+            conversationMessageValues.put(MESSAGE_ID_FOREIGN, conversationMessage.getId());
+            conversationMessageValues.put(CONVERSATION_ID_FOREIGN, conversationMessage.getConversationId());
+            conversationMessageValues.put(CONVERSATION_MESSAGE_MESSAGE_NUMBER, conversationMessage.getMessageNumber());
+            conversationMessageValues.put(CONVERSATION_MESSAGE_AUTHOR, conversationMessage.getAuthorUser());
+
+            // If there are two insert statements make sure that they are performed in one transaction.
+            db.beginTransaction();
+            db.insertOrThrow(MESSAGE_TABLE, null, messageValues);
+            db.insertOrThrow(CONVERSATION_MESSAGE_TABLE, null, conversationMessageValues);
+
+            // Notify observers that specific database content has changed.
+            Intent databaseChanged = new Intent(STORE_CONVERSATION_MESSAGE);
+            Log.d(TAG, "sendBroadcast:" + LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged));
+
+            // Mark transaction as successful.
+            db.setTransactionSuccessful();
+            Log.d(TAG, "End. ConversationMessage stored successfully.");
+        } catch (Exception e) {
+            Log.e(TAG, "Database failure during storeConversationMessage(). Need to rollback transaction.");
+        } finally {
+            if (db != null) {
+                // Commit on success or rollback transaction if an error has occurred.
+                db.endTransaction();
+            }
+        }
+    }
+
+    /**
+     * Gets all conversation messages of a specific conversation from the database.
+     *
+     * @param conversationId The id of the conversation.
+     * @return A list of conversation objects.
+     */
+    public List<ConversationMessage> getConversationMessages(int conversationId) {
+        List<ConversationMessage> conversationMessages = new ArrayList<>();
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String query = "SELECT * FROM " + MESSAGE_TABLE + " AS m JOIN " + CONVERSATION_MESSAGE_TABLE + " AS cm" +
+                " ON m." + MESSAGE_ID + "=cm." + MESSAGE_ID_FOREIGN + " WHERE cm." + CONVERSATION_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(conversationId)};
+        Log.d(TAG, query);
+
+        // Create fields before while loop, not within every pass.
+        ConversationMessage conversationMessage;
+        String text;
+        int messageId, messageNumber, author;
+        boolean read;
+        Priority priority;
+        DateTime creationDate;
+
+        // Get message data from database.
+        Cursor cMessage = db.rawQuery(query, args);
+        while (cMessage != null && cMessage.moveToNext()) {
+            messageId = cMessage.getInt(cMessage.getColumnIndex(MESSAGE_ID));
+            messageNumber = cMessage.getInt(cMessage.getColumnIndex(CONVERSATION_MESSAGE_MESSAGE_NUMBER));
+            author = cMessage.getInt(cMessage.getColumnIndex(CONVERSATION_MESSAGE_AUTHOR));
+            text = cMessage.getString(cMessage.getColumnIndex(MESSAGE_TEXT));
+            priority = Priority.values[(cMessage.getInt(cMessage.getColumnIndex(MESSAGE_PRIORITY)))];
+            read = cMessage.getInt(cMessage.getColumnIndex(MESSAGE_READ)) != 0;
+            creationDate = new DateTime(cMessage.getLong(cMessage.getColumnIndex(MESSAGE_CREATION_DATE)), TIME_ZONE);
+
+            // Add new conversation message to the conversation message list.
+            conversationMessage = new ConversationMessage(messageId, text, messageNumber, priority, creationDate,
+                    author, conversationId, read);
+            conversationMessages.add(conversationMessage);
+        }
+        if (cMessage != null) {
+            cMessage.close();
+        }
+        Log.d(TAG, "End with " + conversationMessages);
+        return conversationMessages;
+    }
+
+    /**
+     * Gets the number of unread conversation messages of a specific conversation from the database.
+     *
+     * @param conversationId The id of the conversation.
+     * @return The number of unread conversation messages.
+     */
+    public int getNumberOfUnreadConversationMessages(int conversationId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String query = "SELECT * FROM " + MESSAGE_TABLE + " AS m JOIN " + CONVERSATION_MESSAGE_TABLE + " AS cm" +
+                " ON m." + MESSAGE_ID + "=cm." + MESSAGE_ID_FOREIGN + " WHERE cm." + CONVERSATION_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(conversationId)};
+        Log.d(TAG, query);
+
+        int numberOfUnreadConversationMessages = 0;
+        boolean read;
+
+        // Get message data from database.
+        Cursor cMessage = db.rawQuery(query, args);
+        while (cMessage != null && cMessage.moveToNext()) {
+            read = cMessage.getInt(cMessage.getColumnIndex(MESSAGE_READ)) != 0;
+            if (!read) {
+                numberOfUnreadConversationMessages++;
+            }
+        }
+        if (cMessage != null) {
+            cMessage.close();
+        }
+        Log.d(TAG, "End with number of unread conversation messages: " + numberOfUnreadConversationMessages);
+        return numberOfUnreadConversationMessages;
+    }
+
+    /**
+     * Gets the biggest message number among conversation messages of a specific conversation from the database.
+     *
+     * @param conversationId The id of the conversation.
+     * @return The biggest message number.
+     */
+    public int getMaxMessageNumberConversationMessage(int conversationId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        String announcementsQuery = "SELECT MAX(cm." + CONVERSATION_MESSAGE_MESSAGE_NUMBER + ") FROM " + MESSAGE_TABLE +
+                " AS m JOIN " + CONVERSATION_MESSAGE_TABLE + " AS cm ON m." + MESSAGE_ID + "=cm." + MESSAGE_ID_FOREIGN +
+                " WHERE cm." + CONVERSATION_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(conversationId)};
+        Log.d(TAG, announcementsQuery);
+
+        // Get message data from database.
+        int messageNumber = 0;
+        Cursor cMessage = db.rawQuery(announcementsQuery, args);
+        if (cMessage != null && cMessage.moveToFirst()) {
+            messageNumber = cMessage.getInt(0);
+            cMessage.close();
+        }
+        Log.d(TAG, "End with max message number " + messageNumber);
+        return messageNumber;
+    }
+
+    /**
+     * Marks a message as read.
+     *
+     * @param messageId The message which should be set to read.
+     */
+    public void setMessageToRead(int messageId) {
+        Log.d(TAG, "Update message with id " + messageId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(MESSAGE_READ, true);
+        String where = MESSAGE_ID + "=?";
+        String[] args = {String.valueOf(messageId)};
+        db.update(MESSAGE_TABLE, values, where, args);
     }
 }

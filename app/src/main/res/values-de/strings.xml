@@ -290,4 +290,5 @@
     <string name="conversation_message_no_data">Es gibt noch keine Nachrichten.</string>
     <string name="conversation_close">Konversation schließen</string>
     <string name="conversation_close_text">Wenn Sie diese Konversation schließen, können dort keine weiteren Nachrichten gesendet werden. Möchten Sie die Konversation wirklich schließen?</string>
+    <string name="message_text_to_long">Der Text is zu lang.</string>
 </resources>

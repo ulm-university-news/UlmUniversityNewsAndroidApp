@@ -79,7 +79,7 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
 
             // Mark unread announcements.
             if (!announcement.isRead()) {
-                convertView.setBackgroundColor(Color.parseColor("#d6d6d6"));
+                convertView.setBackgroundColor(Color.parseColor("#f4f4f4"));
             } else {
                 convertView.setBackgroundColor(Color.parseColor("#ffffff"));
             }

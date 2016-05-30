@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.data.Conversation;
+import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.util.Util;
@@ -274,6 +275,58 @@ public class GroupAPI extends MainAPI {
                 }.getType();
                 List<Conversation> conversations = gson.fromJson(json, listType);
                 EventBus.getDefault().post(new BusEventConversations(conversations));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Creates a new conversation message on the server.
+     *
+     * @param conversationMessage The conversation message object including the data of the new conversation message.
+     */
+    public void createConversationMessage(int groupId, ConversationMessage conversationMessage) {
+        // Add group and conversation id to url.
+        String url = serverAddressGroup + "/" + groupId + "/conversation/"
+                + conversationMessage.getConversationId() + "/message";
+        // Parse conversation message object to JSON String.
+        String jsonConversationMessage = gson.toJson(conversationMessage, ConversationMessage.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                ConversationMessage conversationMessageResponse = gson.fromJson(json, ConversationMessage.class);
+                EventBus.getDefault().post(conversationMessageResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setBody(jsonConversationMessage);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getConversationMessages(int groupId, int conversationId, Integer messageNumber) {
+        // Add group and conversation id to url.
+        String url = serverAddressGroup + "/" + groupId + "/conversation/" + conversationId + "/message";
+        HashMap<String, String> params = new HashMap<>();
+        if (messageNumber != null) {
+            params.put("messageNr", messageNumber.toString());
+        }
+        // Add parameters to url.
+        url += getUrlParams(params);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of conversation messages as deserialization type.
+                Type listType = new TypeToken<List<ConversationMessage>>() {
+                }.getType();
+                List<ConversationMessage> conversationMessages = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventConversationMessages(conversationMessages));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);

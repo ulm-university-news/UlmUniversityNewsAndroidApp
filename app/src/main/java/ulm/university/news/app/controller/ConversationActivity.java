@@ -1,24 +1,62 @@
 package ulm.university.news.app.controller;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventConversationMessages;
+import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Conversation;
+import ulm.university.news.app.data.ConversationMessage;
+import ulm.university.news.app.data.enums.Priority;
+import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
+import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.Util;
 
-public class ConversationActivity extends AppCompatActivity implements DialogListener {
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+
+public class ConversationActivity extends AppCompatActivity implements DialogListener, LoaderManager
+        .LoaderCallbacks<List<ConversationMessage>> {
     /** This classes tag for logging. */
     private static final String TAG = "ConversationActivity";
 
-    Conversation conversation;
+    /** The loader's id. This id is specific to the ChannelSearchActivity's LoaderManager. */
+    private static final int LOADER_ID = 8;
+
+    private DatabaseLoader<List<ConversationMessage>> databaseLoader;
+
+    private ConversationMessageListAdapter listAdapter;
+    private List<ConversationMessage> conversationMessages;
+    private Conversation conversation;
+    private int groupId;
+
+    private ListView lvConversationMessages;
+    private EditText etMessage;
+    private ImageView ivSend;
+    private String errorMessage;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +65,25 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
 
-        int groupId = getIntent().getIntExtra("groupId", 0);
+        groupId = getIntent().getIntExtra("groupId", 0);
         int conversationId = getIntent().getIntExtra("conversationId", 0);
         conversation = new GroupDatabaseManager(this).getConversation(conversationId);
+
+        // Initialize the loader. If the Loader with this id already exists, then the LoaderManager will reuse the
+        // existing Loader.
+        databaseLoader = (DatabaseLoader) getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_conversation_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(conversation.getTitle());
+
+        initView();
+        if (conversation.getClosed()) {
+            etMessage.setVisibility(View.GONE);
+            ivSend.setVisibility(View.GONE);
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,13 +117,193 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Check for new messages whenever the conversation is shown.
+        refreshConversationMessages();
+        // Update channel list to make new conversation messages visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    /**
+     * Initialises all view elements of this activity.
+     */
+    private void initView() {
+        lvConversationMessages = (ListView) findViewById(R.id.activity_conversation_lv_conversation_messages);
+        etMessage = (EditText) findViewById(R.id.activity_conversation_et_message);
+        ivSend = (ImageView) findViewById(R.id.activity_conversation_iv_send);
+        TextView tvListEmpty = (TextView) findViewById(R.id.activity_conversation_tv_list_empty);
+
+        toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
+
+        listAdapter = new ConversationMessageListAdapter(this, R.layout.conversation_message_list_item);
+        lvConversationMessages.setAdapter(listAdapter);
+        lvConversationMessages.setEmptyView(tvListEmpty);
+
+        ivSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
+    }
+
+    private void sendMessage() {
+        String message = etMessage.getText().toString();
+        if (message.isEmpty()) {
+            return;
+        }
+        if (message.length() > Constants.MESSAGE_MAX_LENGTH) {
+            errorMessage = getString(R.string.message_text_to_long);
+            toast.setText(errorMessage);
+            toast.show();
+            return;
+        }
+        // Send message to the server.
+        ConversationMessage conversationMessage = new ConversationMessage();
+        conversationMessage.setText(message);
+        conversationMessage.setConversationId(conversation.getId());
+        conversationMessage.setPriority(Priority.NORMAL);
+        GroupAPI.getInstance(this).createConversationMessage(groupId, conversationMessage);
+    }
+
+    private void refreshConversationMessages() {
+        // Refreshing is only possible if there is an internet connection.
+        if (Util.getInstance(this).isOnline()) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Get announcement data. Request new messages only.
+            int messageNumber = databaseLoader.getGroupDBM().getMaxMessageNumberConversationMessage(
+                    conversation.getId());
+            GroupAPI.getInstance(this).getConversationMessages(groupId, conversation.getId(), messageNumber);
+        } else {
+            errorMessage = getString(R.string.general_error_no_connection);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Only show error message if refreshing was triggered manually.
+            toast.setText(errorMessage);
+            toast.show();
+        }
+    }
+
+    @Override
     public void onDialogPositiveClick(String tag) {
         if (tag.equals(YesNoDialogFragment.DIALOG_CONVERSATION_CLOSE)) {
-            // TODO get dbm from loader.
             // TODO send close request to server.
             conversation.setClosed(true);
-            new GroupDatabaseManager(this).updateConversation(conversation);
+            databaseLoader.getGroupDBM().updateConversation(conversation);
             finish();
+        }
+    }
+
+    @Override
+    public Loader<List<ConversationMessage>> onCreateLoader(int id, Bundle args) {
+        databaseLoader = new DatabaseLoader<>(this, new DatabaseLoader
+                .DatabaseLoaderCallbacks<List<ConversationMessage>>() {
+            @Override
+            public List<ConversationMessage> onLoadInBackground() {
+                return databaseLoader.getGroupDBM().getConversationMessages(conversation.getId());
+            }
+
+            @Override
+            public IntentFilter observerFilter() {
+                // Listen to database changes on new conversation messages.
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(GroupDatabaseManager.STORE_CONVERSATION_MESSAGE);
+                return filter;
+            }
+        });
+        databaseLoader.setGroupDBM(new GroupDatabaseManager(this));
+        return databaseLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<ConversationMessage>> loader, List<ConversationMessage> data) {
+        conversationMessages = data;
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+        lvConversationMessages.setSelection(data.size() - 1);
+
+        // Mark loaded and unread conversation messages as read after displaying.
+        for (ConversationMessage cm : conversationMessages) {
+            if (!cm.isRead()) {
+                databaseLoader.getGroupDBM().setMessageToRead(cm.getId());
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<ConversationMessage>> loader) {
+        listAdapter.setData(null);
+    }
+
+    /**
+     * This method will be called when a conversation message is posted to the EventBus.
+     *
+     * @param conversationMessage The conversation message.
+     */
+    public void onEventMainThread(ConversationMessage conversationMessage) {
+        Log.d(TAG, "EventBus: ConversationMessage");
+        Log.d(TAG, conversationMessage.toString());
+        // Clear text input field.
+        etMessage.setText(null);
+        // Store new conversation message in database.
+        databaseLoader.getGroupDBM().storeConversationMessage(conversationMessage);
+    }
+
+    /**
+     * This method will be called when a list of conversation messages is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of conversation message objects.
+     */
+    public void onEventMainThread(BusEventConversationMessages event) {
+        Log.d(TAG, event.toString());
+        List<ConversationMessage> conversationMessages = event.getConversationMessages();
+        // Store new conversation messages in database.
+        for (ConversationMessage cm : conversationMessages) {
+            databaseLoader.getGroupDBM().storeConversationMessage(cm);
+        }
+    }
+
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        Log.d(TAG, "EventBus: ServerError");
+        handleServerError(serverError);
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void handleServerError(ServerError serverError) {
+        Log.d(TAG, serverError.toString());
+
+        // Show appropriate error message.
+        switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                toast.setText(errorMessage);
+                toast.show();
+                break;
         }
     }
 }

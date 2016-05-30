@@ -23,6 +23,8 @@ public class Conversation {
     private int admin;
     /** A list of conversation messages which belong to this conversation. */
     private List<ConversationMessage> conversationMessages;
+    /** A counter which determines how many unread conversation messages the conversation contains. */
+    private Integer numberOfUnreadConversationMessages;
 
     /**
      * Creates an instance of the Conversation class.
@@ -112,6 +114,14 @@ public class Conversation {
         this.conversationMessages = conversationMessages;
     }
 
+    public Integer getNumberOfUnreadConversationMessages() {
+        return numberOfUnreadConversationMessages;
+    }
+
+    public void setNumberOfUnreadConversationMessages(Integer numberOfUnreadConversationMessages) {
+        this.numberOfUnreadConversationMessages = numberOfUnreadConversationMessages;
+    }
+
     @Override
     public String toString() {
         return "Conversation{" +
@@ -120,6 +130,9 @@ public class Conversation {
                 ", closed=" + closed +
                 ", admin=" + admin +
                 ", conversationMessages=" + conversationMessages +
+                ", numberOfUnreadConversationMessages=" + numberOfUnreadConversationMessages +
                 '}';
     }
 }
+
+
