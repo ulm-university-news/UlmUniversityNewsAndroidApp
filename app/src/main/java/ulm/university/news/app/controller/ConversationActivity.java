@@ -240,7 +240,7 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         if (Util.getInstance(this).isOnline()) {
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
-            // Get announcement data. Request new messages only.
+            // Get conversation message data. Request new messages only.
             int messageNumber = databaseLoader.getGroupDBM().getMaxMessageNumberConversationMessage(
                     conversation.getId());
             GroupAPI.getInstance(this).getConversationMessages(groupId, conversation.getId(), messageNumber);

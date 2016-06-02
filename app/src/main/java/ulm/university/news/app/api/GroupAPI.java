@@ -333,6 +333,23 @@ public class GroupAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
+    public void getConversation(int groupId, int conversationId) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/conversation/" + conversationId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Conversation conversation = gson.fromJson(json, Conversation.class);
+                EventBus.getDefault().post(conversation);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
     /**
      * Creates a new conversation message on the server.
      *

@@ -299,4 +299,8 @@
     <string name="conversation_edit_info">Ändern Sie den Titel der Konversation im Feld unten. Bestätigen Sie die Änderung mit einem Klick auf den Bearbeiten-Button.</string>
     <string name="conversation_edited">Konversation erfolgreich geändert.</string>
     <string name="activity_conversation_edit_title">Konversation bearbeiten</string>
+    <string name="push_message_new_conversation">Neue Konversation hinzugefügt.</string>
+    <string name="push_message_new_conversation_message">Neue Nachricht veröffentlicht.</string>
+    <string name="push_message_new_conversation_messages">Neue Nachrichten veröffentlicht.</string>
+    <string name="push_message_conversation">Konversation: %1$s</string>
 </resources>

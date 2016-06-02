@@ -372,7 +372,11 @@ public class GroupDatabaseManager {
         conversationValues.put(CONVERSATION_CLOSED, conversation.getClosed());
         conversationValues.put(CONVERSATION_ADMIN, conversation.getAdmin());
         conversationValues.put(GROUP_ID_FOREIGN, groupId);
-        db.insert(CONVERSATION_TABLE, null, conversationValues);
+        try {
+            db.insertOrThrow(CONVERSATION_TABLE, null, conversationValues);
+        } catch (SQLException e) {
+            Log.i(TAG, "Conversation " + conversation.getId() + " is already stored.");
+        }
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(STORE_CONVERSATION);

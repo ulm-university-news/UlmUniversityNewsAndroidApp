@@ -223,6 +223,8 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(GroupDatabaseManager.STORE_CONVERSATION);
                 filter.addAction(GroupDatabaseManager.UPDATE_CONVERSATION);
+                filter.addAction(GroupDatabaseManager.CONVERSATION_DELETED);
+                filter.addAction(GroupDatabaseManager.STORE_CONVERSATION_MESSAGE);
                 return filter;
             }
         });

@@ -49,14 +49,13 @@ public class GroupController {
                     } else {
                         groupIcon = R.drawable.ic_w_admin;
                     }
-                }else{
+                } else {
                     if (language.equals("de")) {
                         groupIcon = R.drawable.ic_a;
                     } else {
                         groupIcon = R.drawable.ic_w;
                     }
                 }
-                break;
         }
 
         // If group is marked as deleted, set deleted icon.
@@ -84,7 +83,7 @@ public class GroupController {
             } else {
                 conversationIcon = R.drawable.ic_conversation_admin;
             }
-        }else{
+        } else {
             if (language.equals("de")) {
                 conversationIcon = R.drawable.ic_konversation;
             } else {
@@ -99,6 +98,14 @@ public class GroupController {
         return conversationIcon;
     }
 
+    /**
+     * Stores new conversations or updates existing ones in the database.
+     *
+     * @param context The current context.
+     * @param conversations A list of conversations.
+     * @param groupId The group id to which the conversations belong.
+     * @return true if new conversations were stored.
+     */
     public static boolean storeConversations(Context context, List<Conversation> conversations, int groupId) {
         ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
@@ -109,7 +116,7 @@ public class GroupController {
             boolean alreadyStored;
 
             // Store new conversations and update existing ones.
-            for (Conversation conversation: conversations) {
+            for (Conversation conversation : conversations) {
                 alreadyStored = false;
                 for (Conversation conversationDB : conversationsDB) {
                     if (conversationDB.getId() == conversation.getId()) {

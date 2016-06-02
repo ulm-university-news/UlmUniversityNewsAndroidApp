@@ -89,7 +89,7 @@ public class ConversationListAdapter extends ArrayAdapter<Conversation> {
                 if (number > 99) {
                     tvNew.setText(String.valueOf(99));
                 } else {
-                    tvNew.setText(number);
+                    tvNew.setText(String.valueOf(number));
                 }
                 tvNew.setVisibility(View.VISIBLE);
             } else {

@@ -37,8 +37,12 @@
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
-    <string name="push_message_new_announcements">New conversationMessages posted.</string>
+    <string name="push_message_new_announcements">New announcements posted.</string>
     <string name="push_message_channel_deleted">Channel has been deleted.</string>
+    <string name="push_message_new_conversation">New conversation added.</string>
+    <string name="push_message_new_conversation_message">New message posted.</string>
+    <string name="push_message_new_conversation_messages">New messages posted.</string>
+    <string name="push_message_conversation">Conversation: %1$s</string>
 
     <!-- CreateAccountActivity ##################################################################################### -->
     <string name="activity_create_account_information">To use this app you need to create a user account. To do that you just have to enter a user name below and accept the terms of use. You can find them on www.google.de</string>
