@@ -31,7 +31,6 @@
     <string name="activity_create_account_information">Um diese App benutzen zu können müssen Sie ein Nutzerkonto anlegen. Dazu müssen Sie unten einen Nutzernamen eingeben und die Nutzungsbedingungen akzepiteren. Diese können Sie unter folgendem Link abrufen: www.google.de</string>
     <string name="activity_create_account_name_hint">Nutzername</string>
     <string name="activity_create_account_welcome">Wilkommen zur University News Ulm App!</string>
-    <string name="activity_group_add_group_type">Gruppentyp</string>
     <string name="activity_group_add_title">Gruppe hinzufügen</string>
     <string name="activity_group_search_btn_search">Gruppe suchen</string>
     <string name="activity_group_search_chk_tutorial">Tutoriumsgruppe</string>
@@ -97,7 +96,8 @@
     <string name="activity_reminder_add_title">Reminder hinzufügen</string>
     <string name="activity_reminder_detail_title">Reminderdetails</string>
     <string name="activity_reminder_edit_title">Reminder bearbeiten</string>
-    <string name="activity_settings_channel_info">Hier kannst du das Verhalten der Anwendung bei eingehenden Nachrichten eingestellt werden. Die hier vorgenommenen Einstellungen gelten grundsätzlich für die gesamte Anwendung. Für einzelne Kanäle und Gruppen können auch andere Einstellungen vorgenommen werden, welche dann die hier vorgenommenen Einstellungen für den entsprechenden Kanal oder die entsprechende Gruppe überschreiben.</string>
+    <string name="activity_settings_channel_info">Hier können Sie das Verhalten der Anwendung bei eingehenden
+        Nachrichten eingestellt werden. Die hier vorgenommenen Einstellungen gelten grundsätzlich für die gesamte Anwendung. Für einzelne Kanäle und Gruppen können auch andere Einstellungen vorgenommen werden, welche dann die hier vorgenommenen Einstellungen für den entsprechenden Kanal oder die entsprechende Gruppe überschreiben.</string>
     <string name="activity_settings_list_channel_info">Hier kann das Anordnungskriterium für die Auflistung von Kanälen festgelegt werden.</string>
     <string name="activity_settings_list_channel_info_title">Kanaleinstellungen</string>
     <string name="activity_settings_list_general_info_title">Allgemeine Listeneinstellungen</string>
@@ -113,7 +113,6 @@
     <string name="activity_settings_list_rb_general_desc">Absteigend</string>
     <string name="activity_settings_list_rb_group_alphabetical">Alphabetisch</string>
     <string name="activity_settings_list_rb_group_messages">Anzahl ungelesene Nachrichten</string>
-    <string name="activity_settings_list_rb_group_type">Gruppentyp</string>
     <string name="activity_settings_list_rb_messages_asc">Neueste Nachrichten oben</string>
     <string name="activity_settings_list_rb_messages_desc">Neueste Nachrichten unten</string>
     <string name="activity_settings_list_title">Listeneinstellungen</string>
@@ -175,9 +174,9 @@
     <string name="general_date_pattern_time_only">HH:mm</string>
     <string name="general_edit">Bearbeiten</string>
     <string name="general_error_connection_failed">Verbindung zum Server fehlgeschlagen.</string>
-    <string name="general_error_create">Erstellen fehlgeschlagen.</string>
+    <string name="general_error_create">Erstellen nicht möglich.</string>
     <string name="general_error_database">Datenbankfehler. Bitte versuche es erneut.</string>
-    <string name="general_error_delete">Löschen fehlgeschlagen.</string>
+    <string name="general_error_delete">Löschen nicht möglich.</string>
     <string name="general_error_input">Ungültige Felder gefunden.</string>
     <string name="general_error_input_field_empty">ist leer.</string>
     <string name="general_error_input_field_invalid">ist ungültig.</string>
@@ -303,4 +302,10 @@
     <string name="push_message_new_conversation_message">Neue Nachricht veröffentlicht.</string>
     <string name="push_message_new_conversation_messages">Neue Nachrichten veröffentlicht.</string>
     <string name="push_message_conversation">Konversation: %1$s</string>
+    <string name="group_change_password">Passwort ändern</string>
+    <string name="activity_group_edit_title">Gruppe bearbeiten</string>
+    <string name="general_delete">Löschen</string>
+    <string name="general_error_edit">Ändern nicht möglich.</string>
+    <string name="group_delete_dialog_title">Gruppe löschen</string>
+    <string name="group_delete_dialog_text">Die Gruppe wird unwiederruflich gelöscht. Möchten Sie die Gruppe wirklich löschen?</string>
 </resources>

@@ -14,11 +14,13 @@
     <string name="general_error_subscribe"> Can\'t subscribe.</string>
     <string name="general_error_unsubscribe"> Can\'t unsubscribe.</string>
     <string name="general_error_leave"> Can\'t leave.</string>
+    <string name="general_error_edit"> Can\'t edit.</string>
     <string name="general_error_delete"> Can\'t delete.</string>
     <string name="general_year_format">YYYY</string>
     <string name="general_create">Create</string>
     <string name="general_dots" translatable="false">&#8230;</string>
     <string name="general_edit">Edit</string>
+    <string name="general_delete">Delete</string>
     <string name="general_error_create"> Can\'t create.</string>
     <string name="general_error_input">Invalid fields found.</string>
     <string name="general_error_input_field_invalid">is invalid.</string>
@@ -98,7 +100,9 @@
 
     <!-- GroupAddActivity ########################################################################################## -->
     <string name="activity_group_add_title">Add group</string>
-    <string name="activity_group_add_group_type">Group type</string>
+
+    <!-- GroupEditActivity ######################################################################################### -->
+    <string name="activity_group_edit_title">Edit group</string>
 
     <!-- SettingsUserActivity ###################################################################################### -->
     <string name="activity_settings_user_title">User settings</string>
@@ -128,7 +132,6 @@
     <string name="activity_settings_list_group_info_title">Group settings</string>
     <string name="activity_settings_list_group_info">Choose the arrangement criterion for group lists here.</string>
     <string name="activity_settings_list_rb_group_alphabetical">Alphabetical</string>
-    <string name="activity_settings_list_rb_group_type">Group type</string>
     <string name="activity_settings_list_rb_group_messages">Number of unread messages</string>
     <string name="activity_settings_list_general_info_title">General list settings</string>
     <string name="activity_settings_list_general_info">Choose the general arrangement criterion for all lists like
@@ -374,12 +377,16 @@
     <string name="group_working_name">Working group</string>
     <string name="group_type">Group type</string>
     <string name="group_admin">Group administrator</string>
+    <string name="group_change_password">Change password</string>
     <string name="group_members">Group members (%1$s)</string>
     <string name="group_leave_dialog_title">Leave group</string>
     <string name="group_leave_dialog_text">This group will be deleted from your group list. You
         won\'t be able to participate in this group anymore.\nDo you really want to leave this group?</string>
     <string name="group_info_updated">Group data updated.</string>
     <string name="group_info_up_to_date">Group data already up to date.</string>
+    <string name="group_delete_dialog_title">Delete group</string>
+    <string name="group_delete_dialog_text">The group will be deleted and can\'t be restored. Do you really
+        want to delete the group?</string>
     <string name="group_deleted_dialog_title">Group deleted</string>
     <string name="group_deleted_dialog_text">The group \"%1$s\" no longer exists. You can\'t join.</string>
     <string name="group_deleted_member_dialog_title">Group deleted</string>

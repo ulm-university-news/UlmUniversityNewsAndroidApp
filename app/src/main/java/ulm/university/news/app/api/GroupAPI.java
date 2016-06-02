@@ -133,6 +133,31 @@ public class GroupAPI extends MainAPI {
     }
 
     /**
+     * Changes an existing group on the server. The changed data is provided within the group object.
+     *
+     * @param group The group object including the new group data.
+     */
+    public void changeGroup(Group group) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + group.getId();
+        // Parse group object to JSON String.
+        String jsonGroup = gson.toJson(group, Group.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Group groupResponse = gson.fromJson(json, Group.class);
+                EventBus.getDefault().post(groupResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setBody(jsonGroup);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
      * Deletes the group with given id from the server.
      *
      * @param groupId The id of the group which should be deleted.

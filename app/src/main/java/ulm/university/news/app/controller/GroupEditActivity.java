@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -24,7 +26,6 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
-import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
@@ -34,28 +35,32 @@ import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
 import static ulm.university.news.app.util.Constants.PASSWORD_GROUP_PATTERN;
 
-public class GroupAddActivity extends AppCompatActivity implements DialogListener {
+public class GroupEditActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
-    private static final String TAG = "GroupAddActivity";
+    private static final String TAG = "GroupEditActivity";
 
     private TextInputLabels tilName;
     private TextInputLabels tilDescription;
     private TextInputLabels tilPassword;
     private EditText etYear;
-    private Spinner spGroupType;
     private Spinner spTerm;
     private TextView tvError;
     private ProgressBar pgrSearching;
-    private Button btnCreate;
+    private Button btnEdit;
+    private CheckBox chkPassword;
 
     private Toast toast;
+    private Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_add);
+        setContentView(R.layout.activity_group_edit);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_group_add_toolbar);
+        int groupId = getIntent().getIntExtra("groupId", 0);
+        group = new GroupDatabaseManager(this).getGroup(groupId);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_group_edit_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -111,22 +116,24 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
     }
 
     private void initView() {
-        tilName = (TextInputLabels) findViewById(R.id.activity_group_add_til_name);
-        tilDescription = (TextInputLabels) findViewById(R.id.activity_group_add_til_description);
-        tilPassword = (TextInputLabels) findViewById(R.id.activity_group_add_til_password);
-        etYear = (EditText) findViewById(R.id.activity_group_add_et_year);
-        spGroupType = (Spinner) findViewById(R.id.activity_group_add_sp_group_type);
-        spTerm = (Spinner) findViewById(R.id.activity_group_add_sp_term);
-        tvError = (TextView) findViewById(R.id.activity_group_add_tv_error);
-        pgrSearching = (ProgressBar) findViewById(R.id.activity_group_add_pgr_adding);
-        btnCreate = (Button) findViewById(R.id.activity_group_add_btn_create);
+        tilName = (TextInputLabels) findViewById(R.id.activity_group_edit_til_name);
+        tilDescription = (TextInputLabels) findViewById(R.id.activity_group_edit_til_description);
+        tilPassword = (TextInputLabels) findViewById(R.id.activity_group_edit_til_password);
+        etYear = (EditText) findViewById(R.id.activity_group_edit_et_year);
+        spTerm = (Spinner) findViewById(R.id.activity_group_edit_sp_term);
+        tvError = (TextView) findViewById(R.id.activity_group_edit_tv_error);
+        pgrSearching = (ProgressBar) findViewById(R.id.activity_group_edit_pgr_adding);
+        btnEdit = (Button) findViewById(R.id.activity_group_edit_btn_edit);
+        chkPassword = (CheckBox) findViewById(R.id.activity_group_edit_chk_password);
 
         tilName.setNameAndHint(getString(R.string.group_name));
         tilName.setLength(3, 35);
         tilName.setPattern(ACCOUNT_NAME_PATTERN);
+        tilName.setText(group.getName());
 
         tilDescription.setNameAndHint(getString(R.string.group_description));
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
+        tilDescription.setText(group.getDescription());
 
         tilPassword.setNameAndHint(getString(R.string.group_password));
         tilPassword.setLength(1, 20);
@@ -138,19 +145,18 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         if (tv != null) tv.setGravity(Gravity.CENTER);
 
         // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.group_types, R.layout.spinner_item);
-        // Specify the layout to use when the list of choices appears.
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner.
-        spGroupType.setAdapter(adapter);
-        spGroupType.setSelection(0);
-
-        adapter = ArrayAdapter.createFromResource(this, R.array.terms, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.terms, R.layout
+                .spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTerm.setAdapter(adapter);
-        spTerm.setSelection(0);
+        if (group.getTerm().contains("S")) {
+            spTerm.setSelection(0);
+        } else {
+            spTerm.setSelection(1);
+        }
 
+        String year = group.getTerm().substring(1);
+        etYear.setText(year);
         etYear.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -166,20 +172,30 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
             }
         });
 
-        btnCreate.setOnClickListener(new View.OnClickListener() {
+        btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "ButtonClick");
-                addGroup();
+                editGroup();
+            }
+        });
+
+        chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    tilPassword.setVisibility(View.VISIBLE);
+                } else {
+                    tilPassword.setVisibility(View.GONE);
+                }
             }
         });
     }
 
-    private void addGroup() {
+    private void editGroup() {
         boolean valid = true;
         if (!Util.getInstance(this).isOnline()) {
             String message = getString(R.string.general_error_no_connection);
-            message += " " + getString(R.string.general_error_create);
+            message += " " + getString(R.string.general_error_edit);
             toast.setText(message);
             toast.show();
             valid = false;
@@ -188,7 +204,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         if (!tilName.isValid()) {
             valid = false;
         }
-        if (!tilPassword.isValid()) {
+        if (chkPassword.isChecked() && !tilPassword.isValid()) {
             valid = false;
         }
         if (!tilDescription.isValid()) {
@@ -220,18 +236,15 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
             }
             term += year;
 
-            GroupType groupType;
-            if (spGroupType.getSelectedItemPosition() == 0) {
-                groupType = GroupType.WORKING;
-            } else {
-                groupType = GroupType.TUTORIAL;
+            String password = null;
+            if (chkPassword.isChecked()) {
+                password = tilPassword.getText();
+                password = Util.hashPassword(password);
             }
 
-            String password = tilPassword.getText();
-            password = Util.hashPassword(password);
-
-            Group group = new Group(tilName.getText(), tilDescription.getText(), groupType, term, password);
-            GroupAPI.getInstance(this).createGroup(group);
+            Group g = new Group(tilName.getText(), tilDescription.getText(), group.getGroupType(), term, password);
+            g.setId(group.getId());
+            GroupAPI.getInstance(this).changeGroup(g);
         }
     }
 
@@ -244,13 +257,14 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         Log.d(TAG, "EventBus: Group");
         Log.d(TAG, group.toString());
         pgrSearching.setVisibility(View.GONE);
-        // Store group and add local user as a group member.
+        // Update group in database.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
-        groupDBM.storeGroup(group);
-        groupDBM.addUserToGroup(group.getId(), Util.getInstance(this).getLocalUser().getId());
+        groupDBM.updateGroup(group);
         Intent intent = new Intent(this, GroupActivity.class);
         intent.putExtra("groupId", group.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     /**

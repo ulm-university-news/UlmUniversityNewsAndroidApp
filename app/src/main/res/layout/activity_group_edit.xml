@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/activity_group_add_toolbar"
+        android:id="@+id/activity_group_edit_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -28,37 +28,30 @@
             android:padding="10dp">
 
             <ulm.university.news.app.util.TextInputLabels
-                android:id="@+id/activity_group_add_til_name"
+                android:id="@+id/activity_group_edit_til_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <ulm.university.news.app.util.TextInputLabels
-                android:id="@+id/activity_group_add_til_description"
+                android:id="@+id/activity_group_edit_til_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <ulm.university.news.app.util.TextInputLabels
-                android:id="@+id/activity_group_add_til_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/activity_group_add_tv_group_type"
+            <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingStart="4dp"
-                android:paddingTop="8dp"
-                android:text="@string/group_type"
-                android:textSize="12sp"/>
+                android:text="@string/group_change_password"
+                android:id="@+id/activity_group_edit_chk_password"
+                android:checked="false"/>
 
-            <Spinner
-                android:id="@+id/activity_group_add_sp_group_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <ulm.university.news.app.util.TextInputLabels
+                android:id="@+id/activity_group_edit_til_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/activity_group_add_tv_term"
+                android:id="@+id/activity_group_edit_tv_term"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="4dp"
@@ -73,12 +66,12 @@
                 android:orientation="horizontal">
 
                 <Spinner
-                    android:id="@+id/activity_group_add_sp_term"
+                    android:id="@+id/activity_group_edit_sp_term"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <EditText
-                    android:id="@+id/activity_group_add_et_year"
+                    android:id="@+id/activity_group_edit_et_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -92,7 +85,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/activity_group_add_tv_error"
+                android:id="@+id/activity_group_edit_tv_error"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -101,7 +94,7 @@
                 android:visibility="gone"/>
 
             <ProgressBar
-                android:id="@+id/activity_group_add_pgr_adding"
+                android:id="@+id/activity_group_edit_pgr_adding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -109,12 +102,12 @@
                 android:visibility="gone"/>
 
             <Button
-                android:id="@+id/activity_group_add_btn_create"
+                android:id="@+id/activity_group_edit_btn_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="@string/general_create"
+                android:text="@string/general_edit"
                 android:textColor="@color/black"/>
         </LinearLayout>
     </ScrollView>

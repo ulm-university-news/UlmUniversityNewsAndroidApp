@@ -138,6 +138,8 @@ public class PushGcmListenerService extends GcmListenerService {
                         messageNumber);
                 break;
             case CONVERSATION_DELETED:
+                new GroupDatabaseManager(getApplicationContext()).deleteConversation(pushMessage.getId2());
+                // TODO Send notification?
                 break;
         }
     }

@@ -23,7 +23,6 @@ public class GroupFragmentPager extends FragmentPagerAdapter {
         tabTitles = new String[]{
                 context.getString(R.string.activity_group_tab_conversations),
                 context.getString(R.string.activity_group_tab_ballots),
-                context.getString(R.string.activity_group_tab_events),
                 context.getString(R.string.activity_group_tab_information)
         };
         PAGE_COUNT = tabTitles.length;
@@ -42,8 +41,6 @@ public class GroupFragmentPager extends FragmentPagerAdapter {
             case 1:
                 return GroupDetailFragment.newInstance(groupId);
             case 2:
-                return GroupDetailFragment.newInstance(groupId);
-            case 3:
                 return GroupDetailFragment.newInstance(groupId);
         }
         return null;

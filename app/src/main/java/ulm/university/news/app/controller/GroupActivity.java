@@ -29,12 +29,11 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Set color theme according to channel and lecture type.
-        groupId = getIntent().getIntExtra("groupId", 0);
-        Group group = new GroupDatabaseManager(this).getGroup(groupId);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        groupId = getIntent().getIntExtra("groupId", 0);
+        Group group = new GroupDatabaseManager(this).getGroup(groupId);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_group_toolbar);
         setSupportActionBar(toolbar);

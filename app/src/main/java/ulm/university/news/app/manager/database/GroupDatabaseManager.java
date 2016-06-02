@@ -44,7 +44,6 @@ import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_NAM
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TERM;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TYPE;
-import static ulm.university.news.app.manager.database.DatabaseManager.LOCAL_USER_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_CREATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_ID_FOREIGN;
@@ -214,7 +213,7 @@ public class GroupDatabaseManager {
         String where = GROUP_ID + "=?";
         String[] args = {String.valueOf(group.getId())};
 
-        db.update(LOCAL_USER_TABLE, groupValues, where, args);
+        db.update(GROUP_TABLE, groupValues, where, args);
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_GROUP);

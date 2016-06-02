@@ -105,14 +105,14 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() instanceof ModeratorChannelActivity) {
+        if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())) {
             setHasOptionsMenu(true);
         }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.activity_moderator_channel_detail_menu, menu);
+        inflater.inflate(R.menu.activity_group_detail_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -120,23 +120,23 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.activity_moderator_channel_details_edit:
-                Intent intent = new Intent(getActivity(), ChannelEditActivity.class);
+            case R.id.activity_group_detail_tab_edit:
+                Intent intent = new Intent(getActivity(), GroupEditActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
                 return true;
-            case R.id.activity_moderator_channel_channel_delete:
+            case R.id.activity_group_detail_tab_delete:
                 if (Util.getInstance(getContext()).isOnline()) {
-                    // Show delete channel dialog.
+                    // Show delete group dialog.
                     YesNoDialogFragment dialog = new YesNoDialogFragment();
                     Bundle args = new Bundle();
                     args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
-                            .channel_delete_dialog_title));
+                            .group_delete_dialog_title));
                     args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
-                            .channel_delete_dialog_text));
+                            .group_delete_dialog_text));
                     dialog.setArguments(args);
                     dialog.setTargetFragment(GroupDetailFragment.this, 0);
-                    dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_CHANNEL_DELETE);
+                    dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_GROUP_DELETE);
 
                     errorMessage = getString(R.string.general_error_connection_failed);
                     errorMessage += " " + getString(R.string.general_error_delete);
@@ -205,7 +205,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             @Override
             public void onClick(View v) {
                 if (Util.getInstance(v.getContext()).isOnline()) {
-                    // Show leave channel dialog.
+                    // Show leave group dialog.
                     YesNoDialogFragment dialog = new YesNoDialogFragment();
                     Bundle args = new Bundle();
                     args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
@@ -286,7 +286,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                     if (i < numberOfUsers - 1) {
                         groupMemberNames += " " + Html.fromHtml("&#8211; ").toString();
                     }
-                    if(user.getId() == group.getGroupAdmin()){
+                    if (user.getId() == group.getGroupAdmin()) {
                         adminName = user.getName();
                     }
                 }
@@ -398,8 +398,6 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         String action = busEvent.getAction();
         if (GroupAPI.JOIN_GROUP.equals(action)) {
             groupDBM.addUserToGroup(groupId, Util.getInstance(getContext()).getLocalUser().getId());
-            // TODO Get group members.
-            // ChannelAPI.getInstance(getContext()).getResponsibleModerators(channel.getId());
             Intent intent = new Intent(getActivity(), GroupActivity.class);
             intent.putExtra("groupId", groupId);
             startActivity(intent);
@@ -410,8 +408,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
             groupDBM.deleteGroup(groupId);
             getActivity().finish();
         } else if (GroupAPI.DELETE_GROUP.equals(action)) {
-            // TODO Mark local group as deleted.
-            // ChannelController.deleteChannel(getContext(), channel.getId());
+            groupDBM.deleteGroup(groupId);
             getActivity().finish();
         }
     }
