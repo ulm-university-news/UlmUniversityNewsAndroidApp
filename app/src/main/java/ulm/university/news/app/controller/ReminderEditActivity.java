@@ -151,7 +151,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         chkIgnore = (CheckBox) findViewById(R.id.activity_reminder_add_chk_ignore);
         // ivIconTitle = (ImageView) findViewById(R.id.activity_reminder_add_iv_icon_title);
 
-        tilTitle.setNameAndHint(getString(R.string.announcement_title));
+        tilTitle.setNameAndHint(getString(R.string.general_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
         tilText.setNameAndHint(getString(R.string.message_text));
         tilText.setLength(1, Constants.MESSAGE_MAX_LENGTH);

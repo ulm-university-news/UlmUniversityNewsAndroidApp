@@ -36,6 +36,7 @@
     <string name="general_leave_page_edited">If you leave this page, your edited data is discarded. Do you really
         want to leave?</string>
     <string name="general_unknown">Unknown</string>
+    <string name="general_description">Description</string>
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
@@ -103,6 +104,12 @@
 
     <!-- GroupEditActivity ######################################################################################### -->
     <string name="activity_group_edit_title">Edit group</string>
+
+    <!-- BallotAddActivity ######################################################################################### -->
+    <string name="activity_ballot_add_title">Add ballot</string>
+
+    <!-- BallotEditActivity ######################################################################################## -->
+    <string name="activity_ballot_edit_title">Edit ballot</string>
 
     <!-- SettingsUserActivity ###################################################################################### -->
     <string name="activity_settings_user_title">User settings</string>
@@ -318,7 +325,7 @@
     <!-- Announcement ############################################################################################## -->
     <string name="announcement_info_updated">New announcements loaded.</string>
     <string name="announcement_info_up_to_date">No new announcements.</string>
-    <string name="announcement_title">Title</string>
+    <string name="general_title">Title</string>
     <string name="announcement_title_invalid">The title is invalid.</string>
     <string name="announcement_created">Announcement created successfully.</string>
 
@@ -369,7 +376,6 @@
 
     <!-- Group ##################################################################################################### -->
     <string name="group_name">Name</string>
-    <string name="group_description">Description</string>
     <string name="group_password">Group password</string>
     <string name="group_password_invalid">Group password invalid</string>
     <string name="group_tutorial_symbol">T</string>
@@ -431,4 +437,11 @@
     <string name="ballot_info_updated">New ballots loaded.</string>
     <string name="ballot_info_up_to_date">No new ballots.</string>
     <string name="ballot_no_data">There are no ballots yet.</string>
+    <string name="ballot_multiple_choice">Multiple choice</string>
+    <string name="ballot_multiple_choice_info">This option indicates whether the group members can vote for multiple
+        options of the ballot. If disabled, the participants can only vote for one option of the ballot.</string>
+    <string name="ballot_public_votes">Public votes</string>
+    <string name="ballot_public_votes_info">This option indicates whether the group members are able to see
+        which participants have voted for certain options of the ballot. If disabled, the participants can only
+        determine how many votes a option has received, but not which participants have voted for it.</string>
 </resources>

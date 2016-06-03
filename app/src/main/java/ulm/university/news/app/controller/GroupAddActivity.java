@@ -82,13 +82,18 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                YesNoDialogFragment dialog = new YesNoDialogFragment();
-                Bundle args = new Bundle();
-                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
-                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
-                dialog.setArguments(args);
-                dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
-                return true;
+                if (warnOnLeave()) {
+                    YesNoDialogFragment dialog = new YesNoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+                    dialog.setArguments(args);
+                    dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_UP);
+                    return true;
+                } else {
+                    navigateUp();
+                    return true;
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -96,18 +101,28 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
 
     @Override
     public void onBackPressed() {
-        YesNoDialogFragment dialog = new YesNoDialogFragment();
-        Bundle args = new Bundle();
-        args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
-        args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK);
+        if (warnOnLeave()) {
+            YesNoDialogFragment dialog = new YesNoDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
+            args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string.general_leave_page));
+            dialog.setArguments(args);
+            dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_LEAVE_PAGE_BACK);
+        }else{
+            super.onBackPressed();
+        }
     }
 
     private void navigateUp() {
         Intent intent = NavUtils.getParentActivityIntent(this);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         NavUtils.navigateUpTo(this, intent);
+    }
+
+    private boolean warnOnLeave() {
+        // Warn user before leaving page is something was entered in the fields.
+        return !tilName.getText().isEmpty() || !tilDescription.getText().isEmpty() || !etYear.getText().toString()
+                .isEmpty() || !tilPassword.getText().isEmpty();
     }
 
     private void initView() {
@@ -125,7 +140,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         tilName.setLength(3, 35);
         tilName.setPattern(ACCOUNT_NAME_PATTERN);
 
-        tilDescription.setNameAndHint(getString(R.string.group_description));
+        tilDescription.setNameAndHint(getString(R.string.general_description));
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
 
         tilPassword.setNameAndHint(getString(R.string.group_password));
@@ -169,7 +184,6 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "ButtonClick");
                 addGroup();
             }
         });

@@ -165,7 +165,7 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
      */
     private void setReminderDetails() {
         resourceDetails.clear();
-        ResourceDetail title = new ResourceDetail(getString(R.string.announcement_title), reminder.getTitle(),
+        ResourceDetail title = new ResourceDetail(getString(R.string.general_title), reminder.getTitle(),
                 R.drawable.ic_info_black_36dp);
         ResourceDetail text = new ResourceDetail(getString(R.string.message_text), reminder.getText(),
                 R.drawable.ic_info_outline_black_36dp);

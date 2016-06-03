@@ -266,7 +266,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
 
         // Check nullable fields.
         if (group.getDescription() != null && !group.getDescription().isEmpty()) {
-            ResourceDetail description = new ResourceDetail(getString(R.string.group_description), group
+            ResourceDetail description = new ResourceDetail(getString(R.string.general_description), group
                     .getDescription(), R.drawable.ic_info_outline_black_36dp);
             resourceDetails.add(description);
         }

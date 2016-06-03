@@ -131,7 +131,7 @@ public class GroupEditActivity extends AppCompatActivity implements DialogListen
         tilName.setPattern(ACCOUNT_NAME_PATTERN);
         tilName.setText(group.getName());
 
-        tilDescription.setNameAndHint(getString(R.string.group_description));
+        tilDescription.setNameAndHint(getString(R.string.general_description));
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
         tilDescription.setText(group.getDescription());
 

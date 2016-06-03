@@ -120,7 +120,7 @@ public class ConversationEditActivity extends AppCompatActivity implements Dialo
         btnCreate = (Button) findViewById(R.id.activity_conversation_edit_btn_create);
         pgrAdding = (ProgressBar) findViewById(R.id.activity_conversation_edit_pgr_adding);
 
-        tilTitle.setNameAndHint(getString(R.string.announcement_title));
+        tilTitle.setNameAndHint(getString(R.string.general_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
         tilTitle.setText(conversation.getTitle());
 

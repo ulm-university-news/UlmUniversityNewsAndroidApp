@@ -114,7 +114,7 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
         btnCreate = (Button) findViewById(R.id.activity_conversation_add_btn_create);
         pgrAdding = (ProgressBar) findViewById(R.id.activity_conversation_add_pgr_adding);
 
-        tilTitle.setNameAndHint(getString(R.string.announcement_title));
+        tilTitle.setNameAndHint(getString(R.string.general_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
 
         btnCreate.setOnClickListener(new View.OnClickListener() {

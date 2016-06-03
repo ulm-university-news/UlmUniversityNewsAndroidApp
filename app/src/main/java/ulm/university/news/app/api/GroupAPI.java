@@ -428,6 +428,26 @@ public class GroupAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
+    public void createBallot(int groupId, Ballot ballot) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot";
+        // Parse ballot object to JSON String.
+        String jsonBallot = gson.toJson(ballot, Ballot.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Ballot ballotResponse = gson.fromJson(json, Ballot.class);
+                EventBus.getDefault().post(ballotResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setBody(jsonBallot);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
     public void getBallots(int groupId) {
         // Add group id to url.
         String url = serverAddressGroup + "/" + groupId + "/ballot";

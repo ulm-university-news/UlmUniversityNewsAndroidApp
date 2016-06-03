@@ -118,7 +118,7 @@ public class AnnouncementAddActivity extends AppCompatActivity implements Dialog
         tvError = (TextView) findViewById(R.id.activity_announcement_add_tv_error);
         btnCreate = (Button) findViewById(R.id.activity_announcement_add_btn_create);
 
-        tilTitle.setNameAndHint(getString(R.string.announcement_title));
+        tilTitle.setNameAndHint(getString(R.string.general_title));
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
         tilText.setNameAndHint(getString(R.string.message_text));
         tilText.setLength(1, Constants.MESSAGE_MAX_LENGTH);

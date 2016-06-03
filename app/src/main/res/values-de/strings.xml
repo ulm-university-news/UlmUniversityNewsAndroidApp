@@ -128,7 +128,7 @@
     <string name="announcement_created">Benachrichtigung erfolgreich erstellt.</string>
     <string name="announcement_info_up_to_date">Keine neuen Benachrichtigungen.</string>
     <string name="announcement_info_updated">Neue Benachrichtigungen geladen.</string>
-    <string name="announcement_title">Titel</string>
+    <string name="general_title">Titel</string>
     <string name="announcement_title_invalid">Der Titel ist ungültig.</string>
     <string name="channel_contacts">Kontakte</string>
     <string name="channel_created">Kanal erfolgreich erstellt.</string>
@@ -189,7 +189,7 @@
     <string name="general_settings_updated">Einstellungen erfolgreich gespeichert.</string>
     <string name="general_year_format">JJJJ</string>
     <string name="general_yes">Ja</string>
-    <string name="group_description">Beschreibung</string>
+    <string name="general_description">Beschreibung</string>
     <string name="group_name">Name</string>
     <string name="group_password">Gruppenpasswort</string>
     <string name="group_tutorial_name">Tutoriumsgruppe</string>
@@ -312,4 +312,10 @@
     <string name="ballot_info_up_to_date">Keine neuen Abstimmungen.</string>
     <string name="ballot_info_updated">Abstimmungen aktualisiert.</string>
     <string name="ballot_no_data">Es gibt noch keine Abstimmungen.</string>
+    <string name="ballot_multiple_choice">Multiple Choice</string>
+    <string name="ballot_multiple_choice_info">Diese Option gibt an ob die Gruppenmitglieder mehrere Optionen dieser Abstimmung wählen können. Wenn die Option deaktiviert ist, ist nur eine Abstimmungsoption möglich.</string>
+    <string name="ballot_public_votes">Öffentliche Abstimmung</string>
+    <string name="ballot_public_votes_info">Diese Option gibt an ob die Gruppenmitglieder sehen können, wer für welche Abstimmungsoptionen gestimmt hat. Wenn die Option deaktiviert ist, können die einzelnen Stimmen keine Teilnehmern zugeordent werden und  es wird nur die Anzahl der Stimmen angezeigt.</string>
+    <string name="activity_ballot_add_title">Abstimmung hinzufügen</string>
+    <string name="activity_ballot_edit_title">Abstimmung bearbeiten</string>
 </resources>
