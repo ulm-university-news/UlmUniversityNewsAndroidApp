@@ -24,36 +24,36 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
-import ulm.university.news.app.api.BusEventConversations;
+import ulm.university.news.app.api.BusEventBallots;
 import ulm.university.news.app.api.GroupAPI;
-import ulm.university.news.app.data.Conversation;
+import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
 
 
-public class ConversationFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Conversation>> {
+public class BallotFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Ballot>> {
     /** This classes tag for logging. */
-    private static final String TAG = "ConversationFragment";
+    private static final String TAG = "BallotFragment";
 
     /** The loader's id. */
-    private static final int LOADER_ID = 6;
+    private static final int LOADER_ID = 12;
 
     private AdapterView.OnItemClickListener itemClickListener;
-    private DatabaseLoader<List<Conversation>> databaseLoader;
+    private DatabaseLoader<List<Ballot>> databaseLoader;
 
-    private ConversationListAdapter listAdapter;
+    private BallotListAdapter listAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<Conversation> conversations;
-    private ListView lvConversations;
+    private List<Ballot> ballots;
+    private ListView lvBallots;
     private int groupId;
 
     private Toast toast;
     private String errorMessage;
     private boolean isAutoRefresh = true;
 
-    public static ConversationFragment newInstance(int groupId) {
-        ConversationFragment fragment = new ConversationFragment();
+    public static BallotFragment newInstance(int groupId) {
+        BallotFragment fragment = new BallotFragment();
         Bundle args = new Bundle();
         args.putInt("groupId", groupId);
         fragment.setArguments(args);
@@ -78,40 +78,40 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
         databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         databaseLoader.onContentChanged();
 
-        listAdapter = new ConversationListAdapter(getActivity(), R.layout.conversation_list_item);
-        refreshConversations();
+        listAdapter = new BallotListAdapter(getActivity(), R.layout.ballot_list_item);
+        refreshBallots();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conversation, container, false);
-        lvConversations = (ListView) view.findViewById(R.id.fragment_conversation_lv_conversations);
-        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_conversation_tv_list_empty);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_conversation_swipe_refresh_layout);
+        View view = inflater.inflate(R.layout.fragment_ballot, container, false);
+        lvBallots = (ListView) view.findViewById(R.id.fragment_ballot_lv_ballots);
+        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_ballot_tv_list_empty);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_ballot_swipe_refresh_layout);
 
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 isAutoRefresh = false;
-                refreshConversations();
+                refreshBallots();
             }
         });
 
         itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                Conversation conversation = (Conversation) lvConversations.getItemAtPosition(position);
-                Intent intent = new Intent(arg0.getContext(), ConversationActivity.class);
+                Ballot ballot = (Ballot) lvBallots.getItemAtPosition(position);
+                Intent intent = new Intent(arg0.getContext(), BallotActivity.class);
                 intent.putExtra("groupId", groupId);
-                intent.putExtra("conversationId", conversation.getId());
+                intent.putExtra("ballotId", ballot.getId());
                 startActivity(intent);
             }
         };
 
-        lvConversations.setAdapter(listAdapter);
-        lvConversations.setOnItemClickListener(itemClickListener);
-        lvConversations.setEmptyView(tvListEmpty);
+        lvBallots.setAdapter(listAdapter);
+        lvBallots.setOnItemClickListener(itemClickListener);
+        lvBallots.setEmptyView(tvListEmpty);
 
         toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -128,7 +128,7 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.activity_group_conversation_menu, menu);
+        inflater.inflate(R.menu.activity_group_ballot_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -136,8 +136,8 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.activity_group_conversation_tab_add:
-                Intent intent = new Intent(getContext(), ConversationAddActivity.class);
+            case R.id.activity_group_ballot_tab_add:
+                Intent intent = new Intent(getContext(), BallotAddActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
                 return true;
@@ -158,13 +158,13 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
         super.onStop();
     }
 
-    private void refreshConversations() {
+    private void refreshBallots() {
         // Refreshing is only possible if there is an internet connection.
         if (Util.getInstance(getContext()).isOnline()) {
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
-            // Get conversation data.
-            GroupAPI.getInstance(getActivity()).getConversations(groupId);
+            // Get ballot data.
+            GroupAPI.getInstance(getActivity()).getBallots(groupId);
         } else {
             if (!isAutoRefresh) {
                 errorMessage = getString(R.string.general_error_no_connection);
@@ -181,26 +181,26 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     }
 
     /**
-     * This method will be called when a list of announcements is posted to the EventBus.
+     * This method will be called when a list of ballots is posted to the EventBus.
      *
-     * @param event The bus event containing a list of announcement objects.
+     * @param event The bus event containing a list of ballot objects.
      */
-    public void onEventMainThread(BusEventConversations event) {
+    public void onEventMainThread(BusEventBallots event) {
         Log.d(TAG, event.toString());
-        List<Conversation> conversations = event.getConversations();
-        boolean newConversations = GroupController.storeConversations(getActivity(), conversations, groupId);
-        // Conversations were refreshed. Hide loading animation.
+        List<Ballot> ballots = event.getBallots();
+        boolean newBallots = GroupController.storeBallots(getActivity(), ballots, groupId);
+        // Ballots were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
-        if (newConversations) {
-            // If conversation data was updated show message no matter if it was a manual or auto refresh.
-            String message = getString(R.string.conversation_info_updated);
+        if (newBallots) {
+            // If ballot data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.ballot_info_updated);
             toast.setText(message);
             toast.show();
         } else {
             if (!isAutoRefresh) {
                 // Only show up to date message if a manual refresh was triggered.
-                String message = getString(R.string.conversation_info_up_to_date);
+                String message = getString(R.string.ballot_info_up_to_date);
                 toast.setText(message);
                 toast.show();
             }
@@ -208,23 +208,23 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public Loader<List<Conversation>> onCreateLoader(int id, Bundle args) {
+    public Loader<List<Ballot>> onCreateLoader(int id, Bundle args) {
         databaseLoader = new DatabaseLoader<>(getActivity(), new DatabaseLoader
-                .DatabaseLoaderCallbacks<List<Conversation>>() {
+                .DatabaseLoaderCallbacks<List<Ballot>>() {
             @Override
-            public List<Conversation> onLoadInBackground() {
-                // Load all conversations of the group.
-                return databaseLoader.getGroupDBM().getConversations(groupId);
+            public List<Ballot> onLoadInBackground() {
+                // Load all ballots of the group.
+                return databaseLoader.getGroupDBM().getBallots(groupId);
             }
 
             @Override
             public IntentFilter observerFilter() {
-                // Listen to database changes on new or updated conversations.
+                // Listen to database changes on new or updated ballots.
                 IntentFilter filter = new IntentFilter();
-                filter.addAction(GroupDatabaseManager.STORE_CONVERSATION);
-                filter.addAction(GroupDatabaseManager.UPDATE_CONVERSATION);
-                filter.addAction(GroupDatabaseManager.CONVERSATION_DELETED);
-                filter.addAction(GroupDatabaseManager.STORE_CONVERSATION_MESSAGE);
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT);
+                filter.addAction(GroupDatabaseManager.UPDATE_BALLOT);
+                filter.addAction(GroupDatabaseManager.BALLOT_DELETED);
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION);
                 return filter;
             }
         });
@@ -234,15 +234,15 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Conversation>> loader, List<Conversation> data) {
+    public void onLoadFinished(Loader<List<Ballot>> loader, List<Ballot> data) {
         // Update list.
-        conversations = data;
+        ballots = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Conversation>> loader) {
+    public void onLoaderReset(Loader<List<Ballot>> loader) {
         // Clear adapter data.
         listAdapter.setData(null);
     }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
@@ -419,6 +420,26 @@ public class GroupAPI extends MainAPI {
                 }.getType();
                 List<ConversationMessage> conversationMessages = gson.fromJson(json, listType);
                 EventBus.getDefault().post(new BusEventConversationMessages(conversationMessages));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getBallots(int groupId) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of ballots as deserialization type.
+                Type listType = new TypeToken<List<Ballot>>() {
+                }.getType();
+                List<Ballot> ballots = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventBallots(ballots));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);

@@ -39,7 +39,7 @@ public class GroupFragmentPager extends FragmentPagerAdapter {
             case 0:
                 return ConversationFragment.newInstance(groupId);
             case 1:
-                return GroupDetailFragment.newInstance(groupId);
+                return BallotFragment.newInstance(groupId);
             case 2:
                 return GroupDetailFragment.newInstance(groupId);
         }

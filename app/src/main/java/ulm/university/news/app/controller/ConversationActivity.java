@@ -244,12 +244,6 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
             int messageNumber = databaseLoader.getGroupDBM().getMaxMessageNumberConversationMessage(
                     conversation.getId());
             GroupAPI.getInstance(this).getConversationMessages(groupId, conversation.getId(), messageNumber);
-        } else {
-            errorMessage = getString(R.string.general_error_no_connection);
-            errorMessage += getString(R.string.general_error_refresh);
-            // Only show error message if refreshing was triggered manually.
-            toast.setText(errorMessage);
-            toast.show();
         }
     }
 

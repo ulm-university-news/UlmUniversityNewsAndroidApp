@@ -128,7 +128,7 @@
     <string name="activity_settings_list_channel_info">Choose the arrangement criterion for channel lists here.</string>
     <string name="activity_settings_list_rb_channel_alphabetical">Alphabetical</string>
     <string name="activity_settings_list_rb_channel_type">Channel type and faculty</string>
-    <string name="activity_settings_list_rb_channel_messages">Number of unread conversationMessages</string>
+    <string name="activity_settings_list_rb_channel_messages">Number of unread messages</string>
     <string name="activity_settings_list_group_info_title">Group settings</string>
     <string name="activity_settings_list_group_info">Choose the arrangement criterion for group lists here.</string>
     <string name="activity_settings_list_rb_group_alphabetical">Alphabetical</string>
@@ -141,7 +141,7 @@
     <string name="activity_settings_list_messages_info_title">Messages settings</string>
     <string name="activity_settings_list_messages_info">The arrangement of the messages is exempt from the general
         list settings and can be set separately here. Choose the arrangement criterion for all message
-         lists like conversationMessages.</string>
+         lists like conversation messages.</string>
     <string name="activity_settings_list_rb_messages_asc">Latest message at the top</string>
     <string name="activity_settings_list_rb_messages_desc">Latest message at the bottom</string>
 
@@ -188,7 +188,8 @@
 
     <!-- ReminderAddActivity ####################################################################################### -->
     <string name="activity_reminder_add_title">Add reminder</string>
-    <string name="activity_reminder_add_info">Configure a reminder, which sends conversationMessages automatically at a specified interval. All shown fields are mandatory.</string>
+    <string name="activity_reminder_add_info">Configure a reminder, which sends messages automatically at a specified
+        interval. All shown fields are mandatory.</string>
     <string name="activity_reminder_add_select_date">Click to select date</string>
     <string name="activity_reminder_add_select_time">Click to select time</string>
     <string name="activity_reminder_add_select_interval">Click to select interval</string>
@@ -271,7 +272,7 @@
     <string name="channel_info_up_to_date">Channel data already up to date.</string>
     <string name="channel_unsubscribe_dialog_title">Unsubscribe channel</string>
     <string name="channel_unsubscribe_dialog_text">This channel will be deleted from your subscribed channels. You
-        won\'t be able to receive or read conversationMessages of this channel.\nDo you really want to unsubscribe?</string>
+        won\'t be able to receive or read messages of this channel.\nDo you really want to unsubscribe?</string>
     <string name="channel_created">Channel created successfully.</string>
     <string name="channel_edited">Channel changed successfully.</string>
     <string name="channel_delete_dialog_title">Delete channel</string>
@@ -361,7 +362,7 @@
     <string name="moderator_unknown">Unknown</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
-    <string name="fragment_announcement_list_empty">There are no conversationMessages yet.</string>
+    <string name="fragment_announcement_list_empty">There are no announcements yet.</string>
 
     <!-- ReminderFragment ########################################################################################## -->
     <string name="fragment_reminder_list_empty">There are no reminders yet.</string>
@@ -395,7 +396,7 @@
         leave, the local group data will be deleted and can\'t be restored.</string>
 
     <!-- Conversation ############################################################################################## -->
-    <string name="conversation_no_data">There are no conversationMessages yet.</string>
+    <string name="conversation_no_data">There are no conversations yet.</string>
     <string name="conversation_add">Add conversation</string>
     <string name="conversation_close">Close conversation</string>
     <string name="conversation_open">Open conversation</string>
@@ -406,8 +407,8 @@
     <string name="conversation_delete_text">If you delete the conversation, the data can\'t be restored. Do you
         really want to delete this conversation?</string>
     <string name="conversation_delete_server">This conversation has been deleted.</string>
-    <string name="conversation_info_updated">New conversationMessages loaded.</string>
-    <string name="conversation_info_up_to_date">No new conversationMessages.</string>
+    <string name="conversation_info_updated">New conversations loaded.</string>
+    <string name="conversation_info_up_to_date">No new conversations.</string>
     <string name="conversation_created">Conversation created successfully.</string>
     <string name="conversation_edited">Conversation edited successfully.</string>
     <string name="conversation_add_info">Fill out the title field below. Then click the create button to submit the
@@ -424,4 +425,10 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Ballot #################################################################################################### -->
+    <string name="ballot_add">Add ballot.</string>
+    <string name="ballot_info_updated">New ballots loaded.</string>
+    <string name="ballot_info_up_to_date">No new ballots.</string>
+    <string name="ballot_no_data">There are no ballots yet.</string>
 </resources>

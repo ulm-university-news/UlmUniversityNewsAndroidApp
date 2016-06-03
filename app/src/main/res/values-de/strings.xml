@@ -308,4 +308,8 @@
     <string name="general_error_edit">Ändern nicht möglich.</string>
     <string name="group_delete_dialog_title">Gruppe löschen</string>
     <string name="group_delete_dialog_text">Die Gruppe wird unwiederruflich gelöscht. Möchten Sie die Gruppe wirklich löschen?</string>
+    <string name="ballot_add">Abstimmung hinzufügen</string>
+    <string name="ballot_info_up_to_date">Keine neuen Abstimmungen.</string>
+    <string name="ballot_info_updated">Abstimmungen aktualisiert.</string>
+    <string name="ballot_no_data">Es gibt noch keine Abstimmungen.</string>
 </resources>

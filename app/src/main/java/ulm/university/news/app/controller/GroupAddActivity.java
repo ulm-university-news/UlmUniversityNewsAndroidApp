@@ -251,6 +251,7 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         Intent intent = new Intent(this, GroupActivity.class);
         intent.putExtra("groupId", group.getId());
         startActivity(intent);
+        finish();
     }
 
     /**

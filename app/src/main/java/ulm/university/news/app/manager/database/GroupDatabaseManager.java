@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
@@ -22,6 +23,14 @@ import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.data.enums.Priority;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_ADMIN;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_CLOSED;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_DESCRIPTION;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_MULTIPLE_CHOICE;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_PUBLIC;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_TITLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ADMIN;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_CLOSED;
@@ -83,6 +92,10 @@ public class GroupDatabaseManager {
     public static final String UPDATE_CONVERSATION = "updateConversation";
     public static final String STORE_CONVERSATION_MESSAGE = "storeConversationMessage";
     public static final String CONVERSATION_DELETED = "conversationDeleted";
+    public static final String STORE_BALLOT = "storeBallot";
+    public static final String UPDATE_BALLOT = "updateBallot";
+    public static final String BALLOT_DELETED = "ballotDeleted";
+    public static final String STORE_BALLOT_OPTION = "storeBallotOption";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -652,5 +665,95 @@ public class GroupDatabaseManager {
         String where = MESSAGE_ID + "=?";
         String[] args = {String.valueOf(messageId)};
         db.update(MESSAGE_TABLE, values, where, args);
+    }
+
+    /**
+     * Stores the given ballot in the database.
+     *
+     * @param ballot The ballot which should be stored.
+     */
+    public void storeBallot(int groupId, Ballot ballot) {
+        Log.d(TAG, "Store " + ballot);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Conversation values.
+        ContentValues ballotValues = new ContentValues();
+        ballotValues.put(BALLOT_ID, ballot.getId());
+        ballotValues.put(BALLOT_TITLE, ballot.getTitle());
+        ballotValues.put(BALLOT_CLOSED, ballot.getClosed());
+        ballotValues.put(BALLOT_ADMIN, ballot.getAdmin());
+        ballotValues.put(BALLOT_DESCRIPTION, ballot.getDescription());
+        ballotValues.put(BALLOT_MULTIPLE_CHOICE, ballot.getMultipleChoice());
+        ballotValues.put(BALLOT_PUBLIC, ballot.getPublicVotes());
+        ballotValues.put(GROUP_ID_FOREIGN, groupId);
+        try {
+            db.insertOrThrow(BALLOT_TABLE, null, ballotValues);
+        } catch (SQLException e) {
+            Log.i(TAG, "Ballot " + ballot.getId() + " is already stored.");
+        }
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(STORE_BALLOT);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Retrieves the ballots of the specified group from the database.
+     *
+     * @param groupId The id of the group.
+     * @return The ballots of the group.
+     */
+    public List<Ballot> getBallots(int groupId) {
+        List<Ballot> ballots = new ArrayList<>();
+        Ballot ballot;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + BALLOT_TABLE + " WHERE " + GROUP_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(groupId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        while (c != null && c.moveToNext()) {
+            ballot = new Ballot();
+            ballot.setId(c.getInt(c.getColumnIndex(BALLOT_ID)));
+            ballot.setTitle((c.getString(c.getColumnIndex(BALLOT_TITLE))));
+            ballot.setDescription((c.getString(c.getColumnIndex(BALLOT_DESCRIPTION))));
+            ballot.setClosed(c.getInt(c.getColumnIndex(BALLOT_CLOSED)) == 1);
+            ballot.setAdmin((c.getInt(c.getColumnIndex(BALLOT_ADMIN))));
+            ballot.setMultipleChoice(c.getInt(c.getColumnIndex(BALLOT_MULTIPLE_CHOICE)) == 1);
+            ballot.setPublicVotes(c.getInt(c.getColumnIndex(BALLOT_PUBLIC)) == 1);
+            ballots.add(ballot);
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with " + ballots);
+        return ballots;
+    }
+
+    /**
+     * Updates the given ballot in the database. Some fields can't be updated.
+     *
+     * @param ballot The updated ballot.
+     */
+    public void updateBallot(Ballot ballot) {
+        Log.d(TAG, "Update " + ballot);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Ballot values.
+        ContentValues ballotValues = new ContentValues();
+        ballotValues.put(BALLOT_TITLE, ballot.getTitle());
+        ballotValues.put(BALLOT_DESCRIPTION, ballot.getDescription());
+        ballotValues.put(BALLOT_CLOSED, ballot.getClosed());
+        ballotValues.put(BALLOT_ADMIN, ballot.getAdmin());
+
+        String where = BALLOT_ID + "=?";
+        String[] args = {String.valueOf(ballot.getId())};
+
+        db.update(BALLOT_TABLE, ballotValues, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_BALLOT);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 }

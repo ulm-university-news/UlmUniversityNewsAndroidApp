@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Locale;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.Group;
-import ulm.university.news.app.manager.database.ChannelDatabaseManager;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
 
@@ -77,7 +77,8 @@ public class GroupController {
         String language = Locale.getDefault().getLanguage();
 
         // Set appropriate channel icon.
-        if (conversation.isAdmin(Util.getInstance(context).getLocalUser().getId())) {
+        boolean isAdmin = conversation.isAdmin(Util.getInstance(context).getLocalUser().getId());
+        if (isAdmin) {
             if (language.equals("de")) {
                 conversationIcon = R.drawable.ic_konversation_admin;
             } else {
@@ -93,9 +94,51 @@ public class GroupController {
 
         // If group is marked as closed, set closed icon.
         if (conversation.getClosed()) {
-            conversationIcon = R.drawable.ic_conversation_closed;
+            if (isAdmin) {
+                conversationIcon = R.drawable.ic_conversation_closed_admin;
+            } else {
+                conversationIcon = R.drawable.ic_conversation_closed;
+            }
         }
         return conversationIcon;
+    }
+
+    /**
+     * Chooses the appropriate icon for the given ballot.
+     *
+     * @param ballot The ballot.
+     * @return The resource id of the ballot icon.
+     */
+    public static int getBallotIcon(Ballot ballot, Context context) {
+        int ballotIcon;
+        // Get current language.
+        String language = Locale.getDefault().getLanguage();
+
+        // Set appropriate channel icon.
+        boolean isAdmin = ballot.getAdmin() == Util.getInstance(context).getLocalUser().getId();
+        if (isAdmin) {
+            if (language.equals("de")) {
+                ballotIcon = R.drawable.ic_abstimmung_admin;
+            } else {
+                ballotIcon = R.drawable.ic_ballot_admin;
+            }
+        } else {
+            if (language.equals("de")) {
+                ballotIcon = R.drawable.ic_abstimmung;
+            } else {
+                ballotIcon = R.drawable.ic_ballot;
+            }
+        }
+
+        // If group is marked as closed, set closed icon.
+        if (ballot.getClosed()) {
+            if (isAdmin) {
+                ballotIcon = R.drawable.ic_ballot_closed_admin;
+            } else {
+                ballotIcon = R.drawable.ic_ballot_closed;
+            }
+        }
+        return ballotIcon;
     }
 
     /**
@@ -107,7 +150,6 @@ public class GroupController {
      * @return true if new conversations were stored.
      */
     public static boolean storeConversations(Context context, List<Conversation> conversations, int groupId) {
-        ChannelDatabaseManager channelDBM = new ChannelDatabaseManager(context);
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
         boolean newConversations = false;
 
@@ -132,5 +174,40 @@ public class GroupController {
             }
         }
         return newConversations;
+    }
+
+    /**
+     * Stores new ballots or updates existing ones in the database.
+     *
+     * @param context The current context.
+     * @param ballots A list of ballots.
+     * @param groupId The group id to which the ballots belong.
+     * @return true if new ballots were stored.
+     */
+    public static boolean storeBallots(Context context, List<Ballot> ballots, int groupId) {
+        GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
+        boolean newBallots = false;
+
+        if (!ballots.isEmpty()) {
+            List<Ballot> ballotsDB = groupDBM.getBallots(groupId);
+            boolean alreadyStored;
+
+            // Store new ballots and update existing ones.
+            for (Ballot ballot : ballots) {
+                alreadyStored = false;
+                for (Ballot ballotDB : ballotsDB) {
+                    if (ballotDB.getId() == ballot.getId()) {
+                        groupDBM.updateBallot(ballot);
+                        alreadyStored = true;
+                        break;
+                    }
+                }
+                if (!alreadyStored) {
+                    groupDBM.storeBallot(groupId, ballot);
+                    newBallots = true;
+                }
+            }
+        }
+        return newBallots;
     }
 }
