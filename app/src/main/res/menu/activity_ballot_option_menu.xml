@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/activity_group_ballot_tab_add"
+        android:id="@+id/activity_ballot_option_tab_add"
         android:icon="@drawable/ic_add_circle_outline_white_24dp"
         android:title="@string/general_add"
         app:showAsAction="ifRoom"/>

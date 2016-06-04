@@ -9,6 +9,7 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.Option;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
 
@@ -209,5 +210,38 @@ public class GroupController {
             }
         }
         return newBallots;
+    }
+
+    /**
+     * Stores new ballot options in the database.
+     *
+     * @param context The current context.
+     * @param options A list of options.
+     * @param ballotId The ballot id to which the options belong.
+     * @return true if new options were stored.
+     */
+    public static boolean storeOptions(Context context, List<Option> options, int ballotId) {
+        GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
+        boolean newOptions = false;
+
+        if (!options.isEmpty()) {
+            List<Option> optionsDB = groupDBM.getOptions(ballotId);
+            boolean alreadyStored;
+            // Store new options.
+            for (Option option : options) {
+                alreadyStored = false;
+                for (Option optionDB : optionsDB) {
+                    if (optionDB.getId() == option.getId()) {
+                        alreadyStored = true;
+                        break;
+                    }
+                }
+                if (!alreadyStored) {
+                    groupDBM.storeOption(ballotId, option);
+                    newOptions = true;
+                }
+            }
+        }
+        return newOptions;
     }
 }

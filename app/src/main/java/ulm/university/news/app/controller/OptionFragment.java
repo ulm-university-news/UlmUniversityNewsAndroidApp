@@ -1,0 +1,259 @@
+package ulm.university.news.app.controller;
+
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
+import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventOptions;
+import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.data.Ballot;
+import ulm.university.news.app.data.Option;
+import ulm.university.news.app.manager.database.DatabaseLoader;
+import ulm.university.news.app.manager.database.GroupDatabaseManager;
+import ulm.university.news.app.util.Util;
+
+
+public class OptionFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>> {
+    /** This classes tag for logging. */
+    private static final String TAG = "OptionFragment";
+
+    /** The loader's id. */
+    private static final int LOADER_ID = 13;
+
+    private AdapterView.OnItemClickListener itemClickListener;
+    private DatabaseLoader<List<Option>> databaseLoader;
+
+    private OptionListAdapter listAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private List<Option> options;
+    private ListView lvOptions;
+    private int groupId;
+    private Ballot ballot;
+
+    private Toast toast;
+    private String errorMessage;
+    private boolean isAutoRefresh = true;
+
+    public static OptionFragment newInstance(int groupId, int ballotId) {
+        OptionFragment fragment = new OptionFragment();
+        Bundle args = new Bundle();
+        args.putInt("groupId", groupId);
+        args.putInt("ballotId", ballotId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update channel list to make changes like read messages visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        groupId = getArguments().getInt("groupId");
+        int ballotId = getArguments().getInt("ballotId");
+
+        // Initialize or reuse an existing database loader.
+        databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader.onContentChanged();
+        ballot = databaseLoader.getGroupDBM().getBallot(ballotId);
+
+        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot.getMultipleChoice());
+        refreshOptions();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_option, container, false);
+        lvOptions = (ListView) view.findViewById(R.id.fragment_option_lv_options);
+        TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_option_tv_list_empty);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_option_swipe_refresh_layout);
+
+        if (ballot.getMultipleChoice()) {
+            lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        } else {
+            lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        }
+
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isAutoRefresh = false;
+                refreshOptions();
+            }
+        });
+
+        itemClickListener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                // TODO Do something here?
+            }
+        };
+
+        lvOptions.setAdapter(listAdapter);
+        lvOptions.setOnItemClickListener(itemClickListener);
+        lvOptions.setEmptyView(tvListEmpty);
+
+        toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
+
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (ballot.getAdmin() == Util.getInstance(getContext()).getLocalUser().getId()) {
+            setHasOptionsMenu(true);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.activity_ballot_option_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection.
+        switch (item.getItemId()) {
+            case R.id.activity_ballot_option_tab_add:
+                Intent intent = new Intent(getContext(), OptionAddActivity.class);
+                intent.putExtra("groupId", groupId);
+                intent.putExtra("ballotId", ballot.getId());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    private void refreshOptions() {
+        // Refreshing is only possible if there is an internet connection.
+        if (Util.getInstance(getContext()).isOnline()) {
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += getString(R.string.general_error_refresh);
+            // Get ballot option data.
+            GroupAPI.getInstance(getActivity()).getOptions(groupId, ballot.getId());
+        } else {
+            if (!isAutoRefresh) {
+                errorMessage = getString(R.string.general_error_no_connection);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Only show error message if refreshing was triggered manually.
+                toast.setText(errorMessage);
+                toast.show();
+                // Reset the auto refresh flag.
+                isAutoRefresh = true;
+                // Can't refresh. Hide loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }
+    }
+
+    /**
+     * This method will be called when a list of options is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of ballot options objects.
+     */
+    public void onEventMainThread(BusEventOptions event) {
+        Log.d(TAG, event.toString());
+        List<Option> options = event.getOptions();
+        // Options were refreshed. Hide loading animation.
+        swipeRefreshLayout.setRefreshing(false);
+
+        boolean newOptions = GroupController.storeOptions(getContext(), options, ballot.getId());
+
+        if (newOptions) {
+            // If ballot data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.option_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
+                // Only show updated message if a manual refresh was triggered.
+                String message = getString(R.string.option_info_up_to_date);
+                toast.setText(message);
+                toast.show();
+            }
+        }
+    }
+
+    @Override
+    public Loader<List<Option>> onCreateLoader(int id, Bundle args) {
+        databaseLoader = new DatabaseLoader<>(getActivity(), new DatabaseLoader
+                .DatabaseLoaderCallbacks<List<Option>>() {
+            @Override
+            public List<Option> onLoadInBackground() {
+                // Load all options of the ballot.
+                return databaseLoader.getGroupDBM().getOptions(ballot.getId());
+            }
+
+            @Override
+            public IntentFilter observerFilter() {
+                // Listen to database changes on new options.
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION);
+                filter.addAction(GroupDatabaseManager.DELETE_BALLOT_OPTION);
+                return filter;
+            }
+        });
+        // This loader uses the group database manager to load data.
+        databaseLoader.setGroupDBM(new GroupDatabaseManager(getActivity()));
+        return databaseLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Option>> loader, List<Option> data) {
+        // Update list.
+        options = data;
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Option>> loader) {
+        // Clear adapter data.
+        listAdapter.setData(null);
+    }
+}

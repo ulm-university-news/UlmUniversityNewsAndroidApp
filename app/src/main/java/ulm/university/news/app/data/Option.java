@@ -22,8 +22,7 @@ public class Option {
     /**
      * Creates an instance of the Option class.
      */
-    public Option(){
-
+    public Option() {
     }
 
     /**
@@ -31,7 +30,7 @@ public class Option {
      *
      * @param text The text of the option.
      */
-    public Option(String text){
+    public Option(String text) {
         this.text = text;
     }
 
@@ -41,7 +40,7 @@ public class Option {
      * @param id The id of the option.
      * @param text The text of the option.
      */
-    public Option(int id, String text){
+    public Option(int id, String text) {
         this.id = id;
         this.text = text;
     }

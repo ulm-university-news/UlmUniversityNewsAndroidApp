@@ -334,4 +334,12 @@
     <string name="ballot_delete_text">Die Abstimmung wird unwiederruflich gelöscht. Möchten Sie die Abstimmung wirklich löschen?</string>
     <string name="ballot_open">Abstimmung öffnen</string>
     <string name="ballot_open_text">Möchten Sie diese Abstimmung wieder öffnen?</string>
+    <string name="general_open">Öffnen</string>
+    <string name="option_no_data">Es gibt noch keine Abstimmungsoptionen.</string>
+    <string name="activity_option_add_title">Abstimmungsoption hinzufügen</string>
+    <string name="general_text">Text</string>
+    <string name="option_created">Abstimmungsoption erfolgreich erstellt.</string>
+    <string name="option_info_up_to_date">Keine neuen Abstimmungsoptionen.</string>
+    <string name="option_info_updated">Abstimmungsoptionen aktualisiert.</string>
+    <string name="option_add_info">Füllen Sie das Textfeld aus. Danach können Sie die neue Abstimmungsoption erstellen.</string>
 </resources>

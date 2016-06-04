@@ -39,7 +39,7 @@ public class BallotFragmentPager extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return BallotDetailFragment.newInstance(groupId, ballotId);
+                return OptionFragment.newInstance(groupId, ballotId);
             case 1:
                 return BallotDetailFragment.newInstance(groupId, ballotId);
             case 2:

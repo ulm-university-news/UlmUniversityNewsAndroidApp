@@ -18,6 +18,7 @@ import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.Option;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.data.enums.Priority;
@@ -27,6 +28,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_AD
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_CLOSED;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_DESCRIPTION;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_MULTIPLE_CHOICE;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_PUBLIC;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_TABLE;
@@ -60,6 +62,9 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_P
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_READ;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
+import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
@@ -96,6 +101,7 @@ public class GroupDatabaseManager {
     public static final String UPDATE_BALLOT = "updateBallot";
     public static final String BALLOT_DELETED = "ballotDeleted";
     public static final String STORE_BALLOT_OPTION = "storeBallotOption";
+    public static final String DELETE_BALLOT_OPTION = "deleteBallotOption";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -676,7 +682,7 @@ public class GroupDatabaseManager {
         Log.d(TAG, "Store " + ballot);
         SQLiteDatabase db = dbm.getWritableDatabase();
 
-        // Conversation values.
+        // Ballot values.
         ContentValues ballotValues = new ContentValues();
         ballotValues.put(BALLOT_ID, ballot.getId());
         ballotValues.put(BALLOT_TITLE, ballot.getTitle());
@@ -803,5 +809,60 @@ public class GroupDatabaseManager {
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(BALLOT_DELETED);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Stores the given ballot option in the database.
+     *
+     * @param option The option which should be stored.
+     */
+    public void storeOption(int ballotId, Option option) {
+        Log.d(TAG, "Store " + option);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Option values.
+        ContentValues optionValues = new ContentValues();
+        optionValues.put(OPTION_ID, option.getId());
+        optionValues.put(OPTION_TEXT, option.getText());
+        optionValues.put(BALLOT_ID_FOREIGN, ballotId);
+        try {
+            db.insertOrThrow(OPTION_TABLE, null, optionValues);
+        } catch (SQLException e) {
+            Log.i(TAG, "Option " + option.getId() + " is already stored.");
+        }
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(STORE_BALLOT_OPTION);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Retrieves the options of the specified ballot from the database.
+     *
+     * @param ballotId The id of the ballot.
+     * @return The options of the ballot.
+     */
+    public List<Option> getOptions(int ballotId) {
+        List<Option> options = new ArrayList<>();
+        Option option;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + OPTION_TABLE + " WHERE " + BALLOT_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(ballotId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        while (c != null && c.moveToNext()) {
+            option = new Option();
+            option.setId(c.getInt(c.getColumnIndex(OPTION_ID)));
+            option.setText((c.getString(c.getColumnIndex(OPTION_TEXT))));
+            // TODO Add all user votes to the ballot option.
+            options.add(option);
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with " + options);
+        return options;
     }
 }

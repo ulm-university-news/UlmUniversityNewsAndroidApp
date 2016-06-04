@@ -14,6 +14,7 @@ import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.ConversationMessage;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.Option;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.util.Util;
 
@@ -519,6 +520,51 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getOptions(int groupId, int ballotId) {
+        // Add group and ballot id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballotId + "/option";
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of options as deserialization type.
+                Type listType = new TypeToken<List<Option>>() {
+                }.getType();
+                List<Option> options = gson.fromJson(json, listType);
+                EventBus.getDefault().post(new BusEventOptions(options));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Creates a new ballot option on the server.
+     *
+     * @param option The option object including the data of the new option.
+     */
+    public void createOption(int groupId, int ballotId, Option option) {
+        // Add group and ballot id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballotId + "/option";
+        // Parse option object to JSON String.
+        String jsonOption = gson.toJson(option, Option.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Option optionResponse = gson.fromJson(json, Option.class);
+                EventBus.getDefault().post(optionResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setBody(jsonOption);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();
