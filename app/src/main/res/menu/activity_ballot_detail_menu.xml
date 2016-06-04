@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/activity_ballot_detail_menu_edit"
+        android:icon="@drawable/ic_create_white_24dp"
+        android:title="@string/general_edit"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/activity_ballot_detail_menu_close"
+        android:icon="@drawable/ic_lock_white_24dp"
+        android:title="@string/general_close"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/activity_ballot_detail_menu_open"
+          android:title="@string/general_open"
+          android:icon="@drawable/ic_lock_open_white_24dp"
+          app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/activity_ballot_detail_menu_delete"
+        android:icon="@drawable/ic_remove_circle_white_24dp"
+        android:title="@string/general_delete"
+        app:showAsAction="ifRoom"/>
+</menu>

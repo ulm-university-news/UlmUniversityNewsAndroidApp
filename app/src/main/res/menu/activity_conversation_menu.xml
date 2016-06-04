@@ -3,22 +3,22 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/activity_conversation_menu_edit"
-          android:title="@string/conversation_open"
+          android:title="@string/general_edit"
           android:icon="@drawable/ic_create_white_24dp"
           app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/activity_conversation_menu_close"
-          android:title="@string/conversation_close"
-          android:icon="@drawable/ic_block_white_24dp"
+          android:title="@string/general_close"
+          android:icon="@drawable/ic_lock_white_24dp"
           app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/activity_conversation_menu_open"
-          android:title="@string/conversation_open"
-          android:icon="@drawable/ic_add_circle_outline_white_24dp"
+          android:title="@string/general_open"
+          android:icon="@drawable/ic_lock_open_white_24dp"
           app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/activity_conversation_menu_delete"
-          android:title="@string/conversation_close"
+          android:title="@string/general_delete"
           android:icon="@drawable/ic_remove_circle_white_24dp"
           app:showAsAction="ifRoom"/>
 </menu>

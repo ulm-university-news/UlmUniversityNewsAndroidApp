@@ -24,6 +24,10 @@
     <item name="uni_conversation_accent" type="color">#ffe269</item>
     <item name="uni_conversation_dark" type="color">#cca504</item>
 
+    <item name="uni_ballot_primary" type="color">#07966e</item>
+    <item name="uni_ballot_accent" type="color">#6ac0a8</item>
+    <item name="uni_ballot_dark" type="color">#057858</item>
+
     <item name="error" type="color">#ee0000</item>
     <item name="hyperlink" type="color">#1919ff</item>
 

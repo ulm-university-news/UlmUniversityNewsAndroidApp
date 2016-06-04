@@ -7,7 +7,7 @@
     <string name="activity_channel_add_title">Kanal hinzufügen</string>
     <string name="activity_channel_announcement_tab">Benachrichtigungen</string>
     <string name="activity_channel_channel_details_list_loading">Lade Kanaldaten…</string>
-    <string name="activity_channel_channel_details_tab">Kanalinformationen</string>
+    <string name="activity_channel_channel_details_tab">Kanaldetails</string>
     <string name="activity_channel_detail_button_subscribe">Abonnieren</string>
     <string name="activity_channel_detail_button_unsubscribe">Deabonnieren</string>
     <string name="activity_channel_edit_info">Hier können die Kanaldaten bearbeitet werden. Alle Felder mit * sind Pflichtfelder. Bei manchen Feldern sind nicht alle Sonderzeichen erlaubt.</string>
@@ -274,7 +274,7 @@
     <string name="activity_group_tab_ballots">Abstimmungen</string>
     <string name="activity_group_tab_conversations">Konversationen</string>
     <string name="activity_group_tab_events">Ereignisse</string>
-    <string name="activity_group_tab_information">Gruppeninformationen</string>
+    <string name="activity_group_tab_information">Gruppendetails</string>
     <string name="group_deleted_member_dialog_text">Die Gruppe \"%1$s\" wurde gelöscht. Es wird keine weiteren Aktivitäten geben. Da Sie ein Gruppenmitglied sind, sind die Gruppendaten noch lokal auf Ihrem Gerät gespeichert. Wenn Sie die Gruppe verlassen werden die Daten unwiederruflich gelöscht.</string>
     <string name="group_deleted_member_dialog_title">Gruppe gelöscht</string>
     <string name="group_members">Gruppenmitglieder (%1$s)</string>
@@ -318,4 +318,20 @@
     <string name="ballot_public_votes_info">Diese Option gibt an ob die Gruppenmitglieder sehen können, wer für welche Abstimmungsoptionen gestimmt hat. Wenn die Option deaktiviert ist, können die einzelnen Stimmen keine Teilnehmern zugeordent werden und  es wird nur die Anzahl der Stimmen angezeigt.</string>
     <string name="activity_ballot_add_title">Abstimmung hinzufügen</string>
     <string name="activity_ballot_edit_title">Abstimmung bearbeiten</string>
+    <string name="activity_ballot_tab_information">Abstimmungsdetails</string>
+    <string name="activity_ballot_tab_result">Ergebnis</string>
+    <string name="activity_ballot_tab_vote">Abstimmen</string>
+    <string name="ballot_admin">Abstimmungsadministrator</string>
+    <string name="ballot_close">Abstimmung schließen</string>
+    <string name="ballot_close_text">Wenn Sie die Abstimmung schließen, können keine weiteren Stimmen abgegeben werden. Möchten Sie die Abstimmung wirklich schließen?</string>
+    <string name="ballot_info_refreshed">Abstimmungsdaten aktualisiert.</string>
+    <string name="ballot_multiple_choice_detail">Multiple choice: %1$s</string>
+    <string name="ballot_public_votes_detail">Öffentliche Abstimmung: %1$s</string>
+    <string name="ballot_no_data_refresh">Keine Abstimmungsdaten gefunden. Wischen Sie nach unten zum aktualisieren.</string>
+    <string name="general_add">Hinzufügen</string>
+    <string name="general_close">Schließen</string>
+    <string name="ballot_delete">Abstimmung löschen</string>
+    <string name="ballot_delete_text">Die Abstimmung wird unwiederruflich gelöscht. Möchten Sie die Abstimmung wirklich löschen?</string>
+    <string name="ballot_open">Abstimmung öffnen</string>
+    <string name="ballot_open_text">Möchten Sie diese Abstimmung wieder öffnen?</string>
 </resources>

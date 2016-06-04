@@ -95,6 +95,7 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         }
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (conversation.isAdmin(Util.getInstance(this).getLocalUser().getId())) {
             MenuInflater menuInflater = getMenuInflater();

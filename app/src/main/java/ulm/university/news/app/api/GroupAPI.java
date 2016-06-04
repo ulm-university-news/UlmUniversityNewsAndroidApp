@@ -41,6 +41,7 @@ public class GroupAPI extends MainAPI {
     public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String DELETE_GROUP = "deleteGroup";
     public static final String DELETE_CONVERSATION = "deleteConversation";
+    public static final String DELETE_BALLOT = "deleteBallot";
 
     /**
      * Get the instance of the GroupAPI class.
@@ -448,6 +449,26 @@ public class GroupAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
+    public void changeBallot(int groupId, Ballot ballot) {
+        // Add group and ballot id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballot.getId();
+        // Parse ballot object to JSON String.
+        String jsonBallot = gson.toJson(ballot, Ballot.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Ballot ballotResponse = gson.fromJson(json, Ballot.class);
+                EventBus.getDefault().post(new BusEventBallotChange(ballotResponse));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setBody(jsonBallot);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
     public void getBallots(int groupId) {
         // Add group id to url.
         String url = serverAddressGroup + "/" + groupId + "/ballot";
@@ -463,6 +484,41 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void getBallot(int groupId, int ballotId) {
+        // Add group and ballot id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballotId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                // Use a list of ballots as deserialization type.
+                Ballot ballot = gson.fromJson(json, Ballot.class);
+                EventBus.getDefault().post(ballot);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_GET, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    public void deleteBallot(int groupId, int ballotId) {
+        // Add group and ballot id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballotId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+
+                EventBus.getDefault().post(new BusEvent(DELETE_BALLOT, null));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();

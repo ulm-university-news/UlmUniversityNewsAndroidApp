@@ -698,6 +698,36 @@ public class GroupDatabaseManager {
     }
 
     /**
+     * Retrieves the ballot with given id from the database.
+     *
+     * @param ballotId The id of the ballot.
+     * @return A specific ballot of the group.
+     */
+    public Ballot getBallot(int ballotId) {
+        Ballot ballot = null;
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + BALLOT_TABLE + " WHERE " + BALLOT_ID + "=?";
+        String[] args = {String.valueOf(ballotId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        if (c != null && c.moveToFirst()) {
+            ballot = new Ballot();
+            ballot.setId(c.getInt(c.getColumnIndex(BALLOT_ID)));
+            ballot.setTitle((c.getString(c.getColumnIndex(BALLOT_TITLE))));
+            ballot.setDescription((c.getString(c.getColumnIndex(BALLOT_DESCRIPTION))));
+            ballot.setClosed(c.getInt(c.getColumnIndex(BALLOT_CLOSED)) == 1);
+            ballot.setAdmin((c.getInt(c.getColumnIndex(BALLOT_ADMIN))));
+            ballot.setMultipleChoice(c.getInt(c.getColumnIndex(BALLOT_MULTIPLE_CHOICE)) == 1);
+            ballot.setPublicVotes(c.getInt(c.getColumnIndex(BALLOT_PUBLIC)) == 1);
+            c.close();
+        }
+        Log.d(TAG, "End with " + ballot);
+        return ballot;
+    }
+
+    /**
      * Retrieves the ballots of the specified group from the database.
      *
      * @param groupId The id of the group.
@@ -754,6 +784,24 @@ public class GroupDatabaseManager {
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_BALLOT);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Deletes the ballot identified by id.
+     *
+     * @param ballotId The id of the ballot that should be deleted.
+     */
+    public void deleteBallot(int ballotId) {
+        Log.d(TAG, "Delete ballot " + ballotId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        String where = BALLOT_ID + "=?";
+        String[] args = {String.valueOf(ballotId)};
+        db.delete(BALLOT_TABLE, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(BALLOT_DELETED);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 }

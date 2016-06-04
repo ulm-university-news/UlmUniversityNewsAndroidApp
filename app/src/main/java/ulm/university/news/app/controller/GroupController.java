@@ -95,9 +95,9 @@ public class GroupController {
         // If group is marked as closed, set closed icon.
         if (conversation.getClosed()) {
             if (isAdmin) {
-                conversationIcon = R.drawable.ic_conversation_closed_admin;
+                conversationIcon = R.drawable.ic_conversation_closed_admin_white;
             } else {
-                conversationIcon = R.drawable.ic_conversation_closed;
+                conversationIcon = R.drawable.ic_conversation_closed_white;
             }
         }
         return conversationIcon;
@@ -133,9 +133,9 @@ public class GroupController {
         // If group is marked as closed, set closed icon.
         if (ballot.getClosed()) {
             if (isAdmin) {
-                ballotIcon = R.drawable.ic_ballot_closed_admin;
+                ballotIcon = R.drawable.ic_ballot_closed_admin_white;
             } else {
-                ballotIcon = R.drawable.ic_ballot_closed;
+                ballotIcon = R.drawable.ic_ballot_closed_white;
             }
         }
         return ballotIcon;

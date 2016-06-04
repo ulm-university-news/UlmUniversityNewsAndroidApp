@@ -21,6 +21,7 @@
     <string name="general_dots" translatable="false">&#8230;</string>
     <string name="general_edit">Edit</string>
     <string name="general_delete">Delete</string>
+    <string name="general_add">Add</string>
     <string name="general_error_create"> Can\'t create.</string>
     <string name="general_error_input">Invalid fields found.</string>
     <string name="general_error_input_field_invalid">is invalid.</string>
@@ -37,6 +38,8 @@
         want to leave?</string>
     <string name="general_unknown">Unknown</string>
     <string name="general_description">Description</string>
+    <string name="general_close">Close</string>
+    <string name="general_open">Open</string>
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
@@ -227,7 +230,7 @@
 
     <!-- ChannelActivity ########################################################################################### -->
     <string name="activity_channel_announcement_tab">Announcements</string>
-    <string name="activity_channel_channel_details_tab">Channel information</string>
+    <string name="activity_channel_channel_details_tab">Channel details</string>
     <string name="activity_channel_channel_details_list_loading">Loading channel data&#8230;</string>
 
     <!-- GroupFragment ############################################################################################# -->
@@ -240,7 +243,12 @@
     <string name="activity_group_tab_conversations">Conversations</string>
     <string name="activity_group_tab_ballots">Ballots</string>
     <string name="activity_group_tab_events">Events</string>
-    <string name="activity_group_tab_information">Group information</string>
+    <string name="activity_group_tab_information">Group details</string>
+
+    <!-- BallotActivity ############################################################################################ -->
+    <string name="activity_ballot_tab_vote">Vote</string>
+    <string name="activity_ballot_tab_result">Result</string>
+    <string name="activity_ballot_tab_information">Ballot details</string>
 
     <!-- ConversationAddActivity ################################################################################### -->
     <string name="activity_conversation_add_title">Add conversation</string>
@@ -435,13 +443,26 @@
     <!-- Ballot #################################################################################################### -->
     <string name="ballot_add">Add ballot.</string>
     <string name="ballot_info_updated">New ballots loaded.</string>
+    <string name="ballot_info_refreshed">Ballot data updated.</string>
     <string name="ballot_info_up_to_date">No new ballots.</string>
     <string name="ballot_no_data">There are no ballots yet.</string>
     <string name="ballot_multiple_choice">Multiple choice</string>
+    <string name="ballot_multiple_choice_detail">Multiple choice: %1$s</string>
     <string name="ballot_multiple_choice_info">This option indicates whether the group members can vote for multiple
         options of the ballot. If disabled, the participants can only vote for one option of the ballot.</string>
     <string name="ballot_public_votes">Public votes</string>
+    <string name="ballot_public_votes_detail">Public votes: %1$s</string>
     <string name="ballot_public_votes_info">This option indicates whether the group members are able to see
         which participants have voted for certain options of the ballot. If disabled, the participants can only
         determine how many votes a option has received, but not which participants have voted for it.</string>
+    <string name="ballot_no_data_refresh">No ballot data found. Swipe down to refresh.</string>
+    <string name="ballot_close">Close ballot</string>
+    <string name="ballot_close_text">If you close this ballot, no further votes can be made. Do you
+        really want to close this ballot?</string>
+    <string name="ballot_admin">Ballot administrator</string>
+    <string name="ballot_open">Open ballot</string>
+    <string name="ballot_open_text">Do you want to open this ballot again?</string>
+    <string name="ballot_delete">Delete ballot</string>
+    <string name="ballot_delete_text">If you delete the ballot, the data can\'t be restored. Do you
+        really want to delete this ballot?</string>
 </resources>

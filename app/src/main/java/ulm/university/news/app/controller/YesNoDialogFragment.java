@@ -26,6 +26,9 @@ public class YesNoDialogFragment extends AppCompatDialogFragment {
     public static final String DIALOG_CONVERSATION_CLOSE = "dialogCloseConversation";
     public static final String DIALOG_CONVERSATION_OPEN = "dialogOpenConversation";
     public static final String DIALOG_CONVERSATION_DELETE = "dialogDeleteConversation";
+    public static final String DIALOG_BALLOT_CLOSE = "dialogCloseBallot";
+    public static final String DIALOG_BALLOT_OPEN = "dialogOpenBallot";
+    public static final String DIALOG_BALLOT_DELETE = "dialogDeleteBallot";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
