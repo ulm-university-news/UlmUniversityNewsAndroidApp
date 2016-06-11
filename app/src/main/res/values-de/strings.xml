@@ -342,4 +342,10 @@
     <string name="option_info_up_to_date">Keine neuen Abstimmungsoptionen.</string>
     <string name="option_info_updated">Abstimmungsoptionen aktualisiert.</string>
     <string name="option_add_info">Füllen Sie das Textfeld aus. Danach können Sie die neue Abstimmungsoption erstellen.</string>
+    <string name="vote_info_up_to_date">Keine neuen Stimmabgaben.</string>
+    <string name="vote_no_data">Es gibt noch keine Stimmabgaben.</string>
+    <string name="vote_info_updated">Stimmabgaben aktualisiert.</string>
+    <string name="vote_vote">Abstimmen</string>
+    <string name="general_error_vote">Abstimmen fehlgeschlagen.</string>
+    <string name="vote_voted">Abstimmung erfolgreich.</string>
 </resources>

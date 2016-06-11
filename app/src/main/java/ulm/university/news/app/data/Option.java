@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * The Option class represents an option of a ballot. An option always belongs to a ballot. The ballot can have
- * multiple options for which users can vote. The option consists of a text and can contain a list of ids of users
+ * multiple options for which users can createVote. The option consists of a text and can contain a list of ids of users
  * who have voted for the specific option.
  *
  * @author Matthias Mak
@@ -76,5 +76,26 @@ public class Option {
                 ", text='" + text + '\'' +
                 ", voters=" + voters +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Option)) return false;
+
+        Option option = (Option) o;
+
+        if (id != option.id) return false;
+        if (text != null ? !text.equals(option.text) : option.text != null) return false;
+        return voters != null ? voters.equals(option.voters) : option.voters == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (voters != null ? voters.hashCode() : 0);
+        return result;
     }
 }

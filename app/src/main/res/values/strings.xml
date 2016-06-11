@@ -16,6 +16,7 @@
     <string name="general_error_leave"> Can\'t leave.</string>
     <string name="general_error_edit"> Can\'t edit.</string>
     <string name="general_error_delete"> Can\'t delete.</string>
+    <string name="general_error_vote"> Can\'t vote.</string>
     <string name="general_year_format">YYYY</string>
     <string name="general_create">Create</string>
     <string name="general_dots" translatable="false">&#8230;</string>
@@ -477,4 +478,11 @@
     <string name="option_created">Ballot option created successfully.</string>
     <string name="option_add_info">Fill out the text field below. Then click the create button to submit the
         new ballot option.</string>
+
+    <!-- Vote ###################################################################################################### -->
+    <string name="vote_no_data">There are no votes yet.</string>
+    <string name="vote_info_updated">Votes updated.</string>
+    <string name="vote_info_up_to_date">No new votes.</string>
+    <string name="vote_vote">Vote</string>
+    <string name="vote_voted">Voting successful.</string>
 </resources>

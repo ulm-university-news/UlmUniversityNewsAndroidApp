@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Option;
+import ulm.university.news.app.util.Util;
 
 /**
  * TODO
@@ -29,14 +31,17 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
     private boolean multipleChoice;
     private int singleSelectedPosition = -1;
     private HashSet<Integer> multipleSelectedPositions;
+    private Button btnVote;
 
-    public OptionListAdapter(Context context, int resource, boolean multipleChoice) {
+    public OptionListAdapter(Context context, int resource, boolean multipleChoice, Button btnVote) {
         super(context, resource);
         this.multipleChoice = multipleChoice;
+        this.btnVote = btnVote;
 
         // TODO If already voted, preselect options.
         singleSelectedPosition = -1;
         multipleSelectedPositions = new HashSet<>();
+        updateVoteButton();
     }
 
     public OptionListAdapter(Context context, int resource, List<Option> ballots) {
@@ -51,9 +56,25 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
     public void setData(List<Option> data) {
         clear();
         if (data != null) {
+            List<Integer> voters;
             for (int i = 0; i < data.size(); i++) {
                 add(data.get(i));
+
+                voters = data.get(i).getVoters();
+                for (Integer voter : voters) {
+                    if (multipleChoice) {
+                        if (voter.intValue() == Util.getInstance(getContext()).getLocalUser().getId()) {
+                            multipleSelectedPositions.add(i);
+                        }
+                    } else {
+                        if (voter.intValue() == Util.getInstance(getContext()).getLocalUser().getId()) {
+                            singleSelectedPosition = i;
+                            break;
+                        }
+                    }
+                }
             }
+            updateVoteButton();
         }
     }
 
@@ -84,6 +105,11 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
                 chkText.setText(option.getText());
                 chkText.setVisibility(View.VISIBLE);
                 rbText.setVisibility(View.GONE);
+                for (Integer i : multipleSelectedPositions) {
+                    if (i == position) {
+                        chkText.setChecked(true);
+                    }
+                }
                 chkText.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -92,6 +118,7 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
                         } else {
                             multipleSelectedPositions.remove(position);
                         }
+                        updateVoteButton();
                     }
                 });
             } else {
@@ -105,6 +132,7 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
                     public void onClick(View view) {
                         singleSelectedPosition = (Integer) view.getTag();
                         notifyDataSetChanged();
+                        updateVoteButton();
                     }
                 });
             }
@@ -114,8 +142,55 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
         return convertView;
     }
 
+    private void updateVoteButton() {
+        List<Option> allItems = new ArrayList<>();
+        for (int i = 0; i < getCount(); i++) {
+            allItems.add(getItem(i));
+        }
+
+        if (multipleChoice) {
+            boolean sameSelection = true;
+            List<Option> selected = getMultipleSelectedOptions();
+            if (selected != null && !selected.isEmpty()) {
+                List<Option> myOptions = GroupController.getMyOptions(getContext(), allItems);
+                if (myOptions.size() != selected.size()) {
+                    sameSelection = false;
+                } else {
+                    for (Option selectedOption : selected) {
+                        if (!myOptions.contains(selectedOption)) {
+                            sameSelection = false;
+                        }
+                    }
+                }
+                if (!sameSelection) {
+                    btnVote.setAlpha(1f);
+                    btnVote.setEnabled(true);
+                } else {
+                    btnVote.setAlpha(.5f);
+                    btnVote.setEnabled(false);
+                }
+            } else {
+                btnVote.setAlpha(.5f);
+                btnVote.setEnabled(false);
+            }
+        } else {
+            Option selected = getSingleSelectedOption();
+            if (selected != null && !selected.equals(GroupController.getMyOption(getContext(), allItems))) {
+                btnVote.setAlpha(1f);
+                btnVote.setEnabled(true);
+            } else {
+                btnVote.setAlpha(.5f);
+                btnVote.setEnabled(false);
+            }
+        }
+    }
+
     public Option getSingleSelectedOption() {
-        return getItem(singleSelectedPosition);
+        if (singleSelectedPosition > -1) {
+            return getItem(singleSelectedPosition);
+        } else {
+            return null;
+        }
     }
 
     public List<Option> getMultipleSelectedOptions() {

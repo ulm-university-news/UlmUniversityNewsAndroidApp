@@ -63,6 +63,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_R
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_ID;
+import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_ACTIVE;
@@ -71,6 +72,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_NAME;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_OLD_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.USER_OPTION_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_TABLE;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
@@ -102,6 +104,8 @@ public class GroupDatabaseManager {
     public static final String BALLOT_DELETED = "ballotDeleted";
     public static final String STORE_BALLOT_OPTION = "storeBallotOption";
     public static final String DELETE_BALLOT_OPTION = "deleteBallotOption";
+    public static final String STORE_BALLOT_OPTION_VOTE = "storeBallotOptionVote";
+    public static final String DELETE_BALLOT_OPTION_VOTE = "deleteBallotOptionVote";
 
     /** Creates a new instance of GroupDatabaseManager. */
     public GroupDatabaseManager(Context context) {
@@ -856,7 +860,7 @@ public class GroupDatabaseManager {
             option = new Option();
             option.setId(c.getInt(c.getColumnIndex(OPTION_ID)));
             option.setText((c.getString(c.getColumnIndex(OPTION_TEXT))));
-            // TODO Add all user votes to the ballot option.
+            option.setVoters(getVoters(option.getId()));
             options.add(option);
         }
         if (c != null) {
@@ -864,5 +868,74 @@ public class GroupDatabaseManager {
         }
         Log.d(TAG, "End with " + options);
         return options;
+    }
+
+    /**
+     * Stores a user vote for an option in the database.
+     *
+     * @param optionId The id of the option for which is voted.
+     * @param userId The id of the user who votes for the option.
+     */
+    public void storeVote(int optionId, int userId) {
+        Log.d(TAG, "Store vote for option " + optionId + " by user " + userId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        // Vote values.
+        ContentValues optionValues = new ContentValues();
+        optionValues.put(OPTION_ID_FOREIGN, optionId);
+        optionValues.put(USER_ID_FOREIGN, userId);
+        try {
+            db.insertOrThrow(USER_OPTION_TABLE, null, optionValues);
+        } catch (SQLException e) {
+            Log.i(TAG, "User " + userId + " already voted for option " + optionId);
+        }
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(STORE_BALLOT_OPTION_VOTE);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Retrieves the voter ids for an option from the database.
+     *
+     * @param optionId The id of the option.
+     * @return The voters of the option.
+     */
+    public List<Integer> getVoters(int optionId) {
+        List<Integer> voters = new ArrayList<>();
+        SQLiteDatabase db = dbm.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USER_OPTION_TABLE + " WHERE " + OPTION_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(optionId)};
+        Log.d(TAG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, args);
+        while (c != null && c.moveToNext()) {
+            voters.add(c.getInt(c.getColumnIndex(USER_ID_FOREIGN)));
+        }
+        if (c != null) {
+            c.close();
+        }
+        Log.d(TAG, "End with voters " + voters);
+        return voters;
+    }
+
+    /**
+     * Deletes a specific vote of the user identified by id.
+     *
+     * @param optionId The id of the option.
+     * @param userId The id of the user.
+     */
+    public void deleteVote(int optionId, int userId) {
+        Log.d(TAG, "Delete user " + userId + " for option " + optionId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        String where = OPTION_ID_FOREIGN + "=? AND " + USER_ID_FOREIGN + "=?";
+        String[] args = {String.valueOf(optionId), String.valueOf(userId)};
+        db.delete(USER_OPTION_TABLE, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(DELETE_BALLOT_OPTION_VOTE);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 }

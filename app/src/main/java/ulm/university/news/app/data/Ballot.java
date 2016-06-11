@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * The Ballot class represents a ballot. A ballot belongs to a group and offers the participants several options for
- * which each participant can vote. Depending on the properties of the ballot participants can vote for either one
+ * which each participant can createVote. Depending on the properties of the ballot participants can createVote for either one
  * option per ballot or for multiple options. The participants can display the result of the voting. However,
  * depending on the properties the votes can be public or anonymous. If the votes are anonymous, the participants can
  * only determine how many votes an option has received. If the votes are public, it can also be determined which
@@ -26,8 +26,8 @@ public class Ballot {
     /** The closed field indicates whether the ballot is closed or open. If the ballot is closed, no further votes
      * can be placed and the ballot data can't be changed. */
     private Boolean closed;
-    /** The multipleChoice field indicates whether the participants of a group can vote for multiple options of a
-     * ballot. If multiple choice is disabled, the participants can only vote for one option per ballot. */
+    /** The multipleChoice field indicates whether the participants of a group can createVote for multiple options of a
+     * ballot. If multiple choice is disabled, the participants can only createVote for one option per ballot. */
     private Boolean multipleChoice;
     /** The publicVotes field indicates whether the participants of the group can see which participants have voted
      * for certain options of the ballot. If public votes are disabled, the participants can only determine how many

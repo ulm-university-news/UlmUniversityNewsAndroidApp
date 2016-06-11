@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.BusEventOptions;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.data.Ballot;
@@ -48,8 +51,12 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Option> options;
     private ListView lvOptions;
+    private Button btnVote;
+    private ProgressBar pgrSending;
     private int groupId;
     private Ballot ballot;
+    private int voteCounterExpected;
+    private int voteCounterReceived;
 
     private Toast toast;
     private String errorMessage;
@@ -84,7 +91,6 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         databaseLoader.onContentChanged();
         ballot = databaseLoader.getGroupDBM().getBallot(ballotId);
 
-        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot.getMultipleChoice());
         refreshOptions();
     }
 
@@ -94,6 +100,8 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         lvOptions = (ListView) view.findViewById(R.id.fragment_option_lv_options);
         TextView tvListEmpty = (TextView) view.findViewById(R.id.fragment_option_tv_list_empty);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_option_swipe_refresh_layout);
+        btnVote = (Button) view.findViewById(R.id.fragment_option_btn_vote);
+        pgrSending = (ProgressBar) view.findViewById(R.id.fragment_option_pgr_sending);
 
         if (ballot.getMultipleChoice()) {
             lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -117,9 +125,26 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
             }
         };
 
+        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot.getMultipleChoice(),
+                btnVote);
+
         lvOptions.setAdapter(listAdapter);
         lvOptions.setOnItemClickListener(itemClickListener);
         lvOptions.setEmptyView(tvListEmpty);
+
+        btnVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Util.getInstance(v.getContext()).isOnline()) {
+                    vote();
+                } else {
+                    String message = getString(R.string.general_error_no_connection);
+                    message += " " + getString(R.string.general_error_vote);
+                    toast.setText(message);
+                    toast.show();
+                }
+            }
+        });
 
         toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -175,7 +200,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
             errorMessage = getString(R.string.general_error_connection_failed);
             errorMessage += getString(R.string.general_error_refresh);
             // Get ballot option data.
-            GroupAPI.getInstance(getActivity()).getOptions(groupId, ballot.getId());
+            GroupAPI.getInstance(getActivity()).getOptions(groupId, ballot.getId(), true);
         } else {
             if (!isAutoRefresh) {
                 errorMessage = getString(R.string.general_error_no_connection);
@@ -188,6 +213,49 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
                 // Can't refresh. Hide loading animation.
                 swipeRefreshLayout.setRefreshing(false);
             }
+        }
+    }
+
+    private void vote() {
+        btnVote.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.VISIBLE);
+        errorMessage = getString(R.string.general_error_connection_failed);
+        errorMessage += " " + getString(R.string.general_error_vote);
+        voteCounterExpected = 0;
+        voteCounterReceived = 0;
+
+        if (ballot.getMultipleChoice()) {
+            // Vote for selected options.
+            for (Option option : listAdapter.getMultipleSelectedOptions()) {
+                GroupAPI.getInstance(getContext()).createVote(groupId, ballot.getId(), option.getId());
+                voteCounterExpected++;
+            }
+            // Delete unselected options.
+            for (Option optionPreviouslySelected : GroupController.getMyOptions(getContext(), options)) {
+                boolean unselected = true;
+                for (Option optionCurrentlySelected : listAdapter.getMultipleSelectedOptions()) {
+                    if (optionCurrentlySelected.getId() == optionPreviouslySelected.getId()) {
+                        unselected = false;
+                        break;
+                    }
+                }
+                if (unselected) {
+                    // Delete unselected vote.
+                    GroupAPI.getInstance(getContext()).deleteVote(groupId, ballot.getId(),
+                            optionPreviouslySelected.getId());
+                }
+            }
+        } else {
+            Option option = GroupController.getMyOption(getContext(), options);
+            if (option == null) {
+                // There is no previously selected vote. Vote directly.
+                GroupAPI.getInstance(getContext()).createVote(groupId, ballot.getId(),
+                        listAdapter.getSingleSelectedOption().getId());
+            } else {
+                // Delete previously selected vote. Vote after deletion.
+                GroupAPI.getInstance(getContext()).deleteVote(groupId, ballot.getId(), option.getId());
+            }
+            voteCounterExpected = 1;
         }
     }
 
@@ -217,6 +285,56 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
                 toast.show();
             }
         }
+
+        boolean newVotes = GroupController.storeVoters(getContext(), options);
+
+        if (newVotes) {
+            // If createVote data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.option_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
+                // Only show updated message if a manual refresh was triggered.
+                String message = getString(R.string.option_info_up_to_date);
+                toast.setText(message);
+                toast.show();
+            }
+        }
+    }
+
+    /**
+     * This method will be called when a BusEvent is posted to the EventBus.
+     *
+     * @param event The bus event containing an action an maybe additional objects.
+     */
+    public void onEventMainThread(BusEvent event) {
+        Log.d(TAG, "BusEvent: " + event.getAction());
+        if (GroupAPI.VOTE_CREATED.equals(event.getAction())) {
+            Log.d(TAG, "Vote created message received.");
+            // Store vote in database.
+            databaseLoader.getGroupDBM().storeVote((int) event.getObject(), Util.getInstance(getContext())
+                    .getLocalUser().getId());
+            voteCounterReceived++;
+        } else if (GroupAPI.VOTE_DELETED.equals(event.getAction())) {
+            Log.d(TAG, "Vote deleted message received.");
+            // Delete vote from database.
+            databaseLoader.getGroupDBM().deleteVote((int) event.getObject(), Util.getInstance(getContext())
+                    .getLocalUser().getId());
+            if (!ballot.getMultipleChoice()) {
+                // After deletion vote for new option.
+                GroupAPI.getInstance(getContext()).createVote(groupId, ballot.getId(),
+                        listAdapter.getSingleSelectedOption().getId());
+            }
+        }
+        if (voteCounterReceived == voteCounterExpected) {
+            databaseLoader.onContentChanged();
+            pgrSending.setVisibility(View.GONE);
+            btnVote.setVisibility(View.VISIBLE);
+            String message = getString(R.string.vote_voted);
+            toast.setText(message);
+            toast.show();
+        }
     }
 
     @Override
@@ -235,6 +353,8 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION);
                 filter.addAction(GroupDatabaseManager.DELETE_BALLOT_OPTION);
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION_VOTE);
+                filter.addAction(GroupDatabaseManager.DELETE_BALLOT_OPTION_VOTE);
                 return filter;
             }
         });

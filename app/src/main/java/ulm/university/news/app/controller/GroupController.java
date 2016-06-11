@@ -2,6 +2,7 @@ package ulm.university.news.app.controller;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -243,5 +244,63 @@ public class GroupController {
             }
         }
         return newOptions;
+    }
+
+    /**
+     * Stores new voters of an option in the database.
+     *
+     * @param context The current context.
+     * @param options A list of options including user votes.
+     * @return true if new votes were stored.
+     */
+    public static boolean storeVoters(Context context, List<Option> options) {
+        GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
+        boolean newVotes = false;
+
+        if (!options.isEmpty()) {
+            for (Option option : options) {
+                List<Integer> votesDB = groupDBM.getVoters(option.getId());
+                boolean alreadyStored;
+                // Store new options.
+                for (Integer vote : option.getVoters()) {
+                    alreadyStored = false;
+                    for (Integer voteDB : votesDB) {
+                        if (voteDB.intValue() == vote.intValue()) {
+                            alreadyStored = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyStored) {
+                        groupDBM.storeVote(option.getId(), vote);
+                        newVotes = true;
+                    }
+                }
+            }
+        }
+        return newVotes;
+    }
+
+    public static List<Option> getMyOptions(Context context, List<Option> options) {
+        List<Option> myOptions = new ArrayList<>();
+        for (Option option : options) {
+            for (Integer voter : option.getVoters()) {
+                if (voter.intValue() == Util.getInstance(context).getLocalUser().getId()) {
+                    myOptions.add(option);
+                    break;
+                }
+            }
+        }
+        return myOptions;
+    }
+
+    public static Option getMyOption(Context context, List<Option> options) {
+        for (Option option : options) {
+            for (Integer voter : option.getVoters()) {
+                if (voter.intValue() == Util.getInstance(context).getLocalUser().getId()) {
+                    return option;
+                }
+            }
+        }
+        return null;
     }
 }
