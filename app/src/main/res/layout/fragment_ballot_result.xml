@@ -9,29 +9,29 @@
     tools:context="ulm.university.news.app.controller.ChannelDetailActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/fragment_ballot_detail_swipe_refresh_layout"
+        android:id="@+id/fragment_ballot_result_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <ListView
-            android:id="@+id/fragment_ballot_detail_lv_ballot_details"
+            android:id="@+id/fragment_ballot_result_lv_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:listSelector="@android:color/transparent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
-        android:id="@+id/fragment_ballot_detail_tv_list_empty"
+        android:id="@+id/fragment_ballot_result_tv_list_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/ballot_no_data_refresh"
+        android:text="@string/ballot_no_result"
         android:visibility="gone"/>
 
     <ProgressBar
-        android:id="@+id/fragment_ballot_detail_pgr_sending"
+        android:id="@+id/fragment_ballot_result_pgr_sending"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:visibility="gone"/>

@@ -254,7 +254,12 @@ public class GroupDatabaseManager {
 
         String where = GROUP_ID + "=?";
         String[] args = {String.valueOf(groupId)};
-        db.delete(GROUP_TABLE, where, args);
+        try {
+            db.delete(GROUP_TABLE, where, args);
+        } catch (SQLException e) {
+            // Ignore foreign key constraint.
+            Log.e(TAG, e.getMessage());
+        }
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(GROUP_DELETED);

@@ -1,8 +1,11 @@
 package ulm.university.news.app.controller;
 
 import android.content.Context;
+import android.text.Html;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,7 +14,9 @@ import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.Option;
+import ulm.university.news.app.data.User;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
+import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Util;
 
 /**
@@ -302,5 +307,40 @@ public class GroupController {
             }
         }
         return null;
+    }
+
+    public static String getVoterNames(Context context, List<Integer> voters) {
+        String voterNames;
+        if (voters != null && !voters.isEmpty()) {
+            UserDatabaseManager userDBM = new UserDatabaseManager(context);
+            voterNames = "";
+            for (int i = 0; i < voters.size(); i++) {
+                User user = userDBM.getUser(voters.get(i));
+                if (user != null) {
+                    voterNames += user.getName();
+                } else {
+                    voterNames += context.getString(R.string.general_unknown);
+                }
+                if (i < voters.size() - 1) {
+                    voterNames += " " + Html.fromHtml("&#8211; ").toString();
+                }
+            }
+        } else {
+            voterNames = context.getString(R.string.general_nobody);
+        }
+        return voterNames;
+    }
+
+    /**
+     * Sorts the given options according to the number of votes.
+     *
+     * @param options The option list.
+     */
+    public static void sortOptions(List<Option> options) {
+        Collections.sort(options, new Comparator<Option>() {
+            public int compare(Option c1, Option c2) {
+                return c1.getVoters().size() < c2.getVoters().size() ? 1 : -1;
+            }
+        });
     }
 }

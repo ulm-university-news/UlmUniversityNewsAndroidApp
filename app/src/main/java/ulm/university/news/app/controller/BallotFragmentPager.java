@@ -41,7 +41,7 @@ public class BallotFragmentPager extends FragmentPagerAdapter {
             case 0:
                 return OptionFragment.newInstance(groupId, ballotId);
             case 1:
-                return BallotDetailFragment.newInstance(groupId, ballotId);
+                return BallotResultFragment.newInstance(groupId, ballotId);
             case 2:
                 return BallotDetailFragment.newInstance(groupId, ballotId);
         }

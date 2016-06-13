@@ -43,6 +43,7 @@
     <string name="general_open">Open</string>
     <string name="general_title">Title</string>
     <string name="general_text">Text</string>
+    <string name="general_nobody">Nobody</string>
 
     <!-- PushMessages ############################################################################################## -->
     <string name="push_message_new_announcement">New announcement posted.</string>
@@ -470,6 +471,7 @@
     <string name="ballot_delete">Delete ballot</string>
     <string name="ballot_delete_text">If you delete the ballot, the data can\'t be restored. Do you
         really want to delete this ballot?</string>
+    <string name="ballot_no_result">There are no results available yet.</string>
 
     <!-- Option #################################################################################################### -->
     <string name="option_no_data">There are no options yet.</string>

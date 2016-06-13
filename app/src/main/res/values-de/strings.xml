@@ -348,4 +348,6 @@
     <string name="vote_vote">Abstimmen</string>
     <string name="general_error_vote">Abstimmen fehlgeschlagen.</string>
     <string name="vote_voted">Abstimmung erfolgreich.</string>
+    <string name="ballot_no_result">Es gibt noch keine Abstimmungergebnisse.</string>
+    <string name="general_nobody">Niemand</string>
 </resources>

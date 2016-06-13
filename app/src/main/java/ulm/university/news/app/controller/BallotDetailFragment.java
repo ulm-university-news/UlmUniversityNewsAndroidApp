@@ -89,7 +89,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onResume() {
         super.onResume();
-        // Update group in case it was edited.
+        // Update ballot in case it was edited.
         ballot = groupDBM.getBallot(ballotId);
         setBallotDetails();
         listAdapter.setResourceDetails(resourceDetails);
@@ -176,7 +176,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
         lvBallotDetails = (ListView) v.findViewById(R.id.fragment_ballot_detail_lv_ballot_details);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.fragment_ballot_detail_swipe_refresh_layout);
         TextView tvListEmpty = (TextView) v.findViewById(R.id.fragment_ballot_detail_tv_list_empty);
-        pgrSending = (ProgressBar) v.findViewById(R.id.activity_ballot_detail_pgr_sending);
+        pgrSending = (ProgressBar) v.findViewById(R.id.fragment_ballot_detail_pgr_sending);
 
         lvBallotDetails.setEmptyView(tvListEmpty);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);

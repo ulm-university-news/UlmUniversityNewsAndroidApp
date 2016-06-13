@@ -44,8 +44,8 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
         updateVoteButton();
     }
 
-    public OptionListAdapter(Context context, int resource, List<Option> ballots) {
-        super(context, resource, ballots);
+    public OptionListAdapter(Context context, int resource, List<Option> options) {
+        super(context, resource, options);
     }
 
     /**
