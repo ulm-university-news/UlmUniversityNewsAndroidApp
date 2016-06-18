@@ -158,7 +158,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
                 dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_BALLOT_OPEN);
                 return true;
             case R.id.activity_ballot_detail_menu_edit:
-                intent = new Intent(getContext(), ConversationEditActivity.class);
+                intent = new Intent(getContext(), BallotEditActivity.class);
                 intent.putExtra("groupId", groupId);
                 intent.putExtra("ballotId", ballotId);
                 startActivity(intent);
@@ -371,8 +371,6 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
                 toast.show();
                 break;
             case GROUP_NOT_FOUND:
-                // TODO Fix REST server error --> Change 403 forbidden to 404 not found!
-                Log.d(TAG, "Group deleted #############");
                 groupDBM.setGroupToDeleted(groupId);
                 // Close activity and go to the main screen to show deleted dialog on restart activity.
                 Intent intent = new Intent(getContext(), MainActivity.class);

@@ -10,13 +10,13 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
+import ulm.university.news.app.api.BusEventBallotChange;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Ballot;
@@ -28,29 +28,32 @@ import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
 import static ulm.university.news.app.util.Constants.NAME_PATTERN;
 
-public class BallotAddActivity extends AppCompatActivity implements DialogListener {
+public class BallotEditActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
-    private static final String TAG = "BallotAddActivity";
+    private static final String TAG = "BallotEditActivity";
 
     private TextInputLabels tilTitle;
     private TextInputLabels tilDescription;
-    private CheckBox chkMultipleChoice;
-    private CheckBox chkPublicVotes;
     private TextView tvError;
     private ProgressBar pgrSearching;
-    private Button btnCreate;
+    private Button btnEdit;
 
     private Toast toast;
     private int groupId;
+    private Ballot ballot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set color scheme to ballot green.
+        setTheme(R.style.UlmUniversity_Ballot);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ballot_add);
+        setContentView(R.layout.activity_ballot_edit);
 
         groupId = getIntent().getIntExtra("groupId", 0);
+        int ballotId = getIntent().getIntExtra("ballotId", 0);
+        ballot = new GroupDatabaseManager(this).getBallot(ballotId);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_ballot_add_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_ballot_edit_toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -71,7 +74,6 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
         EventBus.getDefault().unregister(this);
         super.onStop();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -115,39 +117,40 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
     }
 
     private void initView() {
-        tilTitle = (TextInputLabels) findViewById(R.id.activity_ballot_add_til_title);
-        tilDescription = (TextInputLabels) findViewById(R.id.activity_ballot_add_til_description);
-        tvError = (TextView) findViewById(R.id.activity_ballot_add_tv_error);
-        pgrSearching = (ProgressBar) findViewById(R.id.activity_ballot_add_pgr_adding);
-        btnCreate = (Button) findViewById(R.id.activity_ballot_add_btn_create);
-        chkMultipleChoice = (CheckBox) findViewById(R.id.activity_ballot_add_chk_multiple_choice);
-        chkPublicVotes = (CheckBox) findViewById(R.id.activity_ballot_add_chk_public_votes);
+        tilTitle = (TextInputLabels) findViewById(R.id.activity_ballot_edit_til_title);
+        tilDescription = (TextInputLabels) findViewById(R.id.activity_ballot_edit_til_description);
+        tvError = (TextView) findViewById(R.id.activity_ballot_edit_tv_error);
+        pgrSearching = (ProgressBar) findViewById(R.id.activity_ballot_edit_pgr_adding);
+        btnEdit = (Button) findViewById(R.id.activity_ballot_edit_btn_edit);
 
         tilTitle.setNameAndHint(getString(R.string.general_title));
         tilTitle.setLength(3, 45);
         tilTitle.setPattern(NAME_PATTERN);
+        tilTitle.setText(ballot.getTitle());
 
         tilDescription.setNameAndHint(getString(R.string.general_description));
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
+        tilDescription.setText(ballot.getDescription());
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
         if (tv != null) tv.setGravity(Gravity.CENTER);
 
-        btnCreate.setOnClickListener(new View.OnClickListener() {
+        btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addBallot();
+                editBallot();
             }
         });
     }
 
     private boolean warnOnLeave() {
-        // Warn user before leaving page if something was entered in the fields.
-        return !tilTitle.getText().isEmpty() || !tilDescription.getText().isEmpty();
+        // Warn user before leaving page if fields were edited.
+        return !tilTitle.getText().equals(ballot.getTitle()) ||
+                !tilDescription.getText().equals(ballot.getDescription());
     }
 
-    private void addBallot() {
+    private void editBallot() {
         boolean valid = true;
         if (!Util.getInstance(this).isOnline()) {
             String message = getString(R.string.general_error_no_connection);
@@ -163,32 +166,30 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
             valid = false;
         }
         if (valid) {
-            // All checks passed. Create new ballot.
+            // All checks passed. Edit ballot.
             tvError.setVisibility(View.GONE);
             pgrSearching.setVisibility(View.VISIBLE);
 
-            Ballot ballot = new Ballot();
             ballot.setTitle(tilTitle.getText());
             ballot.setDescription(tilDescription.getText());
-            ballot.setPublicVotes(chkPublicVotes.isChecked());
-            ballot.setMultipleChoice(chkMultipleChoice.isChecked());
-            GroupAPI.getInstance(this).createBallot(groupId, ballot);
+            GroupAPI.getInstance(this).changeBallot(groupId, ballot);
         }
     }
 
     /**
-     * This method will be called when a ballot is posted to the EventBus.
+     * This method will be called when a changed ballot is posted to the EventBus.
      *
-     * @param ballot The ballot object.
+     * @param event The event containing the changed ballot object.
      */
-    public void onEventMainThread(Ballot ballot) {
-        Log.d(TAG, "EventBus: Ballot");
-        Log.d(TAG, ballot.toString());
+    public void onEventMainThread(BusEventBallotChange event) {
+        Log.d(TAG, event.toString());
         pgrSearching.setVisibility(View.GONE);
-        // Store ballot and continue adding ballot options.
+        // Update ballot and leave activity.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
-        groupDBM.storeBallot(groupId, ballot);
-        // TODO Send ballot options to the server.
+        groupDBM.updateBallot(event.getBallot());
+        toast.setText(getString(R.string.ballot_edited));
+        toast.show();
+        finish();
     }
 
     /**

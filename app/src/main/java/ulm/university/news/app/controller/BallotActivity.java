@@ -62,4 +62,12 @@ public class BallotActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Update activity title in case the ballot was edited.
+        Ballot ballot = new GroupDatabaseManager(this).getBallot(ballotId);
+        getSupportActionBar().setTitle(ballot.getTitle());
+    }
 }

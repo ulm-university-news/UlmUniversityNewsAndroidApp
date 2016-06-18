@@ -157,7 +157,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (ballot.getAdmin() == Util.getInstance(getContext()).getLocalUser().getId()) {
+        if (ballot.getAdmin() == Util.getInstance(getContext()).getLocalUser().getId() && !ballot.getClosed()) {
             setHasOptionsMenu(true);
         }
     }

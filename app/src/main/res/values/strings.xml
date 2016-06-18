@@ -118,6 +118,9 @@
     <!-- OptionAddActivity ######################################################################################### -->
     <string name="activity_option_add_title">Add ballot option</string>
 
+    <!-- OptionEditActivity ######################################################################################## -->
+    <string name="activity_option_edit_title">Edit ballot option</string>
+
     <!-- BallotEditActivity ######################################################################################## -->
     <string name="activity_ballot_edit_title">Edit ballot</string>
 
@@ -453,6 +456,7 @@
 
     <!-- Ballot #################################################################################################### -->
     <string name="ballot_add">Add ballot.</string>
+    <string name="ballot_edited">Ballot changed successfully.</string>
     <string name="ballot_info_updated">Ballots updated.</string>
     <string name="ballot_info_refreshed">Ballot data updated.</string>
     <string name="ballot_info_up_to_date">Ballots up to date.</string>
