@@ -16,10 +16,14 @@ import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEventGroupMembers;
 import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
+import ulm.university.news.app.util.Util;
+
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 public class GroupActivity extends AppCompatActivity {
     /** This classes tag for logging. */
@@ -56,7 +60,14 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     private void refreshGroupMembers() {
-        GroupAPI.getInstance(this).getGroupMembers(groupId);
+        // Refreshing is only possible if there is an internet connection.
+        if (Util.getInstance(this).isOnline()) {
+            Group group = new GroupDatabaseManager(this).getGroup(groupId);
+            // Don't refresh if group is already marked as deleted.
+            if (!group.getDeleted()) {
+                GroupAPI.getInstance(this).getGroupMembers(groupId);
+            }
+        }
     }
 
     private void showGroupDeletedDialog(Group group) {
@@ -73,8 +84,6 @@ public class GroupActivity extends AppCompatActivity {
             new GroupDatabaseManager(this).setGroupDeletedToRead(group.getId());
         }
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,6 +126,33 @@ public class GroupActivity extends AppCompatActivity {
         for (User u : users) {
             userDBM.storeUser(u);
             groupDBM.addUserToGroup(groupId, u.getId());
+        }
+    }
+
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        Log.d(TAG, "EventBus: ServerError");
+        handleServerError(serverError);
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void handleServerError(ServerError serverError) {
+        Log.d(TAG, serverError.toString());
+        // Handle error.
+        switch (serverError.getErrorCode()) {
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(this).setGroupToDeleted(groupId);
+                // Close activity to show the main screen.
+                finish();
+                break;
         }
     }
 }

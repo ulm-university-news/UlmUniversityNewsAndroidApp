@@ -149,16 +149,17 @@ public class GroupController {
     }
 
     /**
-     * Stores new conversations or updates existing ones in the database.
+     * Stores new conversations or updates existing ones and removes deleted conversations in the database.
      *
      * @param context The current context.
      * @param conversations A list of conversations.
      * @param groupId The group id to which the conversations belong.
-     * @return true if new conversations were stored.
+     * @return true if new conversations were stored and/or old conversations were removed.
      */
     public static boolean storeConversations(Context context, List<Conversation> conversations, int groupId) {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
         boolean newConversations = false;
+        boolean oldConversations = false;
 
         if (!conversations.isEmpty()) {
             List<Conversation> conversationsDB = groupDBM.getConversations(groupId);
@@ -179,21 +180,36 @@ public class GroupController {
                     newConversations = true;
                 }
             }
+            // Remove deleted conversations.
+            for (Conversation conversationDB: conversationsDB) {
+                boolean wasDeleted = true;
+                for (Conversation conversation : conversations) {
+                    if (conversationDB.getId() == conversation.getId()) {
+                        wasDeleted = false;
+                        break;
+                    }
+                }
+                if (wasDeleted) {
+                    groupDBM.deleteConversation(conversationDB.getId());
+                    oldConversations = true;
+                }
+            }
         }
-        return newConversations;
+        return newConversations || oldConversations;
     }
 
     /**
-     * Stores new ballots or updates existing ones in the database.
+     * Stores new ballots or updates existing ones and removes deleted ballots in the database.
      *
      * @param context The current context.
      * @param ballots A list of ballots.
      * @param groupId The group id to which the ballots belong.
-     * @return true if new ballots were stored.
+     * @return true if new ballots were stored and/or deleted ballots were removed.
      */
     public static boolean storeBallots(Context context, List<Ballot> ballots, int groupId) {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
         boolean newBallots = false;
+        boolean oldBallots = false;
 
         if (!ballots.isEmpty()) {
             List<Ballot> ballotsDB = groupDBM.getBallots(groupId);
@@ -214,21 +230,36 @@ public class GroupController {
                     newBallots = true;
                 }
             }
+            // Remove deleted ballots.
+            for (Ballot ballotDB: ballotsDB) {
+                boolean wasDeleted = true;
+                for (Ballot ballot : ballots) {
+                    if (ballotDB.getId() == ballot.getId()) {
+                        wasDeleted = false;
+                        break;
+                    }
+                }
+                if (wasDeleted) {
+                    groupDBM.deleteBallot(ballotDB.getId());
+                    oldBallots = true;
+                }
+            }
         }
-        return newBallots;
+        return newBallots || oldBallots;
     }
 
     /**
-     * Stores new ballot options in the database.
+     * Stores new and removes deleted ballot options in the database.
      *
      * @param context The current context.
      * @param options A list of options.
      * @param ballotId The ballot id to which the options belong.
-     * @return true if new options were stored.
+     * @return true if options were change.
      */
     public static boolean storeOptions(Context context, List<Option> options, int ballotId) {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
         boolean newOptions = false;
+        boolean oldOptions = false;
 
         if (!options.isEmpty()) {
             List<Option> optionsDB = groupDBM.getOptions(ballotId);
@@ -247,26 +278,34 @@ public class GroupController {
                     newOptions = true;
                 }
             }
+            // Remove deleted votes.
+            for (Option optionDB: optionsDB) {
+                if (!options.contains(optionDB)) {
+                    groupDBM.deleteOption(optionDB.getId());
+                    oldOptions = true;
+                }
+            }
         }
-        return newOptions;
+        return newOptions || oldOptions;
     }
 
     /**
-     * Stores new voters of an option in the database.
+     * Stores new voters and removes deleted voters of an option in the database.
      *
      * @param context The current context.
      * @param options A list of options including user votes.
-     * @return true if new votes were stored.
+     * @return true if new votes were changed.
      */
     public static boolean storeVoters(Context context, List<Option> options) {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(context);
         boolean newVotes = false;
+        boolean oldVotes = false;
 
         if (!options.isEmpty()) {
             for (Option option : options) {
                 List<Integer> votesDB = groupDBM.getVoters(option.getId());
                 boolean alreadyStored;
-                // Store new options.
+                // Store new votes.
                 for (Integer vote : option.getVoters()) {
                     alreadyStored = false;
                     for (Integer voteDB : votesDB) {
@@ -280,9 +319,16 @@ public class GroupController {
                         newVotes = true;
                     }
                 }
+                // Remove deleted votes.
+                for (Integer voteDB : votesDB) {
+                    if (!option.getVoters().contains(voteDB)) {
+                        groupDBM.deleteVote(option.getId(), voteDB);
+                        oldVotes = true;
+                    }
+                }
             }
         }
-        return newVotes;
+        return newVotes || oldVotes;
     }
 
     public static List<Option> getMyOptions(Context context, List<Option> options) {

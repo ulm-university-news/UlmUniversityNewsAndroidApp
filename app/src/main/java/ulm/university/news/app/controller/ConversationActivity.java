@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -32,6 +33,7 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.ConversationMessage;
+import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.Priority;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
@@ -40,6 +42,7 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.CONVERSATION_NOT_FOUND;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 public class ConversationActivity extends AppCompatActivity implements DialogListener, LoaderManager
         .LoaderCallbacks<List<ConversationMessage>> {
@@ -56,12 +59,14 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     private Conversation conversation;
     private int groupId;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar pgrSending;
     private ListView lvConversationMessages;
     private EditText etMessage;
     private ImageView ivSend;
     private String errorMessage;
     private Toast toast;
+    private boolean isAutoRefresh = true;
     private MenuItem menuItemClose;
     private MenuItem menuItemOpen;
     private MenuItem menuItemEdit;
@@ -192,6 +197,16 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
         ivSend = (ImageView) findViewById(R.id.activity_conversation_iv_send);
         pgrSending = (ProgressBar) findViewById(R.id.activity_conversation_pgr_sending);
         TextView tvListEmpty = (TextView) findViewById(R.id.activity_conversation_tv_list_empty);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_conversation_swipe_refresh_layout);
+
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isAutoRefresh = false;
+                refreshConversationMessages();
+            }
+        });
 
         toast = Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -239,12 +254,31 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
     private void refreshConversationMessages() {
         // Refreshing is only possible if there is an internet connection.
         if (Util.getInstance(this).isOnline()) {
-            errorMessage = getString(R.string.general_error_connection_failed);
-            errorMessage += getString(R.string.general_error_refresh);
-            // Get conversation message data. Request new messages only.
-            int messageNumber = databaseLoader.getGroupDBM().getMaxMessageNumberConversationMessage(
-                    conversation.getId());
-            GroupAPI.getInstance(this).getConversationMessages(groupId, conversation.getId(), messageNumber);
+            Group group = databaseLoader.getGroupDBM().getGroup(groupId);
+            // Don't refresh if group is already marked as deleted.
+            if (!group.getDeleted()) {
+                errorMessage = getString(R.string.general_error_connection_failed);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Get conversation message data. Request new messages only.
+                int messageNumber = databaseLoader.getGroupDBM().getMaxMessageNumberConversationMessage(
+                        conversation.getId());
+                GroupAPI.getInstance(this).getConversationMessages(groupId, conversation.getId(), messageNumber);
+            } else {
+                // Stop loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        } else {
+            if (!isAutoRefresh) {
+                errorMessage = getString(R.string.general_error_no_connection);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Only show error message if refreshing was triggered manually.
+                toast.setText(errorMessage);
+                toast.show();
+                // Reset the auto refresh flag.
+                isAutoRefresh = true;
+                // Can't refresh. Hide loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
         }
     }
 
@@ -371,10 +405,24 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
      */
     public void onEventMainThread(BusEventConversationMessages event) {
         Log.d(TAG, event.toString());
+        swipeRefreshLayout.setRefreshing(false);
         List<ConversationMessage> conversationMessages = event.getConversationMessages();
         // Store new conversation messages in database.
         for (ConversationMessage cm : conversationMessages) {
             databaseLoader.getGroupDBM().storeConversationMessage(cm);
+        }
+        if (!conversationMessages.isEmpty()) {
+            // If conversation data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.conversation_message_info_updated);
+            toast.setText(message);
+            toast.show();
+        } else {
+            if (!isAutoRefresh) {
+                // Only show up to date message if a manual refresh was triggered.
+                String message = getString(R.string.conversation_message_info_up_to_date);
+                toast.setText(message);
+                toast.show();
+            }
         }
     }
 
@@ -407,8 +455,16 @@ public class ConversationActivity extends AppCompatActivity implements DialogLis
                 break;
             case CONVERSATION_NOT_FOUND:
                 databaseLoader.getGroupDBM().deleteConversation(conversation.getId());
-                toast.setText(getString(R.string.conversation_created));
+                toast.setText(getString(R.string.conversation_delete_server));
                 toast.show();
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(this).setGroupToDeleted(groupId);
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
         }
     }
 }

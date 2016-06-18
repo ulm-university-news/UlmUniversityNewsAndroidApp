@@ -105,7 +105,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())) {
+        if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId()) && !group.getDeleted()) {
             setHasOptionsMenu(true);
         }
     }
@@ -319,10 +319,17 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     private void refreshGroup() {
         // Group refresh is only possible if there is an internet connection.
         if (Util.getInstance(getContext()).isOnline()) {
-            errorMessage = getString(R.string.general_error_connection_failed);
-            errorMessage += " " + getString(R.string.general_error_refresh);
-            // Get group on swipe down.
-            GroupAPI.getInstance(getContext()).getGroup(groupId);
+            Group group = groupDBM.getGroup(groupId);
+            // Don't refresh if group is already marked as deleted.
+            if (!group.getDeleted()) {
+                errorMessage = getString(R.string.general_error_connection_failed);
+                errorMessage += " " + getString(R.string.general_error_refresh);
+                // Get group on swipe down.
+                GroupAPI.getInstance(getContext()).getGroup(groupId);
+            } else {
+                // Stop loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
         } else {
             errorMessage = getString(R.string.general_error_no_connection);
             errorMessage += " " + getString(R.string.general_error_refresh);
@@ -452,7 +459,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                 toast.show();
                 break;
             case GROUP_NOT_FOUND:
-                // If local user is a group member, do nothing.
+                // If local user is a group member, just mark group as deleted.
                 if (!isGroupMember) {
                     // Group was deleted on the server, so delete it on the local database too.
                     groupDBM.deleteGroup(groupId);
@@ -465,6 +472,10 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                     dialog.setArguments(args);
                     dialog.show(getActivity().getSupportFragmentManager(), InfoDialogFragment
                             .DIALOG_JOIN_DELETED_GROUP);
+                } else {
+                    groupDBM.setGroupToDeleted(groupId);
+                    // Close activity to show the main screen.
+                    getActivity().finish();
                 }
                 break;
             case GROUP_INCORRECT_PASSWORD:
@@ -478,9 +489,15 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onDialogPositiveClick(String tag) {
         if (tag.equals(YesNoDialogFragment.DIALOG_GROUP_LEAVE)) {
-            GroupAPI.getInstance(getContext()).leaveGroup(groupId);
             btnLeave.setVisibility(View.GONE);
             pgrSending.setVisibility(View.VISIBLE);
+            // If group is already marked as deleted, do not contact server and delete is directly.
+            if (group.getDeleted()) {
+                groupDBM.deleteGroup(groupId);
+                getActivity().finish();
+            } else {
+                GroupAPI.getInstance(getContext()).leaveGroup(groupId);
+            }
         } else if (tag.equals(YesNoDialogFragment.DIALOG_GROUP_DELETE)) {
             GroupAPI.getInstance(getContext()).deleteGroup(groupId);
             pgrSending.setVisibility(View.VISIBLE);

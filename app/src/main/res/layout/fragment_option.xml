@@ -40,6 +40,14 @@
         android:text="@string/vote_vote"
         android:textColor="@color/black"/>
 
+    <TextView
+        android:id="@+id/fragment_option_tv_ballot_closed"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/ballot_closed"
+        android:visibility="gone"/>
+
     <ProgressBar
         android:id="@+id/fragment_option_pgr_sending"
         android:layout_width="wrap_content"

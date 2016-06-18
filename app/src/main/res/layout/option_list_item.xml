@@ -30,20 +30,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/option_list_item_tv_count"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/circle_new_messages"
-                android:gravity="center"
-                android:singleLine="true"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -280,8 +280,8 @@
     <string name="group_members">Gruppenmitglieder (%1$s)</string>
     <string name="conversation_no_data">Es gibt noch keine Konversationen.</string>
     <string name="conversation_add">Konversation hinzufügen</string>
-    <string name="conversation_info_up_to_date">Keine neuen Konversationen.</string>
-    <string name="conversation_info_updated">Neue Konversationen geladen.</string>
+    <string name="conversation_info_up_to_date">Konversationen bereits aktuell.</string>
+    <string name="conversation_info_updated">Konversationen aktualisiert.</string>
     <string name="conversation_created">Konversation erfolgreich erstellt.</string>
     <string name="general_unknown">Unbekannt</string>
     <string name="conversation_add_info">Füllen Sie das Titelfeld aus. Danach können Sie die neue Konversation erstellen.</string>
@@ -309,7 +309,7 @@
     <string name="group_delete_dialog_title">Gruppe löschen</string>
     <string name="group_delete_dialog_text">Die Gruppe wird unwiederruflich gelöscht. Möchten Sie die Gruppe wirklich löschen?</string>
     <string name="ballot_add">Abstimmung hinzufügen</string>
-    <string name="ballot_info_up_to_date">Keine neuen Abstimmungen.</string>
+    <string name="ballot_info_up_to_date">Abstimmungen bereits aktuell.</string>
     <string name="ballot_info_updated">Abstimmungen aktualisiert.</string>
     <string name="ballot_no_data">Es gibt noch keine Abstimmungen.</string>
     <string name="ballot_multiple_choice">Multiple Choice</string>
@@ -339,7 +339,7 @@
     <string name="activity_option_add_title">Abstimmungsoption hinzufügen</string>
     <string name="general_text">Text</string>
     <string name="option_created">Abstimmungsoption erfolgreich erstellt.</string>
-    <string name="option_info_up_to_date">Keine neuen Abstimmungsoptionen.</string>
+    <string name="option_info_up_to_date">Abstimmungsoptionen bereits aktuell.</string>
     <string name="option_info_updated">Abstimmungsoptionen aktualisiert.</string>
     <string name="option_add_info">Füllen Sie das Textfeld aus. Danach können Sie die neue Abstimmungsoption erstellen.</string>
     <string name="vote_info_up_to_date">Keine neuen Stimmabgaben.</string>
@@ -350,4 +350,7 @@
     <string name="vote_voted">Abstimmung erfolgreich.</string>
     <string name="ballot_no_result">Es gibt noch keine Abstimmungergebnisse.</string>
     <string name="general_nobody">Niemand</string>
+    <string name="conversation_message_info_up_to_date">Nachrichten bereits aktuell.</string>
+    <string name="conversation_message_info_updated">Nachrichten aktualisiert.</string>
+    <string name="ballot_closed">Die Abstimmung ist geschlossen.</string>
 </resources>

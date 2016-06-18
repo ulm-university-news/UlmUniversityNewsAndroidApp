@@ -33,7 +33,6 @@ import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_MU
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_PUBLIC;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.BALLOT_TITLE;
-import static ulm.university.news.app.manager.database.DatabaseManager.CHANNEL_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ADMIN;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_CLOSED;
 import static ulm.university.news.app.manager.database.DatabaseManager.CONVERSATION_ID;
@@ -267,6 +266,26 @@ public class GroupDatabaseManager {
     }
 
     /**
+     * Marks a group as deleted.
+     *
+     * @param groupId The group which should be set to deleted.
+     */
+    public void setGroupToDeleted(int groupId) {
+        Log.d(TAG, "Set group with id " + groupId + " to deleted.");
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(GROUP_DELETED, true);
+        String where = GROUP_ID + "=?";
+        String[] args = {String.valueOf(groupId)};
+        db.update(GROUP_TABLE, values, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(UPDATE_GROUP);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
      * Adds a user as a group member to the group identified by id.
      *
      * @param groupId The id of the group.
@@ -340,7 +359,7 @@ public class GroupDatabaseManager {
      */
     public List<User> getGroupMembers(int groupId) {
         List<User> users = new ArrayList<>();
-        User user = null;
+        User user;
         SQLiteDatabase db = dbm.getReadableDatabase();
 
         String selectQuery = "SELECT * FROM " + USER_TABLE + " AS u INNER JOIN " + USER_GROUP_TABLE
@@ -350,6 +369,7 @@ public class GroupDatabaseManager {
 
         Cursor c = db.rawQuery(selectQuery, args);
         while (c != null && c.moveToNext()) {
+            user = new User();
             user = new User();
             user.setId(c.getInt(c.getColumnIndex(USER_ID)));
             user.setName((c.getString(c.getColumnIndex(USER_NAME))));
@@ -376,7 +396,7 @@ public class GroupDatabaseManager {
         values.put(GROUP_DELETED_READ, true);
         String where = GROUP_ID + "=?";
         String[] args = {String.valueOf(groupId)};
-        db.update(CHANNEL_TABLE, values, where, args);
+        db.update(GROUP_TABLE, values, where, args);
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_GROUP);
@@ -842,6 +862,24 @@ public class GroupDatabaseManager {
 
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(STORE_BALLOT_OPTION);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Deletes a specific ballot option identified by id.
+     *
+     * @param optionId The id of the option.
+     */
+    public void deleteOption(int optionId) {
+        Log.d(TAG, "Delete option " + optionId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        String where = OPTION_ID + "=?";
+        String[] args = {String.valueOf(optionId)};
+        db.delete(OPTION_TABLE, where, args);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(DELETE_BALLOT_OPTION);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 

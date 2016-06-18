@@ -376,7 +376,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + OPTION_ID + " INTEGER PRIMARY KEY NOT NULL, "
             + OPTION_TEXT + " TEXT NOT NULL, "
             + BALLOT_ID_FOREIGN + " INTEGER NOT NULL, "
-            + "FOREIGN KEY(" + BALLOT_ID_FOREIGN + ") REFERENCES " + BALLOT_TABLE + "(" + BALLOT_ID + "));";
+            + "FOREIGN KEY(" + BALLOT_ID_FOREIGN + ") REFERENCES " + BALLOT_TABLE + "(" + BALLOT_ID + ") ON DELETE " +
+            "CASCADE);";
 
     // Columns of the UserOption table.
     public static final String USER_OPTION_TABLE = "UserOption";
@@ -386,8 +387,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + OPTION_ID_FOREIGN + " INTEGER NOT NULL, "
             + USER_ID_FOREIGN + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + OPTION_ID_FOREIGN + ", " + USER_ID_FOREIGN + "), "
-            + "FOREIGN KEY(" + OPTION_ID_FOREIGN + ") REFERENCES " + OPTION_TABLE + "(" + OPTION_ID + "), "
-            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
+            + "FOREIGN KEY(" + OPTION_ID_FOREIGN + ") REFERENCES " + OPTION_TABLE + "(" + OPTION_ID + ") ON DELETE " +
+            "CASCADE, "
+            + "FOREIGN KEY(" + USER_ID_FOREIGN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + ") ON DELETE CASCADE);";
 
     // Columns of the ModeratorChannel table.
     public static final String MODERATOR_CHANNEL_TABLE = "ModeratorChannel";
@@ -400,7 +402,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + MODERATOR_CHANNEL_ACTIVE + " INTEGER NOT NULL, "
             + "PRIMARY KEY(" + MODERATOR_ID_FOREIGN + ", " + CHANNEL_ID_FOREIGN + "), "
             + "FOREIGN KEY(" + MODERATOR_ID_FOREIGN + ") REFERENCES " + MODERATOR_TABLE + "(" + MODERATOR_ID + "), "
-            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE CASCADE);";
+            + "FOREIGN KEY(" + CHANNEL_ID_FOREIGN + ") REFERENCES " + CHANNEL_TABLE + "(" + CHANNEL_ID + ") ON DELETE" +
+            " CASCADE);";
 
     /**
      * Get the instance of the DatabaseManager class.

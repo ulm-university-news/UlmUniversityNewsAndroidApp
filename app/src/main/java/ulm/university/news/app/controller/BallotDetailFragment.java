@@ -34,6 +34,7 @@ import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.BALLOT_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
@@ -63,6 +64,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
     private MenuItem menuItemEdit;
     private MenuItem menuItemDelete;
     private ProgressBar pgrSending;
+    private boolean autoRefresh = true;
 
     public BallotDetailFragment() {
     }
@@ -100,6 +102,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_ballot_detail, container, false);
         initView(v);
+        refreshBallot();
         return v;
     }
 
@@ -183,6 +186,7 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                autoRefresh = false;
                 refreshBallot();
             }
         });
@@ -291,7 +295,10 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
         // Show updated message.
         String message = getString(R.string.ballot_info_refreshed);
         toast.setText(message);
-        toast.show();
+        if (!autoRefresh) {
+            toast.show();
+            autoRefresh = true;
+        }
     }
 
     /**
@@ -311,16 +318,15 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
         menuItemClose.setActionView(null);
         menuItemOpen.setActionView(null);
         if (ballot.getClosed()) {
-            // TODO Disable voting.
             menuItemClose.setVisible(false);
             menuItemEdit.setVisible(false);
             menuItemOpen.setVisible(true);
             getActivity().finish();
         } else {
-            // TODO Enable voting.
             menuItemClose.setVisible(true);
             menuItemEdit.setVisible(true);
             menuItemOpen.setVisible(false);
+            getActivity().finish();
         }
     }
 
@@ -365,6 +371,18 @@ public class BallotDetailFragment extends Fragment implements DialogListener {
                 toast.show();
                 break;
             case GROUP_NOT_FOUND:
+                // TODO Fix REST server error --> Change 403 forbidden to 404 not found!
+                Log.d(TAG, "Group deleted #############");
+                groupDBM.setGroupToDeleted(groupId);
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+                break;
+            case BALLOT_NOT_FOUND:
+                groupDBM.deleteBallot(ballotId);
+                getActivity().finish();
                 break;
         }
     }

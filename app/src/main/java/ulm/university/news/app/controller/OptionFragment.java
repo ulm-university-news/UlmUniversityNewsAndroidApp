@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,11 +29,16 @@ import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEvent;
 import ulm.university.news.app.api.BusEventOptions;
 import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Ballot;
+import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.Option;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
+
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 
 public class OptionFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>> {
@@ -44,7 +48,6 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     /** The loader's id. */
     private static final int LOADER_ID = 13;
 
-    private AdapterView.OnItemClickListener itemClickListener;
     private DatabaseLoader<List<Option>> databaseLoader;
 
     private OptionListAdapter listAdapter;
@@ -57,6 +60,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     private Ballot ballot;
     private int voteCounterExpected;
     private int voteCounterReceived;
+    private TextView headerView;
 
     private Toast toast;
     private String errorMessage;
@@ -74,7 +78,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onResume() {
         super.onResume();
-        // Update channel list to make changes like read messages visible.
+        // Update option list to make changes visible.
         if (databaseLoader != null) {
             databaseLoader.onContentChanged();
         }
@@ -90,8 +94,6 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
         databaseLoader.onContentChanged();
         ballot = databaseLoader.getGroupDBM().getBallot(ballotId);
-
-        refreshOptions();
     }
 
     @Override
@@ -102,6 +104,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.fragment_option_swipe_refresh_layout);
         btnVote = (Button) view.findViewById(R.id.fragment_option_btn_vote);
         pgrSending = (ProgressBar) view.findViewById(R.id.fragment_option_pgr_sending);
+        TextView tvBallotClosed = (TextView) view.findViewById(R.id.fragment_option_tv_ballot_closed);
 
         if (ballot.getMultipleChoice()) {
             lvOptions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -118,19 +121,16 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
-        itemClickListener = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                // TODO Do something here?
-            }
-        };
-
-        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot.getMultipleChoice(),
-                btnVote);
+        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot, btnVote);
 
         lvOptions.setAdapter(listAdapter);
-        lvOptions.setOnItemClickListener(itemClickListener);
         lvOptions.setEmptyView(tvListEmpty);
+
+        // Create and add closed header text if ballot is closed.
+        if (ballot.getClosed()) {
+            tvBallotClosed.setVisibility(View.VISIBLE);
+            btnVote.setVisibility(View.GONE);
+        }
 
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +150,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
+        refreshOptions();
         return view;
     }
 
@@ -197,10 +198,17 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     private void refreshOptions() {
         // Refreshing is only possible if there is an internet connection.
         if (Util.getInstance(getContext()).isOnline()) {
-            errorMessage = getString(R.string.general_error_connection_failed);
-            errorMessage += getString(R.string.general_error_refresh);
-            // Get ballot option data.
-            GroupAPI.getInstance(getActivity()).getOptions(groupId, ballot.getId(), true);
+            Group group = databaseLoader.getGroupDBM().getGroup(groupId);
+            // Don't refresh if group is already marked as deleted.
+            if (!group.getDeleted()) {
+                errorMessage = getString(R.string.general_error_connection_failed);
+                errorMessage += getString(R.string.general_error_refresh);
+                // Get ballot option data.
+                GroupAPI.getInstance(getActivity()).getOptions(groupId, ballot.getId(), true);
+            } else {
+                // Stop loading animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
         } else {
             if (!isAutoRefresh) {
                 errorMessage = getString(R.string.general_error_no_connection);
@@ -289,14 +297,14 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
         boolean newVotes = GroupController.storeVoters(getContext(), options);
 
         if (newVotes) {
-            // If createVote data was updated show message no matter if it was a manual or auto refresh.
-            String message = getString(R.string.option_info_updated);
+            // If vote data was updated show message no matter if it was a manual or auto refresh.
+            String message = getString(R.string.vote_info_updated);
             toast.setText(message);
             toast.show();
         } else {
             if (!isAutoRefresh) {
                 // Only show updated message if a manual refresh was triggered.
-                String message = getString(R.string.option_info_up_to_date);
+                String message = getString(R.string.vote_info_up_to_date);
                 toast.setText(message);
                 toast.show();
             }
@@ -334,6 +342,42 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
             String message = getString(R.string.vote_voted);
             toast.setText(message);
             toast.show();
+        }
+    }
+
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        Log.d(TAG, "EventBus: ServerError");
+        handleServerError(serverError);
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void handleServerError(ServerError serverError) {
+        Log.d(TAG, serverError.toString());
+        // Hide loading animation on server response.
+        swipeRefreshLayout.setRefreshing(false);
+        // Show appropriate error message.
+        switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                toast.setText(errorMessage);
+                toast.show();
+                break;
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(getContext()).setGroupToDeleted(groupId);
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+                break;
         }
     }
 

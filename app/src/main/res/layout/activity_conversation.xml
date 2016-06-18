@@ -15,11 +15,17 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <ListView
-        android:id="@+id/activity_conversation_lv_conversation_messages"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_conversation_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/activity_conversation_lv_conversation_messages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/activity_conversation_tv_list_empty"

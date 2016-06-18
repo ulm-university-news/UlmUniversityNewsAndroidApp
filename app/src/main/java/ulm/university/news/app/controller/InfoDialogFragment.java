@@ -38,7 +38,9 @@ public class InfoDialogFragment extends AppCompatDialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
+        /*
         if (getTag().equals(DIALOG_SUBSCRIBE_DELETED_CHANNEL))
             getActivity().finish();
+        */
     }
 }

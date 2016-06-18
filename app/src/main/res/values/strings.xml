@@ -427,8 +427,8 @@
     <string name="conversation_delete_text">If you delete the conversation, the data can\'t be restored. Do you
         really want to delete this conversation?</string>
     <string name="conversation_delete_server">This conversation has been deleted.</string>
-    <string name="conversation_info_updated">New conversations loaded.</string>
-    <string name="conversation_info_up_to_date">No new conversations.</string>
+    <string name="conversation_info_updated">Conversations updated.</string>
+    <string name="conversation_info_up_to_date">Conversations up to date.</string>
     <string name="conversation_created">Conversation created successfully.</string>
     <string name="conversation_edited">Conversation edited successfully.</string>
     <string name="conversation_add_info">Fill out the title field below. Then click the create button to submit the
@@ -438,6 +438,8 @@
 
     <!-- ConversationMessage ####################################################################################### -->
     <string name="conversation_message_no_data">There are no messages yet.</string>
+    <string name="conversation_message_info_updated">Conversation messages updated.</string>
+    <string name="conversation_message_info_up_to_date">Conversations messages up to date.</string>
 
     <!-- User ###################################################################################################### -->
     <string name="user_edited">User updated successfully.</string>
@@ -448,9 +450,9 @@
 
     <!-- Ballot #################################################################################################### -->
     <string name="ballot_add">Add ballot.</string>
-    <string name="ballot_info_updated">New ballots loaded.</string>
+    <string name="ballot_info_updated">Ballots updated.</string>
     <string name="ballot_info_refreshed">Ballot data updated.</string>
-    <string name="ballot_info_up_to_date">No new ballots.</string>
+    <string name="ballot_info_up_to_date">Ballots up to date.</string>
     <string name="ballot_no_data">There are no ballots yet.</string>
     <string name="ballot_multiple_choice">Multiple choice</string>
     <string name="ballot_multiple_choice_detail">Multiple choice: %1$s</string>
@@ -462,6 +464,7 @@
         which participants have voted for certain options of the ballot. If disabled, the participants can only
         determine how many votes a option has received, but not which participants have voted for it.</string>
     <string name="ballot_no_data_refresh">No ballot data found. Swipe down to refresh.</string>
+    <string name="ballot_closed">The ballot is closed.</string>
     <string name="ballot_close">Close ballot</string>
     <string name="ballot_close_text">If you close this ballot, no further votes can be made. Do you
         really want to close this ballot?</string>
@@ -476,7 +479,7 @@
     <!-- Option #################################################################################################### -->
     <string name="option_no_data">There are no options yet.</string>
     <string name="option_info_updated">Ballot options updated.</string>
-    <string name="option_info_up_to_date">No new ballot options.</string>
+    <string name="option_info_up_to_date">Ballot options up to date.</string>
     <string name="option_created">Ballot option created successfully.</string>
     <string name="option_add_info">Fill out the text field below. Then click the create button to submit the
         new ballot option.</string>

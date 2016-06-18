@@ -1,9 +1,12 @@
 package ulm.university.news.app.controller;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import ulm.university.news.app.api.BusEventOptions;
 import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Option;
+import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
 
@@ -32,18 +35,19 @@ import ulm.university.news.app.util.Util;
  *
  * @author Matthias Mak
  */
-public class BallotResultFragment extends Fragment {
+public class BallotResultFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>>{
     /** This classes tag for logging. */
     private static final String TAG = "BallotResultFragment";
 
-    private GroupDatabaseManager groupDBM;
+    /** The loader's id. */
+    private static final int LOADER_ID = 14;
+    private DatabaseLoader<List<Option>> databaseLoader;
+
     private Ballot ballot;
-    private List<Option> options;
     private OptionResultListAdapter listAdapter;
 
     private ListView lvOptions;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar pgrSending;
 
     private String errorMessage;
     private Toast toast;
@@ -70,16 +74,21 @@ public class BallotResultFragment extends Fragment {
         super.onCreate(savedInstanceState);
         groupId = getArguments().getInt("groupId");
         ballotId = getArguments().getInt("ballotId");
-        groupDBM = new GroupDatabaseManager(getActivity());
-        ballot = groupDBM.getBallot(ballotId);
-        options = groupDBM.getOptions(ballotId);
+
+        // Initialize or reuse an existing database loader.
+        databaseLoader = (DatabaseLoader) getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+        databaseLoader.onContentChanged();
+
+        ballot = databaseLoader.getGroupDBM().getBallot(ballotId);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Update ballot in case it was edited.
-        ballot = groupDBM.getBallot(ballotId);
+        // Update option list to make changes visible.
+        if (databaseLoader != null) {
+            databaseLoader.onContentChanged();
+        }
     }
 
     @Override
@@ -113,13 +122,13 @@ public class BallotResultFragment extends Fragment {
         lvOptions = (ListView) v.findViewById(R.id.fragment_ballot_result_lv_result);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.fragment_ballot_result_swipe_refresh_layout);
         TextView tvListEmpty = (TextView) v.findViewById(R.id.fragment_ballot_result_tv_list_empty);
-        pgrSending = (ProgressBar) v.findViewById(R.id.fragment_ballot_result_pgr_sending);
 
         lvOptions.setEmptyView(tvListEmpty);
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isAutoRefresh = false;
                 refreshOptions();
             }
         });
@@ -133,8 +142,6 @@ public class BallotResultFragment extends Fragment {
 
         lvOptions.setAdapter(listAdapter);
         lvOptions.setEmptyView(tvListEmpty);
-
-        listAdapter.setData(options);
     }
 
     private void refreshOptions() {
@@ -157,6 +164,45 @@ public class BallotResultFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         }
+    }
+
+    @Override
+    public Loader<List<Option>> onCreateLoader(int id, Bundle args) {
+        databaseLoader = new DatabaseLoader<>(getActivity(), new DatabaseLoader
+                .DatabaseLoaderCallbacks<List<Option>>() {
+            @Override
+            public List<Option> onLoadInBackground() {
+                // Load all options of the ballot.
+                return databaseLoader.getGroupDBM().getOptions(ballot.getId());
+            }
+
+            @Override
+            public IntentFilter observerFilter() {
+                // Listen to database changes on new options.
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION);
+                filter.addAction(GroupDatabaseManager.DELETE_BALLOT_OPTION);
+                filter.addAction(GroupDatabaseManager.STORE_BALLOT_OPTION_VOTE);
+                filter.addAction(GroupDatabaseManager.DELETE_BALLOT_OPTION_VOTE);
+                return filter;
+            }
+        });
+        // This loader uses the group database manager to load data.
+        databaseLoader.setGroupDBM(new GroupDatabaseManager(getActivity()));
+        return databaseLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Option>> loader, List<Option> data) {
+        // Update list.
+        listAdapter.setData(data);
+        listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Option>> loader) {
+        // Clear adapter data.
+        listAdapter.setData(null);
     }
 
     @Override
@@ -202,13 +248,13 @@ public class BallotResultFragment extends Fragment {
 
         if (newVotes) {
             // If createVote data was updated show message no matter if it was a manual or auto refresh.
-            String message = getString(R.string.option_info_updated);
+            String message = getString(R.string.vote_info_updated);
             toast.setText(message);
             toast.show();
         } else {
             if (!isAutoRefresh) {
                 // Only show updated message if a manual refresh was triggered.
-                String message = getString(R.string.option_info_up_to_date);
+                String message = getString(R.string.vote_info_up_to_date);
                 toast.setText(message);
                 toast.show();
             }

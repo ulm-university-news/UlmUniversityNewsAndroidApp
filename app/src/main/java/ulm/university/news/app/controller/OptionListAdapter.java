@@ -9,13 +9,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import ulm.university.news.app.R;
+import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Option;
 import ulm.university.news.app.util.Util;
 
@@ -28,17 +28,17 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
     /** This classes tag for logging. */
     private static final String TAG = "OptionListAdapter";
 
-    private boolean multipleChoice;
     private int singleSelectedPosition = -1;
     private HashSet<Integer> multipleSelectedPositions;
     private Button btnVote;
+    private Ballot ballot;
 
-    public OptionListAdapter(Context context, int resource, boolean multipleChoice, Button btnVote) {
+    public OptionListAdapter(Context context, int resource, Ballot ballot, Button btnVote) {
         super(context, resource);
-        this.multipleChoice = multipleChoice;
         this.btnVote = btnVote;
+        this.ballot = ballot;
 
-        // TODO If already voted, preselect options.
+        // If already voted, preselect options.
         singleSelectedPosition = -1;
         multipleSelectedPositions = new HashSet<>();
         updateVoteButton();
@@ -62,7 +62,7 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
 
                 voters = data.get(i).getVoters();
                 for (Integer voter : voters) {
-                    if (multipleChoice) {
+                    if (ballot.getMultipleChoice()) {
                         if (voter.intValue() == Util.getInstance(getContext()).getLocalUser().getId()) {
                             multipleSelectedPositions.add(i);
                         }
@@ -97,11 +97,17 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
         if (option != null) {
             CheckBox chkText = (CheckBox) convertView.findViewById(R.id.option_list_item_chk_text);
             final RadioButton rbText = (RadioButton) convertView.findViewById(R.id.option_list_item_rb_text);
-            TextView tvCount = (TextView) convertView.findViewById(R.id.option_list_item_tv_count);
 
-            // TODO If already voted, preselect options.
+            if (ballot.getClosed()) {
+                chkText.setEnabled(false);
+                rbText.setEnabled(false);
+            } else {
+                chkText.setEnabled(true);
+                rbText.setEnabled(true);
+            }
 
-            if (multipleChoice) {
+            // If already voted, preselect options.
+            if (ballot.getMultipleChoice()) {
                 chkText.setText(option.getText());
                 chkText.setVisibility(View.VISIBLE);
                 rbText.setVisibility(View.GONE);
@@ -136,19 +142,24 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
                     }
                 });
             }
-
-            // TODO Show user votes as count?
         }
         return convertView;
     }
 
     private void updateVoteButton() {
+        if (ballot.getClosed()) {
+            // Disable vote button if ballot is closed.
+            btnVote.setAlpha(.5f);
+            btnVote.setEnabled(false);
+            return;
+        }
+
         List<Option> allItems = new ArrayList<>();
         for (int i = 0; i < getCount(); i++) {
             allItems.add(getItem(i));
         }
 
-        if (multipleChoice) {
+        if (ballot.getMultipleChoice()) {
             boolean sameSelection = true;
             List<Option> selected = getMultipleSelectedOptions();
             if (selected != null && !selected.isEmpty()) {
