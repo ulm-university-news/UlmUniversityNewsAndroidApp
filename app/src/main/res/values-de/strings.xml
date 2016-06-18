@@ -356,4 +356,8 @@
     <string name="group_leave_admin_dialog_title">Verlassen nicht möglich</string>
     <string name="group_leave_admin_dialog_text">Sie können die Gruppe nicht verlassen da Sie der Gruppenadministrator sind und es kein anderes Gruppenmitglied gibt das diesen Posten übernehmen kann. Sie können die Gruppe allerdings löschen.</string>
     <string name="ballot_edited">Abstimmung erfolgreich geändert.</string>
+    <string name="option_delete_dialog_title">Abstimmungsoption löschen</string>
+    <string name="option_delete_dialog_text">Die Abstimmungsoption und dazugehörige Stimmen werden unwiederruflich gelöscht. Möchten Sie die Abstimmungsoption wirklich löschen?</string>
+    <string name="activity_option_edit_title"></string>
+    <string name="option_deleted">Abstimmungsoption erfolgreich gelöscht.</string>
 </resources>

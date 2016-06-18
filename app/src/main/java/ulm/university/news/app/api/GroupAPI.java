@@ -46,6 +46,7 @@ public class GroupAPI extends MainAPI {
     public static final String DELETE_BALLOT = "deleteBallot";
     public static final String VOTE_CREATED = "voteCreated";
     public static final String VOTE_DELETED = "voteDeleted";
+    public static final String OPTION_DELETED = "optionDeleted";
 
     /**
      * Get the instance of the GroupAPI class.
@@ -622,6 +623,29 @@ public class GroupAPI extends MainAPI {
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_POST, url);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Deletes a ballot option on the server.
+     *
+     * @param groupId The id of the group.
+     * @param ballotId The id of the ballot.
+     * @param optionId The id of the option.
+     */
+    public void deleteOption(int groupId, int ballotId, final int optionId) {
+        // Add group, ballot and option id to url.
+        String url = serverAddressGroup + "/" + groupId + "/ballot/" + ballotId + "/option/" + optionId;
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                EventBus.getDefault().post(new BusEvent(OPTION_DELETED, optionId));
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);
         rTask.setAccessToken(Util.getInstance(context).getAccessToken());
         Log.d(TAG, rTask.toString());
         new Thread(rTask).start();

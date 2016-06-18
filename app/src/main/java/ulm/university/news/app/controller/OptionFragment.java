@@ -41,7 +41,7 @@ import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 
-public class OptionFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>> {
+public class OptionFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>>, DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "OptionFragment";
 
@@ -121,7 +121,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
             }
         });
 
-        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot, btnVote);
+        listAdapter = new OptionListAdapter(getActivity(), R.layout.option_list_item, ballot, btnVote, this);
 
         lvOptions.setAdapter(listAdapter);
         lvOptions.setEmptyView(tvListEmpty);
@@ -318,30 +318,39 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
      */
     public void onEventMainThread(BusEvent event) {
         Log.d(TAG, "BusEvent: " + event.getAction());
-        if (GroupAPI.VOTE_CREATED.equals(event.getAction())) {
-            Log.d(TAG, "Vote created message received.");
-            // Store vote in database.
-            databaseLoader.getGroupDBM().storeVote((int) event.getObject(), Util.getInstance(getContext())
-                    .getLocalUser().getId());
-            voteCounterReceived++;
-        } else if (GroupAPI.VOTE_DELETED.equals(event.getAction())) {
-            Log.d(TAG, "Vote deleted message received.");
-            // Delete vote from database.
-            databaseLoader.getGroupDBM().deleteVote((int) event.getObject(), Util.getInstance(getContext())
-                    .getLocalUser().getId());
-            if (!ballot.getMultipleChoice()) {
-                // After deletion vote for new option.
-                GroupAPI.getInstance(getContext()).createVote(groupId, ballot.getId(),
-                        listAdapter.getSingleSelectedOption().getId());
-            }
-        }
-        if (voteCounterReceived == voteCounterExpected) {
-            databaseLoader.onContentChanged();
+        if (GroupAPI.OPTION_DELETED.equals(event.getAction())) {
+            databaseLoader.getGroupDBM().deleteOption((int) event.getObject());
+
             pgrSending.setVisibility(View.GONE);
             btnVote.setVisibility(View.VISIBLE);
-            String message = getString(R.string.vote_voted);
-            toast.setText(message);
+            toast.setText(getString(R.string.option_deleted));
             toast.show();
+        } else {
+            if (GroupAPI.VOTE_CREATED.equals(event.getAction())) {
+                Log.d(TAG, "Vote created message received.");
+                // Store vote in database.
+                databaseLoader.getGroupDBM().storeVote((int) event.getObject(), Util.getInstance(getContext())
+                        .getLocalUser().getId());
+                voteCounterReceived++;
+            } else if (GroupAPI.VOTE_DELETED.equals(event.getAction())) {
+                Log.d(TAG, "Vote deleted message received.");
+                // Delete vote from database.
+                databaseLoader.getGroupDBM().deleteVote((int) event.getObject(), Util.getInstance(getContext())
+                        .getLocalUser().getId());
+                if (!ballot.getMultipleChoice()) {
+                    // After deletion vote for new option.
+                    GroupAPI.getInstance(getContext()).createVote(groupId, ballot.getId(),
+                            listAdapter.getSingleSelectedOption().getId());
+                }
+            }
+            if (voteCounterReceived == voteCounterExpected) {
+                databaseLoader.onContentChanged();
+                pgrSending.setVisibility(View.GONE);
+                btnVote.setVisibility(View.VISIBLE);
+                String message = getString(R.string.vote_voted);
+                toast.setText(message);
+                toast.show();
+            }
         }
     }
 
@@ -419,5 +428,25 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoaderReset(Loader<List<Option>> loader) {
         // Clear adapter data.
         listAdapter.setData(null);
+    }
+
+    @Override
+    public void onDialogPositiveClick(String tag) {
+        if (YesNoDialogFragment.DIALOG_OPTION_DELETE.equals(tag)) {
+            if (Util.getInstance(getContext()).isOnline()) {
+                btnVote.setVisibility(View.GONE);
+                pgrSending.setVisibility(View.VISIBLE);
+                GroupAPI.getInstance(getContext()).deleteOption(groupId, ballot.getId(),
+                        listAdapter.getCurrentOptionId());
+
+                errorMessage = getString(R.string.general_error_connection_failed);
+                errorMessage += " " + getString(R.string.general_error_delete);
+            } else {
+                String message = getString(R.string.general_error_no_connection);
+                message += " " + getString(R.string.general_error_delete);
+                toast.setText(message);
+                toast.show();
+            }
+        }
     }
 }

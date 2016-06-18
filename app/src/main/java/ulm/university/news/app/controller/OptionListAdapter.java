@@ -1,6 +1,8 @@
 package ulm.university.news.app.controller;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import java.util.ArrayList;
@@ -32,11 +35,15 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
     private HashSet<Integer> multipleSelectedPositions;
     private Button btnVote;
     private Ballot ballot;
+    private OptionFragment optionFragment;
+    private int currentOptionId;
 
-    public OptionListAdapter(Context context, int resource, Ballot ballot, Button btnVote) {
+    public OptionListAdapter(Context context, int resource, Ballot ballot, Button btnVote,
+                             OptionFragment optionFragment) {
         super(context, resource);
         this.btnVote = btnVote;
         this.ballot = ballot;
+        this.optionFragment = optionFragment;
 
         // If already voted, preselect options.
         singleSelectedPosition = -1;
@@ -54,8 +61,12 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
      * @param data The updated option list.
      */
     public void setData(List<Option> data) {
+        // Reset previous data.
         clear();
+        multipleSelectedPositions.clear();
+        singleSelectedPosition = -1;
         if (data != null) {
+            // Set new data.
             List<Integer> voters;
             for (int i = 0; i < data.size(); i++) {
                 add(data.get(i));
@@ -85,25 +96,41 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             convertView = vi.inflate(R.layout.option_list_item, parent, false);
         }
 
-        Option option = getItem(position);
+        final Option option = getItem(position);
 
         if (option != null) {
             CheckBox chkText = (CheckBox) convertView.findViewById(R.id.option_list_item_chk_text);
             final RadioButton rbText = (RadioButton) convertView.findViewById(R.id.option_list_item_rb_text);
+            ImageView ivDelete = (ImageView) convertView.findViewById(R.id.option_list_item_iv_delete);
+
+            // If local user is admin, show delete option buttons.
+            if (ballot.isBallotAdmin(Util.getInstance(convertView.getContext()).getLocalUser().getId())) {
+                ivDelete.setVisibility(View.VISIBLE);
+                ivDelete.setColorFilter(ContextCompat.getColor(convertView.getContext(), R.color.grey));
+                ivDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteBallotOption(option.getId());
+                    }
+                });
+            }
 
             if (ballot.getClosed()) {
                 chkText.setEnabled(false);
                 rbText.setEnabled(false);
+                ivDelete.setEnabled(false);
+                ivDelete.setAlpha(0.5f);
             } else {
                 chkText.setEnabled(true);
                 rbText.setEnabled(true);
+                ivDelete.setEnabled(true);
+                ivDelete.setAlpha(1f);
             }
 
             // If already voted, preselect options.
@@ -144,6 +171,20 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
             }
         }
         return convertView;
+    }
+
+    private void deleteBallotOption(int optionId) {
+        currentOptionId = optionId;
+        // Show delete group dialog.
+        YesNoDialogFragment dialog = new YesNoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(YesNoDialogFragment.DIALOG_TITLE, getContext().getString(R.string
+                .option_delete_dialog_title));
+        args.putString(YesNoDialogFragment.DIALOG_TEXT, getContext().getString(R.string
+                .option_delete_dialog_text));
+        dialog.setArguments(args);
+        dialog.setTargetFragment(optionFragment, 0);
+        dialog.show(optionFragment.getFragmentManager(), YesNoDialogFragment.DIALOG_OPTION_DELETE);
     }
 
     private void updateVoteButton() {
@@ -212,5 +253,9 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
         }
 
         return selectedOptions;
+    }
+
+    public int getCurrentOptionId() {
+        return currentOptionId;
     }
 }

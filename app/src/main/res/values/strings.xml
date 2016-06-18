@@ -488,8 +488,12 @@
     <string name="option_info_updated">Ballot options updated.</string>
     <string name="option_info_up_to_date">Ballot options up to date.</string>
     <string name="option_created">Ballot option created successfully.</string>
+    <string name="option_deleted">Ballot option deleted successfully.</string>
     <string name="option_add_info">Fill out the text field below. Then click the create button to submit the
         new ballot option.</string>
+    <string name="option_delete_dialog_title">Delete option</string>
+    <string name="option_delete_dialog_text">The option and all associated votes will be deleted and can\'t be
+        restored. Do you really want to delete the option?</string>
 
     <!-- Vote ###################################################################################################### -->
     <string name="vote_no_data">There are no votes yet.</string>
