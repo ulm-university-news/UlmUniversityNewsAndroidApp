@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
@@ -82,6 +83,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         groupId = getArguments().getInt("groupId");
         groupDBM = new GroupDatabaseManager(getActivity());
         group = groupDBM.getGroup(groupId);
+        group.setParticipants(groupDBM.getGroupMembers(groupId));
         resourceDetails = new ArrayList<>();
     }
 
@@ -204,26 +206,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         btnLeave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Util.getInstance(v.getContext()).isOnline()) {
-                    // Show leave group dialog.
-                    YesNoDialogFragment dialog = new YesNoDialogFragment();
-                    Bundle args = new Bundle();
-                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
-                            .group_leave_dialog_title));
-                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
-                            .group_leave_dialog_text));
-                    dialog.setArguments(args);
-                    dialog.setTargetFragment(GroupDetailFragment.this, 0);
-                    dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_GROUP_LEAVE);
-
-                    errorMessage = getString(R.string.general_error_connection_failed);
-                    errorMessage += " " + getString(R.string.general_error_leave);
-                } else {
-                    String message = getString(R.string.general_error_no_connection);
-                    message += " " + getString(R.string.general_error_leave);
-                    toast.setText(message);
-                    toast.show();
-                }
+                leaveGroup();
             }
         });
 
@@ -241,6 +224,43 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         listAdapter = new ResourceDetailListAdapter();
         listAdapter.setResourceDetails(resourceDetails);
         lvGroupDetails.setAdapter(listAdapter);
+    }
+
+    private void leaveGroup() {
+        if (Util.getInstance(getContext()).isOnline()) {
+            // Show can't leave group dialog if local user is admin and single group member.
+            group.setParticipants(groupDBM.getGroupMembers(groupId));
+            if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())
+                    && group.getParticipants().size() < 2) {
+                InfoDialogFragment dialog = new InfoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string
+                        .group_leave_admin_dialog_title));
+                args.putString(InfoDialogFragment.DIALOG_TEXT, getString(R.string
+                        .group_leave_admin_dialog_text));
+                dialog.setArguments(args);
+                dialog.show(getFragmentManager(), InfoDialogFragment.DIALOG_LEAVE_GROUP_ADMIN);
+            } else {
+                // Show leave group dialog.
+                YesNoDialogFragment dialog = new YesNoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
+                        .group_leave_dialog_title));
+                args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
+                        .group_leave_dialog_text));
+                dialog.setArguments(args);
+                dialog.setTargetFragment(GroupDetailFragment.this, 0);
+                dialog.show(getFragmentManager(), YesNoDialogFragment.DIALOG_GROUP_LEAVE);
+            }
+
+            errorMessage = getString(R.string.general_error_connection_failed);
+            errorMessage += " " + getString(R.string.general_error_leave);
+        } else {
+            String message = getString(R.string.general_error_no_connection);
+            message += " " + getString(R.string.general_error_leave);
+            toast.setText(message);
+            toast.show();
+        }
     }
 
     /**
@@ -417,6 +437,12 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         } else if (GroupAPI.DELETE_GROUP.equals(action)) {
             groupDBM.deleteGroup(groupId);
             getActivity().finish();
+        } else if (GroupAPI.CHANGE_GROUP_ADMIN.equals(action)) {
+            Group groupWithChangedAdmin = (Group) busEvent.getObject();
+            group.setGroupAdmin(groupWithChangedAdmin.getGroupAdmin());
+            groupDBM.updateGroup(group);
+            // Local user isn't admin anymore. Attempt to leave group again.
+            GroupAPI.getInstance(getContext()).leaveGroup(groupId);
         }
     }
 
@@ -491,12 +517,25 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         if (tag.equals(YesNoDialogFragment.DIALOG_GROUP_LEAVE)) {
             btnLeave.setVisibility(View.GONE);
             pgrSending.setVisibility(View.VISIBLE);
-            // If group is already marked as deleted, do not contact server and delete is directly.
-            if (group.getDeleted()) {
-                groupDBM.deleteGroup(groupId);
-                getActivity().finish();
+            if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())) {
+                // Change admin to a random user.
+                Group groupWithChangedAdmin = new Group();
+                Random random = new Random();
+                User user;
+                do {
+                    user = group.getParticipants().get(random.nextInt(group.getParticipants().size()));
+                } while (group.getGroupAdmin() == user.getId());
+                groupWithChangedAdmin.setGroupAdmin(user.getId());
+                groupWithChangedAdmin.setId(groupId);
+                GroupAPI.getInstance(getContext()).changeGroupAdmin(groupWithChangedAdmin);
             } else {
-                GroupAPI.getInstance(getContext()).leaveGroup(groupId);
+                // If group is already marked as deleted, do not contact server and delete is directly.
+                if (group.getDeleted()) {
+                    groupDBM.deleteGroup(groupId);
+                    getActivity().finish();
+                } else {
+                    GroupAPI.getInstance(getContext()).leaveGroup(groupId);
+                }
             }
         } else if (tag.equals(YesNoDialogFragment.DIALOG_GROUP_DELETE)) {
             GroupAPI.getInstance(getContext()).deleteGroup(groupId);

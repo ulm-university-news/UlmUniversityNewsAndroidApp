@@ -403,6 +403,9 @@
     <string name="group_leave_dialog_title">Leave group</string>
     <string name="group_leave_dialog_text">This group will be deleted from your group list. You
         won\'t be able to participate in this group anymore.\nDo you really want to leave this group?</string>
+    <string name="group_leave_admin_dialog_title">Can\'t leave group</string>
+    <string name="group_leave_admin_dialog_text">You can\'t leave the group, because you are the administrator of this
+        group and there is no other group member to assume. However, you can delete the group.</string>
     <string name="group_info_updated">Group data updated.</string>
     <string name="group_info_up_to_date">Group data already up to date.</string>
     <string name="group_delete_dialog_title">Delete group</string>

@@ -353,4 +353,6 @@
     <string name="conversation_message_info_up_to_date">Nachrichten bereits aktuell.</string>
     <string name="conversation_message_info_updated">Nachrichten aktualisiert.</string>
     <string name="ballot_closed">Die Abstimmung ist geschlossen.</string>
+    <string name="group_leave_admin_dialog_title">Verlassen nicht möglich</string>
+    <string name="group_leave_admin_dialog_text">Sie können die Gruppe nicht verlassen da Sie der Gruppenadministrator sind und es kein anderes Gruppenmitglied gibt das diesen Posten übernehmen kann. Sie können die Gruppe allerdings löschen.</string>
 </resources>

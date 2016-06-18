@@ -17,6 +17,7 @@ public class InfoDialogFragment extends AppCompatDialogFragment {
     public static final String DIALOG_TEXT = "dialogText";
     public static final String DIALOG_SUBSCRIBE_DELETED_CHANNEL = "subscribeDeletedChannel";
     public static final String DIALOG_JOIN_DELETED_GROUP = "joinDeletedGroup";
+    public static final String DIALOG_LEAVE_GROUP_ADMIN = "leaveGroupAdmin";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

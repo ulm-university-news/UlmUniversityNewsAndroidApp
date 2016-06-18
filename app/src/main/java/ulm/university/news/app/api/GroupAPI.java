@@ -39,6 +39,7 @@ public class GroupAPI extends MainAPI {
     // Constants.
     public static final String JOIN_GROUP = "joinGroup";
     public static final String LEAVE_GROUP = "removeUserFromGroup";
+    public static final String CHANGE_GROUP_ADMIN = "changeGroupAdmin";
     public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String DELETE_GROUP = "deleteGroup";
     public static final String DELETE_CONVERSATION = "deleteConversation";
@@ -153,6 +154,31 @@ public class GroupAPI extends MainAPI {
             public void onResponse(String json) {
                 Group groupResponse = gson.fromJson(json, Group.class);
                 EventBus.getDefault().post(groupResponse);
+            }
+        };
+        RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
+        rTask.setBody(jsonGroup);
+        rTask.setAccessToken(Util.getInstance(context).getAccessToken());
+        Log.d(TAG, rTask.toString());
+        new Thread(rTask).start();
+    }
+
+    /**
+     * Changes the admin of an existing group on the server. The changed data is provided within the group object.
+     *
+     * @param group The group object including the new admin id.
+     */
+    public void changeGroupAdmin(Group group) {
+        // Add group id to url.
+        String url = serverAddressGroup + "/" + group.getId();
+        // Parse group object to JSON String.
+        String jsonGroup = gson.toJson(group, Group.class);
+
+        RequestCallback rCallback = new RequestCallback() {
+            @Override
+            public void onResponse(String json) {
+                Group groupResponse = gson.fromJson(json, Group.class);
+                EventBus.getDefault().post(new BusEvent(CHANGE_GROUP_ADMIN, groupResponse));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);
