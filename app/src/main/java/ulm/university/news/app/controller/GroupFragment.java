@@ -139,7 +139,7 @@ public class GroupFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<List<Group>> loader, List<Group> data) {
         // Update list.
-        // TODO Util.getInstance(getContext()).sortChannels(data);
+        GroupController.sortGroups(getContext(), data);
         groups = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

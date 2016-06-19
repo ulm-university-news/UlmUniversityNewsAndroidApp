@@ -132,8 +132,8 @@
     <!-- SettingsNotificationActivity ############################################################################## -->
     <string name="activity_settings_notification_title">Notification settings</string>
     <string name="activity_settings_notification_info">Define the behaviour of the app on incoming messages.
-        These settings are used for the whole app. You are able to choose other announcement settings for single
-        channels and users.</string>
+        These settings are used for the whole app. You may override this settings for individual channels and groups.
+        </string>
     <string name="activity_settings_notification_rb_all">Announce all incoming messages</string>
     <string name="activity_settings_notification_rb_priority">Announce high priority messages only.</string>
     <string name="activity_settings_notification_rb_none">Announce no incoming messages.</string>
@@ -159,9 +159,8 @@
     <string name="activity_settings_list_rb_general_asc">Ascending</string>
     <string name="activity_settings_list_rb_general_desc">Descending</string>
     <string name="activity_settings_list_messages_info_title">Messages settings</string>
-    <string name="activity_settings_list_messages_info">The arrangement of the messages is exempt from the general
-        list settings and can be set separately here. Choose the arrangement criterion for all message
-         lists like conversation messages.</string>
+    <string name="activity_settings_list_messages_info">Choose the arrangement criterion for all message
+         lists like channel messages and conversation messages.</string>
     <string name="activity_settings_list_rb_messages_asc">Latest message at the top</string>
     <string name="activity_settings_list_rb_messages_desc">Latest message at the bottom</string>
 

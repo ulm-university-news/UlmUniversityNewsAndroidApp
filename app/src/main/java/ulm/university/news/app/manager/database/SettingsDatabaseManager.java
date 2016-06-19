@@ -54,7 +54,7 @@ public class SettingsDatabaseManager {
         values.put(SETTINGS_ID, 0);
         values.put(SETTINGS_CHANNEL, OrderSettings.TYPE_AND_FACULTY.ordinal());
         values.put(SETTINGS_CONVERSATION, OrderSettings.LATEST_DATE.ordinal());
-        values.put(SETTINGS_GROUP, OrderSettings.ALPHABETICAL.ordinal());
+        values.put(SETTINGS_GROUP, OrderSettings.TYPE.ordinal());
         values.put(SETTINGS_BALLOT, OrderSettings.LATEST_DATE.ordinal());
         values.put(SETTINGS_MESSAGE, OrderSettings.ASCENDING.ordinal());
         values.put(SETTINGS_GENERAL, OrderSettings.ASCENDING.ordinal());

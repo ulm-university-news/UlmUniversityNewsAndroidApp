@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class SettingsListActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("all")
     private void initView() {
         toast = Toast.makeText(this, getString(R.string.general_settings_updated), Toast.LENGTH_SHORT);
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -80,6 +82,9 @@ public class SettingsListActivity extends AppCompatActivity {
         RadioButton rbChannelType = (RadioButton) findViewById(R.id.activity_settings_list_rb_channel_type);
         RadioButton rbChannelMessages = (RadioButton) findViewById(R.id.activity_settings_list_rb_channel_messages);
 
+        // Disable messages setting. Not supported anymore.
+        rbChannelMessages.setVisibility(View.GONE);
+
         switch (settings.getChannelSettings()) {
             case ALPHABETICAL:
                 rbChannelAlphabetical.setChecked(true);
@@ -103,6 +108,9 @@ public class SettingsListActivity extends AppCompatActivity {
                 .activity_settings_list_rb_group_alphabetical);
         RadioButton rbGroupType = (RadioButton) findViewById(R.id.activity_settings_list_rb_group_type);
         RadioButton rbGroupMessages = (RadioButton) findViewById(R.id.activity_settings_list_rb_group_messages);
+
+        // Disable messages setting. Not supported anymore.
+        rbGroupMessages.setVisibility(View.GONE);
 
         switch (settings.getGroupSettings()) {
             case ALPHABETICAL:

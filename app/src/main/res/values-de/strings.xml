@@ -96,15 +96,15 @@
     <string name="activity_reminder_add_title">Reminder hinzufügen</string>
     <string name="activity_reminder_detail_title">Reminderdetails</string>
     <string name="activity_reminder_edit_title">Reminder bearbeiten</string>
-    <string name="activity_settings_channel_info">Hier können Sie das Verhalten der Anwendung bei eingehenden
-        Nachrichten eingestellt werden. Die hier vorgenommenen Einstellungen gelten grundsätzlich für die gesamte Anwendung. Für einzelne Kanäle und Gruppen können auch andere Einstellungen vorgenommen werden, welche dann die hier vorgenommenen Einstellungen für den entsprechenden Kanal oder die entsprechende Gruppe überschreiben.</string>
+    <string name="activity_settings_channel_info">Hier können Sie für diesen Kanal spezifische Benachrichtigungseinstellungen festlegen, welche die globalen Einstellungen für diesen Kanal überschreiben. Bei \"Allgemeine Einstellungen\" werden für den Kanal die globalen Benachrichtigungseinstellungen verwendet.</string>
     <string name="activity_settings_list_channel_info">Hier kann das Anordnungskriterium für die Auflistung von Kanälen festgelegt werden.</string>
     <string name="activity_settings_list_channel_info_title">Kanaleinstellungen</string>
     <string name="activity_settings_list_general_info_title">Allgemeine Listeneinstellungen</string>
     <string name="activity_settings_list_general_info">Hier kann festgelegt werden, ob die Elemente in Auflistungen wie z. B. \"Meine Kanäle\" entsprechend dem gewählten Anordnungskriterium aufteigend, oder absteigend sortiert werden sollen. </string>
     <string name="activity_settings_list_group_info">Hier kann das Anordnungskriterium für die Auflistung von Gruppen eingestellt werden.</string>
     <string name="activity_settings_list_group_info_title">Gruppeneinstellungen</string>
-    <string name="activity_settings_list_messages_info">Die Anordnung der Nachrichten ist von den allgemeinen Listeneinstellungen ausgenommen und kann hier separat eingestellt werden. So können die neuesten Nachrichten ganz oben oder ganz unten angezeigt werden.</string>
+    <string name="activity_settings_list_messages_info">Wählen Sie ob die neuesten Kanalnachrichten oder
+        Konversationsnachrichten ganz oben oder ganz unten in der Liste angezeigt werden sollen.</string>
     <string name="activity_settings_list_messages_info_title">Nachrichteneinstellungen</string>
     <string name="activity_settings_list_rb_channel_alphabetical">Alphabetisch</string>
     <string name="activity_settings_list_rb_channel_messages">Anzahl ungelesene Nachrichten</string>
@@ -116,7 +116,9 @@
     <string name="activity_settings_list_rb_messages_asc">Neueste Nachrichten oben</string>
     <string name="activity_settings_list_rb_messages_desc">Neueste Nachrichten unten</string>
     <string name="activity_settings_list_title">Listeneinstellungen</string>
-    <string name="activity_settings_notification_info">Hier können Sie für diesen Kanal spezifische Benachrichtigungseinstellungen festlegen, welche die globalen Einstellungen für diesen Kanal überschreiben. Bei \"Allgemeine Einstellungen\" werden für den Kanal die globalen Benachrichtigungseinstellungen verwendet.</string>
+    <string name="activity_settings_notification_info">Hier können Sie das Verhalten der Anwendung bei eingehenden
+        Nachrichten einstellen. Die hier vorgenommenen Einstellungen gelten grundsätzlich für die gesamte Anwendung.
+        Für einzelne Kanäle und Gruppen können auch andere Einstellungen vorgenommen werden, welche dann die hier vorgenommenen Einstellungen für den entsprechenden Kanal oder die entsprechende Gruppe überschreiben.</string>
     <string name="activity_settings_notification_rb_all">Alle Nachrichten ankündigen</string>
     <string name="activity_settings_notification_rb_general">Allgemeine Einstellungen</string>
     <string name="activity_settings_notification_rb_none">Keine Nachrichten ankündigen.</string>

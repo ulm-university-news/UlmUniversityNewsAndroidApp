@@ -14,8 +14,10 @@ import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Conversation;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.Option;
+import ulm.university.news.app.data.Settings;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
+import ulm.university.news.app.manager.database.SettingsDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Util;
 
@@ -388,5 +390,56 @@ public class GroupController {
                 return c1.getVoters().size() < c2.getVoters().size() ? 1 : -1;
             }
         });
+    }
+
+    /**
+     * Sorts the given groups alphabetically. Ignores group type.
+     *
+     * @param groups The group list.
+     */
+    private static void sortGroupName(List<Group> groups) {
+        Collections.sort(groups, new Comparator<Group>() {
+            public int compare(Group g1, Group g2) {
+                return g1.getName().compareToIgnoreCase(g2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given groups according to their group type. Groups of the same type will be sorted
+     * alphabetically.
+     *
+     * @param groups The group list.
+     */
+    private static void sortGroupType(List<Group> groups) {
+        Collections.sort(groups, new Comparator<Group>() {
+            public int compare(Group g1, Group g2) {
+                int res = g1.getGroupType().compareTo(g2.getGroupType());
+                if (res != 0) {
+                    return res;
+                }
+                return g1.getName().compareToIgnoreCase(g2.getName());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given group list according to the group settings.
+     *
+     * @param groups The group list.
+     */
+    public static void sortGroups(Context context, List<Group> groups) {
+        if (groups != null) {
+            // Check settings for preferred group order.
+            Settings settings = new SettingsDatabaseManager(context).getSettings();
+            switch (settings.getGroupSettings()) {
+                case ALPHABETICAL:
+                    sortGroupName(groups);
+                    break;
+                case TYPE:
+                    sortGroupType(groups);
+                    break;
+            }
+        }
     }
 }
