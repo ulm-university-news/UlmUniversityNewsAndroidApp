@@ -33,6 +33,7 @@ import ulm.university.news.app.util.Util;
 import static ulm.university.news.app.util.Constants.ACCOUNT_NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.PASSWORD_GROUP_PATTERN;
 
 public class GroupEditActivity extends AppCompatActivity implements DialogListener {
@@ -289,6 +290,16 @@ public class GroupEditActivity extends AppCompatActivity implements DialogListen
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
+                break;
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(this).setGroupToDeleted(group.getId());
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 break;
         }
     }

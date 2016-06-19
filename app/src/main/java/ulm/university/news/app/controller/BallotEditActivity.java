@@ -24,8 +24,10 @@ import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.BALLOT_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.NAME_PATTERN;
 
 public class BallotEditActivity extends AppCompatActivity implements DialogListener {
@@ -35,12 +37,13 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
     private TextInputLabels tilTitle;
     private TextInputLabels tilDescription;
     private TextView tvError;
-    private ProgressBar pgrSearching;
+    private ProgressBar pgrSending;
     private Button btnEdit;
 
     private Toast toast;
     private int groupId;
     private Ballot ballot;
+    private GroupDatabaseManager groupDBM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,8 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
 
         groupId = getIntent().getIntExtra("groupId", 0);
         int ballotId = getIntent().getIntExtra("ballotId", 0);
-        ballot = new GroupDatabaseManager(this).getBallot(ballotId);
+        groupDBM = new GroupDatabaseManager(this);
+        ballot = groupDBM.getBallot(ballotId);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_ballot_edit_toolbar);
         setSupportActionBar(toolbar);
@@ -120,7 +124,7 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
         tilTitle = (TextInputLabels) findViewById(R.id.activity_ballot_edit_til_title);
         tilDescription = (TextInputLabels) findViewById(R.id.activity_ballot_edit_til_description);
         tvError = (TextView) findViewById(R.id.activity_ballot_edit_tv_error);
-        pgrSearching = (ProgressBar) findViewById(R.id.activity_ballot_edit_pgr_adding);
+        pgrSending = (ProgressBar) findViewById(R.id.activity_ballot_edit_pgr_adding);
         btnEdit = (Button) findViewById(R.id.activity_ballot_edit_btn_edit);
 
         tilTitle.setNameAndHint(getString(R.string.general_title));
@@ -168,7 +172,7 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
         if (valid) {
             // All checks passed. Edit ballot.
             tvError.setVisibility(View.GONE);
-            pgrSearching.setVisibility(View.VISIBLE);
+            pgrSending.setVisibility(View.VISIBLE);
 
             ballot.setTitle(tilTitle.getText());
             ballot.setDescription(tilDescription.getText());
@@ -183,9 +187,8 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
      */
     public void onEventMainThread(BusEventBallotChange event) {
         Log.d(TAG, event.toString());
-        pgrSearching.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.GONE);
         // Update ballot and leave activity.
-        GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         groupDBM.updateBallot(event.getBallot());
         toast.setText(getString(R.string.ballot_edited));
         toast.show();
@@ -210,11 +213,32 @@ public class BallotEditActivity extends AppCompatActivity implements DialogListe
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
         // Show appropriate error message.
-        pgrSearching.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.GONE);
+        btnEdit.setVisibility(View.VISIBLE);
+        Intent intent;
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
                 break;
+            case GROUP_NOT_FOUND:
+                groupDBM.setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
+            case BALLOT_NOT_FOUND:
+                groupDBM.deleteBallot(ballot.getId());
+                toast.setText(getString(R.string.ballot_delete_server));
+                toast.show();
+                intent = new Intent(this, GroupActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+                finish();
         }
     }
 

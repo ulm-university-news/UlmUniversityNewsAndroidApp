@@ -8,7 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.manager.database.UserDatabaseManager;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 public class GroupActivity extends AppCompatActivity {
@@ -30,6 +34,7 @@ public class GroupActivity extends AppCompatActivity {
     private static final String TAG = "GroupActivity";
 
     private int groupId;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,10 @@ public class GroupActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_group_sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
+        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+        if (v != null) v.setGravity(Gravity.CENTER);
 
         showGroupDeletedDialog(group);
         refreshGroupMembers();
@@ -147,10 +156,20 @@ public class GroupActivity extends AppCompatActivity {
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
         // Handle error.
+        // Show appropriate error message.
         switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                toast.setText( getString(R.string.general_error_connection_failed));
+                toast.show();
+                break;
             case GROUP_NOT_FOUND:
                 new GroupDatabaseManager(this).setGroupToDeleted(groupId);
-                // Close activity to show the main screen.
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
                 break;
         }

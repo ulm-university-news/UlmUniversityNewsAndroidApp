@@ -246,6 +246,8 @@ public class BallotFragment extends Fragment implements LoaderManager.LoaderCall
                 break;
             case GROUP_NOT_FOUND:
                 new GroupDatabaseManager(getContext()).setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
                 // Close activity and go to the main screen to show deleted dialog on restart activity.
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

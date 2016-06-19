@@ -39,6 +39,7 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
+import static ulm.university.news.app.util.Constants.OPTION_NOT_FOUND;
 
 
 public class OptionFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Option>>, DialogListener {
@@ -379,8 +380,15 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
                 toast.setText(errorMessage);
                 toast.show();
                 break;
+            case OPTION_NOT_FOUND:
+                // TODO Which option should be deleted?
+                // databaseLoader.getGroupDBM().deleteOption();
+                toast.setText(getString(R.string.option_delete_server));
+                getActivity().finish();
             case GROUP_NOT_FOUND:
                 new GroupDatabaseManager(getContext()).setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
                 // Close activity and go to the main screen to show deleted dialog on restart activity.
                 Intent intent = new Intent(getContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

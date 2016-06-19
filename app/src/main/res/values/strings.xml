@@ -421,6 +421,7 @@
     <string name="group_deleted_member_dialog_text">The group \"%1$s\" has been deleted. There won\'t be any
         further activities. Since you are a group member you still have a local copy on your device. If you
         leave, the local group data will be deleted and can\'t be restored.</string>
+    <string name="group_deleted">This group has been deleted.</string>
 
     <!-- Conversation ############################################################################################## -->
     <string name="conversation_no_data">There are no conversations yet.</string>
@@ -483,6 +484,7 @@
     <string name="ballot_delete_text">If you delete the ballot, the data can\'t be restored. Do you
         really want to delete this ballot?</string>
     <string name="ballot_no_result">There are no results available yet.</string>
+    <string name="ballot_delete_server">This ballot has been deleted.</string>
 
     <!-- Option #################################################################################################### -->
     <string name="option_no_data">There are no options yet.</string>
@@ -495,6 +497,7 @@
     <string name="option_delete_dialog_title">Delete option</string>
     <string name="option_delete_dialog_text">The option and all associated votes will be deleted and can\'t be
         restored. Do you really want to delete the option?</string>
+    <string name="option_delete_server">The option has been deleted.</string>
 
     <!-- Vote ###################################################################################################### -->
     <string name="vote_no_data">There are no votes yet.</string>

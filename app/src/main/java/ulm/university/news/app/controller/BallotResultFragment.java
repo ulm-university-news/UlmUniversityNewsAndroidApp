@@ -24,11 +24,15 @@ import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEventOptions;
 import ulm.university.news.app.api.GroupAPI;
+import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Option;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
+
+import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 /**
  * This fragment shows the results of the ballot.
@@ -258,6 +262,44 @@ public class BallotResultFragment extends Fragment implements LoaderManager.Load
                 toast.setText(message);
                 toast.show();
             }
+        }
+    }
+
+    /**
+     * This method will be called when a server error is posted to the EventBus.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void onEventMainThread(ServerError serverError) {
+        Log.d(TAG, "EventBus: ServerError");
+        handleServerError(serverError);
+    }
+
+    /**
+     * Handles the server error and shows appropriate error message.
+     *
+     * @param serverError The error which occurred on the server.
+     */
+    public void handleServerError(ServerError serverError) {
+        Log.d(TAG, serverError.toString());
+        // Hide loading animation on server response.
+        swipeRefreshLayout.setRefreshing(false);
+        // Show appropriate error message.
+        switch (serverError.getErrorCode()) {
+            case CONNECTION_FAILURE:
+                toast.setText(errorMessage);
+                toast.show();
+                break;
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(getContext()).setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                getActivity().finish();
+                break;
         }
     }
 }

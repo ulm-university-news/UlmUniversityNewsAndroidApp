@@ -26,6 +26,7 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.NAME_PATTERN;
 
 public class BallotAddActivity extends AppCompatActivity implements DialogListener {
@@ -37,7 +38,7 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
     private CheckBox chkMultipleChoice;
     private CheckBox chkPublicVotes;
     private TextView tvError;
-    private ProgressBar pgrSearching;
+    private ProgressBar pgrSending;
     private Button btnCreate;
 
     private Toast toast;
@@ -118,7 +119,7 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
         tilTitle = (TextInputLabels) findViewById(R.id.activity_ballot_add_til_title);
         tilDescription = (TextInputLabels) findViewById(R.id.activity_ballot_add_til_description);
         tvError = (TextView) findViewById(R.id.activity_ballot_add_tv_error);
-        pgrSearching = (ProgressBar) findViewById(R.id.activity_ballot_add_pgr_adding);
+        pgrSending = (ProgressBar) findViewById(R.id.activity_ballot_add_pgr_adding);
         btnCreate = (Button) findViewById(R.id.activity_ballot_add_btn_create);
         chkMultipleChoice = (CheckBox) findViewById(R.id.activity_ballot_add_chk_multiple_choice);
         chkPublicVotes = (CheckBox) findViewById(R.id.activity_ballot_add_chk_public_votes);
@@ -165,7 +166,7 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
         if (valid) {
             // All checks passed. Create new ballot.
             tvError.setVisibility(View.GONE);
-            pgrSearching.setVisibility(View.VISIBLE);
+            pgrSending.setVisibility(View.VISIBLE);
 
             Ballot ballot = new Ballot();
             ballot.setTitle(tilTitle.getText());
@@ -184,7 +185,7 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
     public void onEventMainThread(Ballot ballot) {
         Log.d(TAG, "EventBus: Ballot");
         Log.d(TAG, ballot.toString());
-        pgrSearching.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.GONE);
         // Store ballot and continue adding ballot options.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         groupDBM.storeBallot(groupId, ballot);
@@ -209,10 +210,22 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
         // Show appropriate error message.
-        pgrSearching.setVisibility(View.GONE);
+        pgrSending.setVisibility(View.GONE);
+        btnCreate.setVisibility(View.VISIBLE);
+        Intent intent;
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
+                break;
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(this).setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 break;
         }
     }
