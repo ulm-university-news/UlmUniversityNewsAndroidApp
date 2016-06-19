@@ -119,7 +119,6 @@
     <string name="activity_option_add_title">Add ballot option</string>
 
     <!-- OptionEditActivity ######################################################################################## -->
-    <string name="activity_option_edit_title">Edit ballot option</string>
 
     <!-- BallotEditActivity ######################################################################################## -->
     <string name="activity_ballot_edit_title">Edit ballot</string>
@@ -140,6 +139,9 @@
     <string name="activity_settings_notification_rb_general">Use general announcement settings</string>
     <string name="activity_settings_channel_info">Define the behaviour of the app on incoming messages for this
         specific channel. These settings are used for this channel only. This settings will override the
+        general notification settings.</string>
+    <string name="activity_settings_group_info">Define the behaviour of the app on incoming messages for this
+        specific group. These settings are used for this group only. This settings will override the
         general notification settings.</string>
 
     <!-- SettingsListActivity ###################################################################################### -->

@@ -21,6 +21,7 @@ import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.Option;
 import ulm.university.news.app.data.User;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.data.enums.NotificationSettings;
 import ulm.university.news.app.data.enums.Priority;
 import ulm.university.news.app.util.Util;
 
@@ -65,6 +66,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_ID
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.OPTION_TEXT;
+import static ulm.university.news.app.manager.database.DatabaseManager.SETTINGS_NOTIFICATION;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_GROUP_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.USER_ID;
@@ -133,6 +135,7 @@ public class GroupDatabaseManager {
         groupValues.put(GROUP_CREATION_DATE, group.getCreationDate().getMillis());
         groupValues.put(GROUP_MODIFICATION_DATE, group.getModificationDate().getMillis());
         groupValues.put(GROUP_ADMIN, group.getGroupAdmin());
+        groupValues.put(SETTINGS_NOTIFICATION, NotificationSettings.GENERAL.ordinal());
 
         try {
             db.insertOrThrow(GROUP_TABLE, null, groupValues);

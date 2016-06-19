@@ -362,4 +362,5 @@
     <string name="option_delete_dialog_text">Die Abstimmungsoption und dazugehörige Stimmen werden unwiederruflich gelöscht. Möchten Sie die Abstimmungsoption wirklich löschen?</string>
     <string name="activity_option_edit_title"></string>
     <string name="option_deleted">Abstimmungsoption erfolgreich gelöscht.</string>
+    <string name="activity_settings_group_info">Hier können Sie für diese Gruppe spezifische Benachrichtigungseinstellungen festlegen, welche die globalen Einstellungen für diese Gruppe überschreiben. Bei \"Allgemeine Einstellungen\" werden für die Gruppe die globalen Benachrichtigungseinstellungen verwendet.</string>
 </resources>

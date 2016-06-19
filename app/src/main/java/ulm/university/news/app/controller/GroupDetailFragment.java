@@ -107,23 +107,34 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId()) && !group.getDeleted()) {
             setHasOptionsMenu(true);
-        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.activity_group_detail_menu, menu);
+        // Disable edit and delete menu items if local user isn't the group admin.
+        if (!group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId()) || group.getDeleted()) {
+            MenuItem menuItemEdit = menu.findItem(R.id.activity_group_detail_tab_edit);
+            MenuItem menuItemDelete = menu.findItem(R.id.activity_group_detail_tab_delete);
+            menuItemEdit.setVisible(false);
+            menuItemDelete.setVisible(false);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
+        Intent intent;
         switch (item.getItemId()) {
+            case R.id.activity_group_detail_tab_settings:
+                intent = new Intent(getActivity(), SettingsGroupActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+                return true;
             case R.id.activity_group_detail_tab_edit:
-                Intent intent = new Intent(getActivity(), GroupEditActivity.class);
+                intent = new Intent(getActivity(), GroupEditActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
                 return true;

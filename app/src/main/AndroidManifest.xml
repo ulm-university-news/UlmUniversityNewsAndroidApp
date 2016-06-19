@@ -242,11 +242,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.BallotActivity"/>
         </activity>
-        <activity android:name=".controller.BallotEditActivity"
+        <activity
+            android:name=".controller.BallotEditActivity"
             android:label="@string/activity_ballot_edit_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ulm.university.news.app.controller.BallotActivity"/>
+        </activity>
+        <activity android:name=".controller.SettingsGroupActivity">
         </activity>
     </application>
 
