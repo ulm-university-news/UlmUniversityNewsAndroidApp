@@ -343,7 +343,10 @@
     <string name="option_created">Abstimmungsoption erfolgreich erstellt.</string>
     <string name="option_info_up_to_date">Abstimmungsoptionen bereits aktuell.</string>
     <string name="option_info_updated">Abstimmungsoptionen aktualisiert.</string>
-    <string name="option_add_info">Füllen Sie das Textfeld aus. Danach können Sie die neue Abstimmungsoption erstellen.</string>
+    <string name="option_add_info">Hier können Sie eine oder mehrere Abstimmungsoptionen hinzufügen. Füllen Sie dazu
+        das Textfeld bzw. die Textfelder aus. Danach können Sie die neue(n) Option(en) erstellen. Um
+    mehr Abstimmungsoptionen hinzuzufügen, klicken Sie auf den Plus-Button. Klicken Sie auf den Minus-Button um
+    die zuletzt hinzugefügte Option wieder zu entfernen.</string>
     <string name="vote_info_up_to_date">Keine neuen Stimmabgaben.</string>
     <string name="vote_no_data">Es gibt noch keine Stimmabgaben.</string>
     <string name="vote_info_updated">Stimmabgaben aktualisiert.</string>
@@ -366,4 +369,5 @@
     <string name="group_deleted">Diese Gruppe wurde gelöscht.</string>
     <string name="ballot_delete_server">Diese Abstimmung wurde gelöscht.</string>
     <string name="option_delete_server">Die Abstimmungsoption wurde gelöscht.</string>
+    <string name="options_created">Abstimmungsoptionen erfolgreich erstellt.</string>
 </resources>

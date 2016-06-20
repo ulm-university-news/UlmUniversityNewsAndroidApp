@@ -189,7 +189,13 @@ public class BallotAddActivity extends AppCompatActivity implements DialogListen
         // Store ballot and continue adding ballot options.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         groupDBM.storeBallot(groupId, ballot);
-        // TODO Send ballot options to the server.
+        // Go to another activity to options to the ballot.
+        Intent intent = new Intent(this, OptionAddActivity.class);
+        intent.putExtra("groupId", groupId);
+        intent.putExtra("ballotId", ballot.getId());
+        intent.putExtra("numberOfOptions", 2);
+        startActivity(intent);
+        finish();
     }
 
     /**

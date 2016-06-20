@@ -10,9 +10,14 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
@@ -24,21 +29,28 @@ import ulm.university.news.app.util.Constants;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
+import static ulm.university.news.app.util.Constants.BALLOT_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 public class OptionAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
     private static final String TAG = "OptionAddActivity";
 
-    private TextInputLabels tilText;
+    private LinearLayout llOptions;
+    private List<TextInputLabels> tilOptions;
     private ProgressBar pgrAdding;
     private TextView tvError;
     private Button btnCreate;
     private Toast toast;
+    private ImageButton ibAddOption;
+    private ImageButton ibRemoveOption;
 
     private GroupDatabaseManager groupDBM;
     private int groupId;
     private int ballotId;
+    private int initialNumberOfOptions;
+    private int createdOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +61,10 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
         setContentView(R.layout.activity_option_add);
         groupId = getIntent().getIntExtra("groupId", 0);
         ballotId = getIntent().getIntExtra("ballotId", 0);
+        initialNumberOfOptions = getIntent().getIntExtra("numberOfOptions", 1);
         groupDBM = new GroupDatabaseManager(this);
+
+        tilOptions = new LinkedList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_option_add_toolbar);
         setSupportActionBar(toolbar);
@@ -58,13 +73,14 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initView();
+        updateRemoveButton();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!tilText.getText().isEmpty()) {
+                if (warnOnLeave()) {
                     YesNoDialogFragment dialog = new YesNoDialogFragment();
                     Bundle args = new Bundle();
                     args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
@@ -83,7 +99,7 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
 
     @Override
     public void onBackPressed() {
-        if (!tilText.getText().isEmpty()) {
+        if (warnOnLeave()) {
             YesNoDialogFragment dialog = new YesNoDialogFragment();
             Bundle args = new Bundle();
             args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string.general_leave_page_title));
@@ -93,6 +109,15 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
         } else {
             super.onBackPressed();
         }
+    }
+
+    private boolean warnOnLeave() {
+        for (TextInputLabels tilOption : tilOptions) {
+            if (!tilOption.getText().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void navigateUp() {
@@ -114,18 +139,38 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
     }
 
     private void initView() {
-        tilText = (TextInputLabels) findViewById(R.id.activity_option_add_til_text);
+        llOptions = (LinearLayout) findViewById(R.id.activity_option_add_ll_options);
         tvError = (TextView) findViewById(R.id.activity_option_add_tv_error);
         btnCreate = (Button) findViewById(R.id.activity_option_add_btn_create);
         pgrAdding = (ProgressBar) findViewById(R.id.activity_option_add_pgr_adding);
+        ibAddOption = (ImageButton) findViewById(R.id.activity_option_add_ib_add_option);
+        ibRemoveOption = (ImageButton) findViewById(R.id.activity_option_add_ib_remove_option);
 
-        tilText.setNameAndHint(getString(R.string.general_text));
-        tilText.setLength(1, Constants.OPTION_TEXT_MAX_LENGTH);
+        // Add initial number of option fields.
+        for (int i = 0; i < initialNumberOfOptions; i++) {
+            addOptionField();
+        }
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addOption();
+                sendAddOptionsRequests();
+            }
+        });
+
+        ibAddOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addOptionField();
+                updateRemoveButton();
+            }
+        });
+
+        ibRemoveOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeOptionField();
+                updateRemoveButton();
             }
         });
 
@@ -134,10 +179,39 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
         if (v != null) v.setGravity(Gravity.CENTER);
     }
 
-    private void addOption() {
+    private void addOptionField() {
+        TextInputLabels tilOption = new TextInputLabels(this);
+        tilOption.setNameAndHint(getString(R.string.general_text));
+        tilOption.setLength(1, Constants.OPTION_TEXT_MAX_LENGTH);
+        tilOptions.add(tilOption);
+
+        // Add field to the view.
+        llOptions.addView(tilOption);
+    }
+
+    /**
+     * Removes the latest options field.
+     */
+    private void removeOptionField() {
+        tilOptions.remove(tilOptions.size() - 1);
+        llOptions.removeViewAt(tilOptions.size());
+    }
+
+    private void updateRemoveButton() {
+        if (tilOptions.size() > initialNumberOfOptions) {
+            ibRemoveOption.setVisibility(View.VISIBLE);
+        } else {
+            ibRemoveOption.setVisibility(View.GONE);
+        }
+    }
+
+    private void sendAddOptionsRequests() {
+        createdOptions = 0;
         boolean valid = true;
-        if (!tilText.isValid()) {
-            valid = false;
+        for (TextInputLabels tilOption : tilOptions) {
+            if (!tilOption.isValid()) {
+                valid = false;
+            }
         }
         if (!Util.getInstance(this).isOnline()) {
             String message = getString(R.string.general_error_no_connection) + getString(R.string.general_error_create);
@@ -147,16 +221,18 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
         }
 
         if (valid) {
-            // All checks passed. Create new option.
+            // All checks passed. Create new option(s).
             tvError.setVisibility(View.GONE);
             btnCreate.setVisibility(View.GONE);
             pgrAdding.setVisibility(View.VISIBLE);
 
-            Option option = new Option();
-            option.setText(tilText.getText());
-
-            // Send option data to the server.
-            GroupAPI.getInstance(this).createOption(groupId, ballotId, option);
+            // Send all option data to the server.
+            Option option;
+            for (TextInputLabels tilOption : tilOptions) {
+                option = new Option();
+                option.setText(tilOption.getText());
+                GroupAPI.getInstance(this).createOption(groupId, ballotId, option);
+            }
         }
     }
 
@@ -171,11 +247,18 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
 
         // Store option in database and show created message.
         groupDBM.storeOption(ballotId, option);
-        toast.setText(getString(R.string.option_created));
-        toast.show();
+        createdOptions++;
 
-        // Go back to ballot view.
-        navigateUp();
+        if (createdOptions == tilOptions.size()) {
+            if (createdOptions > 1) {
+                toast.setText(getString(R.string.options_created));
+            } else {
+                toast.setText(getString(R.string.option_created));
+            }
+            toast.show();
+            // Go back to ballot view.
+            navigateUp();
+        }
     }
 
     /**
@@ -198,10 +281,30 @@ public class OptionAddActivity extends AppCompatActivity implements DialogListen
         // Show appropriate error message.
         pgrAdding.setVisibility(View.GONE);
         btnCreate.setVisibility(View.VISIBLE);
+        Intent intent;
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
                 break;
+            case GROUP_NOT_FOUND:
+                new GroupDatabaseManager(this).setGroupToDeleted(groupId);
+                toast.setText(getString(R.string.group_deleted));
+                toast.show();
+                // Close activity and go to the main screen to show deleted dialog on restart activity.
+                intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
+            case BALLOT_NOT_FOUND:
+                groupDBM.deleteBallot(ballotId);
+                toast.setText(getString(R.string.ballot_delete_server));
+                toast.show();
+                intent = new Intent(this, GroupActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+                finish();
         }
     }
 

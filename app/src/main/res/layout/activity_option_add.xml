@@ -34,10 +34,15 @@
                 android:padding="5dp"
                 android:text="@string/option_add_info"/>
 
-            <ulm.university.news.app.util.TextInputLabels
-                android:id="@+id/activity_option_add_til_text"
+            <LinearLayout
+                android:id="@+id/activity_option_add_ll_options"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- TextInputLabel elements will be added here dynamically. -->
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/activity_option_add_tv_error"
@@ -55,6 +60,27 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
                 android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/activity_option_add_ib_add_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_add_circle_outline_black_24dp"/>
+
+                <ImageButton
+                    android:id="@+id/activity_option_add_ib_remove_option"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_remove_circle_outline_black_24dp"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/activity_option_add_btn_create"
