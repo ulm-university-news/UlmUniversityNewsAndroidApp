@@ -18,7 +18,8 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/activity_conversation_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <ListView
             android:id="@+id/activity_conversation_lv_conversation_messages"
