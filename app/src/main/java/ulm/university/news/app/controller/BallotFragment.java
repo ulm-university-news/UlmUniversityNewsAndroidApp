@@ -29,6 +29,7 @@ import ulm.university.news.app.api.GroupAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Ballot;
 import ulm.university.news.app.data.Group;
+import ulm.university.news.app.data.enums.GroupType;
 import ulm.university.news.app.manager.database.DatabaseLoader;
 import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.Util;
@@ -128,7 +129,15 @@ public class BallotFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+        Group group = databaseLoader.getGroupDBM().getGroup(groupId);
+        if (group.getGroupType().equals(GroupType.WORKING)) {
+            setHasOptionsMenu(true);
+        } else {
+            // In a tutorial group only the tutor is able to create a ballot.
+            if (group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId())) {
+                setHasOptionsMenu(true);
+            }
+        }
     }
 
     @Override
