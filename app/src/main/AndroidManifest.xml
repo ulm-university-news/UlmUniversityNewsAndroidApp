@@ -251,6 +251,13 @@
         </activity>
         <activity android:name=".controller.SettingsGroupActivity">
         </activity>
+        <activity
+            android:name=".controller.GroupMembersActivity"
+            android:label="@string/activity_group_members_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ulm.university.news.app.controller.GroupActivity"/>
+        </activity>
     </application>
 
 </manifest>

@@ -127,7 +127,7 @@ public class GroupFragment extends Fragment implements LoaderManager.LoaderCallb
                 // Listen to database changes on channel subscriptions and new announcements.
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(GroupDatabaseManager.JOIN_GROUP);
-                filter.addAction(GroupDatabaseManager.LEAVE_GROUP);
+                filter.addAction(GroupDatabaseManager.REMOVE_USER_FROM_GROUP);
                 return filter;
             }
         });

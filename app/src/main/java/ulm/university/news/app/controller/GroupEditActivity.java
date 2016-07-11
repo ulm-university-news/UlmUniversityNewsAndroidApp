@@ -257,13 +257,13 @@ public class GroupEditActivity extends AppCompatActivity implements DialogListen
     public void onEventMainThread(Group group) {
         Log.d(TAG, "EventBus: Group");
         Log.d(TAG, group.toString());
-        pgrSearching.setVisibility(View.GONE);
         // Update group in database.
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         groupDBM.updateGroup(group);
         Intent intent = new Intent(this, GroupActivity.class);
         intent.putExtra("groupId", group.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        pgrSearching.setVisibility(View.GONE);
         startActivity(intent);
         finish();
     }

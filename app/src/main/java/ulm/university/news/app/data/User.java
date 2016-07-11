@@ -14,6 +14,8 @@ public class User {
     private String name;
     /** The old username of the user after name change. */
     private String oldName;
+    /** Indicates whether the user is an active group member. */
+    private Boolean active;
 
     /**
      * Creates an instance of the LocalUser class.
@@ -48,6 +50,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", oldName='" + oldName + '\'' +
+                ", active=" + active +
                 '}';
     }
 
@@ -77,5 +80,13 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

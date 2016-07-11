@@ -107,7 +107,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-            setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -117,8 +117,10 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
         if (!group.isGroupAdmin(Util.getInstance(getContext()).getLocalUser().getId()) || group.getDeleted()) {
             MenuItem menuItemEdit = menu.findItem(R.id.activity_group_detail_tab_edit);
             MenuItem menuItemDelete = menu.findItem(R.id.activity_group_detail_tab_delete);
+            MenuItem menuItemMembers = menu.findItem(R.id.activity_group_detail_tab_members);
             menuItemEdit.setVisible(false);
             menuItemDelete.setVisible(false);
+            menuItemMembers.setVisible(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -135,6 +137,11 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                 return true;
             case R.id.activity_group_detail_tab_edit:
                 intent = new Intent(getActivity(), GroupEditActivity.class);
+                intent.putExtra("groupId", groupId);
+                startActivity(intent);
+                return true;
+            case R.id.activity_group_detail_tab_members:
+                intent = new Intent(getActivity(), GroupMembersActivity.class);
                 intent.putExtra("groupId", groupId);
                 startActivity(intent);
                 return true;

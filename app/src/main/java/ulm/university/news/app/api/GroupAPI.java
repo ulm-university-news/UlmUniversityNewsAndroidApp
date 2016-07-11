@@ -38,7 +38,7 @@ public class GroupAPI extends MainAPI {
 
     // Constants.
     public static final String JOIN_GROUP = "joinGroup";
-    public static final String LEAVE_GROUP = "removeUserFromGroup";
+    public static final String LEAVE_GROUP = "leaveGroup";
     public static final String CHANGE_GROUP_ADMIN = "changeGroupAdmin";
     public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String DELETE_GROUP = "deleteGroup";
@@ -260,14 +260,14 @@ public class GroupAPI extends MainAPI {
      * @param groupId The group id.
      * @param userId The user who should be removed from the group.
      */
-    public void removeUserFromGroup(int groupId, int userId) {
+    public void removeUserFromGroup(int groupId, final int userId) {
         // Add channel id to url.
         String url = serverAddressGroup + "/" + groupId + "/user/" + userId;
 
         RequestCallback rCallback = new RequestCallback() {
             @Override
             public void onResponse(String json) {
-                EventBus.getDefault().post(new BusEvent(REMOVE_USER_FROM_GROUP, null));
+                EventBus.getDefault().post(new BusEvent(REMOVE_USER_FROM_GROUP, userId));
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_DELETE, url);

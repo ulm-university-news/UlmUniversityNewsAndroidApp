@@ -370,4 +370,9 @@
     <string name="ballot_delete_server">Diese Abstimmung wurde gelöscht.</string>
     <string name="option_delete_server">Die Abstimmungsoption wurde gelöscht.</string>
     <string name="options_created">Abstimmungsoptionen erfolgreich erstellt.</string>
+    <string name="group_members_empty">In dieser Gruppe gibt es keine Gruppenmitglieder.</string>
+    <string name="activity_group_members_title">Gruppenmitglieder</string>
+    <string name="group_members_menu">Gruppenmitglieder</string>
+    <string name="group_member_remove_dialog_title">Gruppenmitglied entfernen</string>
+    <string name="group_member_remove_dialog_text">Der ausgewählte Nutzer wird aus der Gruppe entfernt. Der Nutzer kann der Gruppe danach erneut beitreten. Möchten Sie dieses Gruppenmitglied wirklich entfernen?</string>
 </resources>

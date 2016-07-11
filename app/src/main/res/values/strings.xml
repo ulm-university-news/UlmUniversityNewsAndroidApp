@@ -123,6 +123,9 @@
     <!-- BallotEditActivity ######################################################################################## -->
     <string name="activity_ballot_edit_title">Edit ballot</string>
 
+    <!-- GroupMembersActivity ###################################################################################### -->
+    <string name="activity_group_members_title">Group members</string>
+
     <!-- SettingsUserActivity ###################################################################################### -->
     <string name="activity_settings_user_title">User settings</string>
     <string name="activity_settings_user_info">Your current user name is %1$s.\nYou can change this name below.</string>
@@ -404,6 +407,8 @@
     <string name="group_admin">Group administrator</string>
     <string name="group_change_password">Change password</string>
     <string name="group_members">Group members (%1$s)</string>
+    <string name="group_members_empty">There are no group members in this group.</string>
+    <string name="group_members_menu">Group members</string>
     <string name="group_leave_dialog_title">Leave group</string>
     <string name="group_leave_dialog_text">This group will be deleted from your group list. You
         won\'t be able to participate in this group anymore.\nDo you really want to leave this group?</string>
@@ -422,6 +427,9 @@
         further activities. Since you are a group member you still have a local copy on your device. If you
         leave, the local group data will be deleted and can\'t be restored.</string>
     <string name="group_deleted">This group has been deleted.</string>
+    <string name="group_member_remove_dialog_title">Remove group member</string>
+    <string name="group_member_remove_dialog_text">The selected user will be removed from the group. The user is able
+        to join the group again. Do you really want to remove this group member?</string>
 
     <!-- Conversation ############################################################################################## -->
     <string name="conversation_no_data">There are no conversations yet.</string>

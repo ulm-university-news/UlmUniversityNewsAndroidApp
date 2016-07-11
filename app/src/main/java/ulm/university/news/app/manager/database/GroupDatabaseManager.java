@@ -94,7 +94,7 @@ public class GroupDatabaseManager {
     public static final String STORE_GROUP = "storeGroup";
     public static final String JOIN_GROUP = "joinGroup";
     public static final String ADD_USER_TO_GROUP = "addUserToGroup";
-    public static final String LEAVE_GROUP = "removeUserFromGroup";
+    public static final String REMOVE_USER_FROM_GROUP = "removeUserFromGroup";
     public static final String UPDATE_GROUP = "updateGroup";
     public static final String STORE_CONVERSATION = "storeConversation";
     public static final String UPDATE_CONVERSATION = "updateConversation";
@@ -327,7 +327,7 @@ public class GroupDatabaseManager {
         db.delete(USER_GROUP_TABLE, where, args);
 
         // Notify observers that database content has changed.
-        Intent databaseChanged = new Intent(LEAVE_GROUP);
+        Intent databaseChanged = new Intent(REMOVE_USER_FROM_GROUP);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 

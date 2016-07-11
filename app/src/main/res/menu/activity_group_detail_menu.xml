@@ -14,6 +14,12 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/activity_group_detail_tab_members"
+        android:icon="@drawable/ic_people_white_24dp"
+        android:title="@string/group_members_menu"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/activity_group_detail_tab_delete"
         android:icon="@drawable/ic_remove_circle_white_24dp"
         android:title="@string/general_delete"

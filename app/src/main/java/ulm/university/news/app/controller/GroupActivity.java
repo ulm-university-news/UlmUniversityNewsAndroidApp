@@ -134,7 +134,11 @@ public class GroupActivity extends AppCompatActivity {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         for (User u : users) {
             userDBM.storeUser(u);
-            groupDBM.addUserToGroup(groupId, u.getId());
+            if (u.getActive() != null && u.getActive()) {
+                groupDBM.addUserToGroup(groupId, u.getId());
+            } else {
+                groupDBM.removeUserFromGroup(groupId, u.getId());
+            }
         }
     }
 
@@ -159,7 +163,7 @@ public class GroupActivity extends AppCompatActivity {
         // Show appropriate error message.
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
-                toast.setText( getString(R.string.general_error_connection_failed));
+                toast.setText(getString(R.string.general_error_connection_failed));
                 toast.show();
                 break;
             case GROUP_NOT_FOUND:
