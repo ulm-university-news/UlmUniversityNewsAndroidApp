@@ -375,4 +375,6 @@
     <string name="group_members_menu">Gruppenmitglieder</string>
     <string name="group_member_remove_dialog_title">Gruppenmitglied entfernen</string>
     <string name="group_member_remove_dialog_text">Der ausgewählte Nutzer wird aus der Gruppe entfernt. Der Nutzer kann der Gruppe danach erneut beitreten. Möchten Sie dieses Gruppenmitglied wirklich entfernen?</string>
+    <string name="reminder_interval_invalid">Reminderintervall oder -daten ungültig.</string>
+    <string name="reminder_not_found">Dieser Reminder wurde gelöscht.</string>
 </resources>

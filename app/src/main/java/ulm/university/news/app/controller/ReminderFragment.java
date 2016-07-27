@@ -188,7 +188,7 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
     public void onEventMainThread(BusEventReminders event) {
         Log.d(TAG, event.toString());
         List<Reminder> reminders = event.getReminders();
-        boolean newReminders = ChannelController.storeReminders(getActivity(), reminders);
+        boolean remindersUpdated = ChannelController.storeReminders(getActivity(), reminders);
         // Reminders were refreshed. Hide loading animation.
         swipeRefreshLayout.setRefreshing(false);
 
@@ -202,13 +202,15 @@ public class ReminderFragment extends Fragment implements LoaderManager.LoaderCa
                 }
             }
             if(deleted){
+                remindersUpdated = true;
                 this.reminders.remove(localReminder);
+                databaseLoader.getChannelDBM().deleteReminder(localReminder.getId());
                 listAdapter.setData(this.reminders);
                 listAdapter.notifyDataSetChanged();
             }
         }
 
-        if (newReminders) {
+        if (remindersUpdated) {
             // If reminder data was updated show message no matter if it was a manual or auto refresh.
             String message = getString(R.string.reminders_info_updated);
             toast.setText(message);

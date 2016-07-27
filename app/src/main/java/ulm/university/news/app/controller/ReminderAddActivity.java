@@ -36,6 +36,8 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.REMINDER_INVALID_DATES;
+import static ulm.university.news.app.util.Constants.REMINDER_INVALID_INTERVAL;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
 
 public class ReminderAddActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
@@ -339,6 +341,15 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
+                tvError.setVisibility(View.VISIBLE);
+                break;
+            case REMINDER_INVALID_INTERVAL:
+                tvError.setText(R.string.reminder_interval_invalid);
+                tvError.setVisibility(View.VISIBLE);
+                break;
+            case REMINDER_INVALID_DATES:
+                tvError.setText(R.string.reminder_interval_invalid);
+                tvError.setVisibility(View.VISIBLE);
                 break;
         }
     }

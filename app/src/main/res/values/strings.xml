@@ -370,6 +370,7 @@
     <string name="reminder_next_date_on">Next reminder message: %1$s</string>
     <string name="reminder_time">Time</string>
     <string name="reminder_interval">Interval</string>
+    <string name="reminder_interval_invalid">Invalid reminder interval or dates.</string>
     <string name="reminder_interval_weekly">Weekly</string>
     <string name="reminder_interval_one_week">Send reminder message every week.</string>
     <string name="reminder_interval_multiple_weeks">Send reminder every %1$s weeks.</string>
@@ -385,6 +386,7 @@
     <string name="reminder_delete_dialog_title">Delete reminder</string>
     <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder messages will be sent afterwards.\nDo you really want to delete the reminder?</string>
     <string name="reminder_last_edited_by">Last edited by</string>
+    <string name="reminder_not_found">This reminder has been deleted.</string>
 
     <!-- Moderator ################################################################################################# -->
     <string name="moderator_unknown">Unknown</string>

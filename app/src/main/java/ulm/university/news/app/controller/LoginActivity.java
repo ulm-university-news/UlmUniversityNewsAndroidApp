@@ -25,7 +25,6 @@ import static ulm.university.news.app.util.Constants.MODERATOR_DELETED;
 import static ulm.university.news.app.util.Constants.MODERATOR_LOCKED;
 import static ulm.university.news.app.util.Constants.MODERATOR_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.MODERATOR_UNAUTHORIZED;
-import static ulm.university.news.app.util.Constants.PASSWORD_PATTERN;
 
 public class LoginActivity extends AppCompatActivity {
     /** This classes tag for logging. */
@@ -61,8 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         tilName.setLength(3, 35);
         tilName.setPattern(ACCOUNT_NAME_PATTERN);
         tilPassword.setNameAndHint(getString(R.string.activity_login_til_password_hint));
-        tilPassword.setLength(8, 20);
-        tilPassword.setPattern(PASSWORD_PATTERN);
+        tilPassword.setLength(1,20);
         tilPassword.setToPasswordField();
 
         btnLogin.setOnClickListener(new View.OnClickListener() {

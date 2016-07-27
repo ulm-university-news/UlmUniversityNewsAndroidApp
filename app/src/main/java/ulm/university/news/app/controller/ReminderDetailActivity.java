@@ -33,6 +33,7 @@ import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.REMINDER_NOT_FOUND;
 
 public class ReminderDetailActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
@@ -385,6 +386,11 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
                 toast.setText(errorMessage);
                 toast.show();
                 break;
+            case REMINDER_NOT_FOUND:
+                toast.setText(R.string.reminder_not_found);
+                toast.show();
+                channelDBM.deleteReminder(reminder.getId());
+                navigateUp();
         }
     }
 

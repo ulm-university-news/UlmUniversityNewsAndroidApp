@@ -36,6 +36,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.REMINDER_NOT_FOUND;
 
 public class ReminderEditActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
         IntervalPickerListener, DialogListener {
@@ -52,7 +53,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
     private TextView tvIntervalValue;
     private TextView tvTimeValue;
     private TextView tvError;
-    private Button btnCreate;
+    private Button btnEdit;
     private CheckBox chkIgnore;
     // private ImageView ivIconTitle;
 
@@ -147,7 +148,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         tvIntervalValue = (TextView) findViewById(R.id.activity_reminder_add_tv_interval_value);
         tvTimeValue = (TextView) findViewById(R.id.activity_reminder_add_tv_time_value);
         tvError = (TextView) findViewById(R.id.activity_reminder_add_tv_error);
-        btnCreate = (Button) findViewById(R.id.activity_reminder_add_btn_create);
+        btnEdit = (Button) findViewById(R.id.activity_reminder_add_btn_create);
         chkIgnore = (CheckBox) findViewById(R.id.activity_reminder_add_chk_ignore);
         // ivIconTitle = (ImageView) findViewById(R.id.activity_reminder_add_iv_icon_title);
 
@@ -167,10 +168,10 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         spPriority.setAdapter(adapter);
         spPriority.setSelection(0);
 
-        btnCreate.setOnClickListener(new View.OnClickListener() {
+        btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addReminder();
+                editReminder();
             }
         });
 
@@ -269,7 +270,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         } else {
             spPriority.setSelection(1);
         }
-        btnCreate.setText(getString(R.string.general_edit));
+        btnEdit.setText(getString(R.string.general_edit));
         tvStartDateValue.setText(Util.getInstance(this).getFormattedDateOnly(startDate));
         tvEndDateValue.setText(Util.getInstance(this).getFormattedDateOnly(endDate));
         tvTimeValue.setText(Util.getInstance(this).getFormattedTimeOnly(startDate));
@@ -298,7 +299,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         chkIgnore.setChecked(reminder.isIgnore());
     }
 
-    private void addReminder() {
+    private void editReminder() {
         boolean valid = true;
         if (!tilTitle.isValid()) {
             valid = false;
@@ -329,7 +330,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         if (valid) {
             // All checks passed. Create new reminder.
             tvError.setVisibility(View.GONE);
-            btnCreate.setVisibility(View.GONE);
+            btnEdit.setVisibility(View.GONE);
             pgrAdding.setVisibility(View.VISIBLE);
 
             Priority priority;
@@ -347,6 +348,7 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
             reminder.setNextDate(null);
             reminder.setCreationDate(null);
             reminder.setModificationDate(null);
+            reminder.setActive(null);
 
             // Send reminder data to the server.
             ChannelAPI.getInstance(this).changeReminder(reminder);
@@ -390,11 +392,16 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
         Log.d(TAG, serverError.toString());
         // Show appropriate error message.
         pgrAdding.setVisibility(View.GONE);
-        btnCreate.setVisibility(View.VISIBLE);
+        btnEdit.setVisibility(View.VISIBLE);
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
                 tvError.setText(R.string.general_error_connection_failed);
                 break;
+            case REMINDER_NOT_FOUND:
+                toast.setText(R.string.reminder_not_found);
+                toast.show();
+                channelDBM.deleteReminder(reminder.getId());
+                navigateUp();
         }
     }
 
