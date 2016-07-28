@@ -21,6 +21,8 @@ public class YesNoDialogFragment extends AppCompatDialogFragment {
     public static final String DIALOG_GROUP_LEAVE = "dialogGroupLeave";
     public static final String DIALOG_GROUP_DELETE = "dialogGroupDelete";
     public static final String DIALOG_REMINDER_DELETE = "dialogReminderDelete";
+    public static final String DIALOG_REMINDER_DEACTIVATE = "dialogReminderDeactivate";
+    public static final String DIALOG_REMINDER_ACTIVATE = "dialogReminderActivate";
     public static final String DIALOG_LEAVE_PAGE_UP = "dialogLeavePageUp";
     public static final String DIALOG_LEAVE_PAGE_BACK = "dialogLeavePageBack";
     public static final String DIALOG_CONVERSATION_CLOSE = "dialogCloseConversation";

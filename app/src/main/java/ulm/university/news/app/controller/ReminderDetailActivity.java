@@ -51,6 +51,9 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
     private Toast toast;
     private String errorMessage;
 
+    private MenuItem menuItemActivate;
+    private MenuItem menuItemDeactivate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Get reminder data from database.
@@ -90,6 +93,16 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_moderator_reminder_detail_menu, menu);
+        menuItemActivate = menu.findItem(R.id.activity_moderator_reminder_detail_activate);
+        menuItemDeactivate = menu.findItem(R.id.activity_moderator_reminder_detail_deactivate);
+        if (reminder.isActive()) {
+            menuItemActivate.setVisible(false);
+            menuItemDeactivate.setVisible(true);
+        } else {
+            menuItemActivate.setVisible(true);
+            menuItemDeactivate.setVisible(false);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -97,12 +110,12 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection.
         switch (item.getItemId()) {
-            case R.id.activity_moderator_reminder_details_edit:
+            case R.id.activity_moderator_reminder_detail_edit:
                 Intent intent = new Intent(this, ReminderEditActivity.class);
                 intent.putExtra("reminderId", reminder.getId());
                 startActivity(intent);
                 return true;
-            case R.id.activity_moderator_reminder_channel_delete:
+            case R.id.activity_moderator_reminder_detail_delete:
                 if (Util.getInstance(this).isOnline()) {
                     // Show delete reminder dialog.
                     YesNoDialogFragment dialog = new YesNoDialogFragment();
@@ -113,6 +126,48 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
                             .reminder_delete_dialog_text));
                     dialog.setArguments(args);
                     dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_REMINDER_DELETE);
+
+                    errorMessage = getString(R.string.general_error_connection_failed);
+                    errorMessage += " " + getString(R.string.general_error_delete);
+                } else {
+                    String message = getString(R.string.general_error_no_connection);
+                    message += " " + getString(R.string.general_error_delete);
+                    toast.setText(message);
+                    toast.show();
+                }
+                return true;
+            case R.id.activity_moderator_reminder_detail_activate:
+                if (Util.getInstance(this).isOnline()) {
+                    // Show activate reminder dialog.
+                    YesNoDialogFragment dialog = new YesNoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
+                            .reminder_activate_dialog_title));
+                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
+                            .reminder_activate_dialog_text));
+                    dialog.setArguments(args);
+                    dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_REMINDER_ACTIVATE);
+
+                    errorMessage = getString(R.string.general_error_connection_failed);
+                    errorMessage += " " + getString(R.string.general_error_delete);
+                } else {
+                    String message = getString(R.string.general_error_no_connection);
+                    message += " " + getString(R.string.general_error_delete);
+                    toast.setText(message);
+                    toast.show();
+                }
+                return true;
+            case R.id.activity_moderator_reminder_detail_deactivate:
+                if (Util.getInstance(this).isOnline()) {
+                    // Show deactivate reminder dialog.
+                    YesNoDialogFragment dialog = new YesNoDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString(YesNoDialogFragment.DIALOG_TITLE, getString(R.string
+                            .reminder_deactivate_dialog_title));
+                    args.putString(YesNoDialogFragment.DIALOG_TEXT, getString(R.string
+                            .reminder_deactivate_dialog_text));
+                    dialog.setArguments(args);
+                    dialog.show(getSupportFragmentManager(), YesNoDialogFragment.DIALOG_REMINDER_DEACTIVATE);
 
                     errorMessage = getString(R.string.general_error_connection_failed);
                     errorMessage += " " + getString(R.string.general_error_delete);
@@ -265,6 +320,8 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
         }
         if (reminder.isExpired()) {
             return getString(R.string.reminder_expired);
+        } else if (!reminder.isActive()) {
+            return getString(R.string.reminder_deactivated);
         } else {
             return Util.getInstance(this).getFormattedDateLong(reminder.getNextDate());
         }
@@ -357,6 +414,24 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
             // Delete local reminder.
             channelDBM.deleteReminder(reminder.getId());
             finish();
+        } else if (ChannelAPI.ACTIVATE_REMINDER.equals(action)) {
+            Reminder r = (Reminder) busEvent.getObject();
+            channelDBM.updateReminder(r);
+            menuItemActivate.setVisible(false);
+            menuItemDeactivate.setVisible(true);
+            this.reminder = r;
+            setReminderDetails();
+            listAdapter.setResourceDetails(resourceDetails);
+            listAdapter.notifyDataSetChanged();
+        } else if (ChannelAPI.DEACTIVATE_REMINDER.equals(action)) {
+            Reminder r = (Reminder) busEvent.getObject();
+            channelDBM.updateReminder(r);
+            menuItemActivate.setVisible(true);
+            menuItemDeactivate.setVisible(false);
+            this.reminder = r;
+            setReminderDetails();
+            listAdapter.setResourceDetails(resourceDetails);
+            listAdapter.notifyDataSetChanged();
         }
     }
 
@@ -398,6 +473,18 @@ public class ReminderDetailActivity extends AppCompatActivity implements DialogL
     public void onDialogPositiveClick(String tag) {
         if (tag.equals(YesNoDialogFragment.DIALOG_REMINDER_DELETE)) {
             ChannelAPI.getInstance(this).deleteReminder(channelId, reminder.getId());
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_REMINDER_ACTIVATE)) {
+            Reminder activate = new Reminder();
+            activate.setChannelId(reminder.getChannelId());
+            activate.setId(reminder.getId());
+            activate.setActive(true);
+            ChannelAPI.getInstance(this).changeReminder(activate);
+        } else if (tag.equals(YesNoDialogFragment.DIALOG_REMINDER_DEACTIVATE)) {
+            Reminder deactivate = new Reminder();
+            deactivate.setChannelId(reminder.getChannelId());
+            deactivate.setId(reminder.getId());
+            deactivate.setActive(false);
+            ChannelAPI.getInstance(this).changeReminder(deactivate);
         }
     }
 }

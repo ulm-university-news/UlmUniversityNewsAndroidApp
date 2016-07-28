@@ -2,16 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-    android:id="@+id/activity_moderator_reminder_details_edit"
+    android:id="@+id/activity_moderator_reminder_detail_edit"
     android:icon="@drawable/ic_create_white_24dp"
     android:orderInCategory="100"
-    android:title="@string/activity_moderator_channel_menu_edit_reminder"
+    android:title="@string/general_edit"
     app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/activity_moderator_reminder_channel_delete"
+        android:id="@+id/activity_moderator_reminder_detail_deactivate"
+        android:icon="@drawable/ic_alarm_off_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/reminder_deactivate"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/activity_moderator_reminder_detail_activate"
+        android:icon="@drawable/ic_alarm_on_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/reminder_activate"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/activity_moderator_reminder_detail_delete"
         android:icon="@drawable/ic_remove_circle_white_24dp"
         android:orderInCategory="100"
-        android:title="@string/activity_moderator_channel_menu_delete_reminder"
+        android:title="@string/general_delete"
         app:showAsAction="ifRoom"/>
 </menu>

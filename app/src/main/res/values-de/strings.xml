@@ -386,4 +386,12 @@
     <string name="group_id">Id</string>
     <string name="group_member_removed_dialog_title">Aus der Gruppe entfernt</string>
     <string name="group_member_removed_dialog_text">Sie wurden vom Gruppenadministrator aus dieser Gruppe entfernt. Sie können der Gruppe jedoch erneut beitreten.</string>
+    <string name="reminder_deactivate">Deaktivieren</string>
+    <string name="reminder_activate">Aktivieren</string>
+    <string name="reminder_activate_dialog_title">Reminder aktivieren</string>
+    <string name="reminder_deactivate_dialog_title">Reminder deaktivieren</string>
+    <string name="reminder_activate_dialog_text">Der Reminder wird reaktiviert. Die Remindernachrichten werden danach wie gewohnt gesendet. Möchten Sie den Reminder wirklich reaktivieren?</string>
+    <string name="reminder_deactivate_dialog_text">Der Reminder wird deaktiviert. Danach werden keine weiteren
+        Remindernachrichten mehr gesendet. Möchten Sie den Reminder wirklich daktivieren?</string>
+    <string name="reminder_deactivated">Der Reminder ist deaktiviert.</string>
 </resources>

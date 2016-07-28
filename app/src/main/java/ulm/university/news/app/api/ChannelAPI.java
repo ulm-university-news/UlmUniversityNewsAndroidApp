@@ -42,6 +42,8 @@ public class ChannelAPI extends MainAPI {
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String DELETE_CHANNEL = "deleteChannel";
     public static final String DELETE_REMINDER = "deleteReminder";
+    public static final String ACTIVATE_REMINDER = "activateReminder";
+    public static final String DEACTIVATE_REMINDER = "deactivateReminder";
 
     /**
      * Get the instance of the ChannelAPI class.
@@ -301,7 +303,7 @@ public class ChannelAPI extends MainAPI {
         new Thread(rTask).start();
     }
 
-    public void changeReminder(Reminder reminder) {
+    public void changeReminder(final Reminder reminder) {
         // Add channel id to url and point to specific reminder resource.
         String url = serverAddressChannel + "/" + reminder.getChannelId() + "/reminder/" + reminder.getId();
         // Parse reminder to json.
@@ -311,7 +313,15 @@ public class ChannelAPI extends MainAPI {
             @Override
             public void onResponse(String json) {
                 Reminder r = gson.fromJson(json, Reminder.class);
-                EventBus.getDefault().post(r);
+                if (reminder.isActive() == null) {
+                    EventBus.getDefault().post(r);
+                } else {
+                    if (reminder.isActive()) {
+                        EventBus.getDefault().post(new BusEvent(ACTIVATE_REMINDER, r));
+                    } else {
+                        EventBus.getDefault().post(new BusEvent(DEACTIVATE_REMINDER, r));
+                    }
+                }
             }
         };
         RequestTask rTask = new RequestTask(rCallback, this, METHOD_PATCH, url);

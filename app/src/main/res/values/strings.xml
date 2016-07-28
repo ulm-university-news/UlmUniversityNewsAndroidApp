@@ -385,13 +385,21 @@
     <string name="reminder_interval_once">Single event</string>
     <string name="reminder_interval_once_text">Send reminder only once.</string>
     <string name="reminder_expired">The reminder is expired.</string>
-    <string name="reminder_disabled">The reminder is disabled.</string>
+    <string name="reminder_deactivated">The reminder is deactivated.</string>
     <string name="reminder_created">Reminder created successfully.</string>
     <string name="reminder_edited">Reminder changed successfully.</string>
     <string name="reminder_delete_dialog_title">Delete reminder</string>
     <string name="reminder_delete_dialog_text">This reminder will be deleted. No mo reminder messages will be sent afterwards.\nDo you really want to delete the reminder?</string>
+    <string name="reminder_activate_dialog_title">Activate reminder</string>
+    <string name="reminder_activate_dialog_text">This reminder will be reactivated. The reminder will send messages
+        as usual afterwards.\nDo you really want to activate the reminder?</string>
+    <string name="reminder_deactivate_dialog_title">Deactivate reminder</string>
+    <string name="reminder_deactivate_dialog_text">This reminder will be deactivated. The reminder won\'t send
+        andy messages afterwards.\nDo you really want to activate the reminder?</string>
     <string name="reminder_last_edited_by">Last edited by</string>
     <string name="reminder_not_found">This reminder has been deleted.</string>
+    <string name="reminder_deactivate">Deactivate</string>
+    <string name="reminder_activate">Activate</string>
 
     <!-- Moderator ################################################################################################# -->
     <string name="moderator_unknown">Unknown</string>
