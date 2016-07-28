@@ -1,5 +1,6 @@
 package ulm.university.news.app.controller;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -28,12 +29,14 @@ import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
+import static ulm.university.news.app.util.Constants.GROUP_PARTICIPANT_NOT_FOUND;
 
 public class GroupActivity extends AppCompatActivity {
     /** This classes tag for logging. */
     private static final String TAG = "GroupActivity";
 
     private int groupId;
+    private Group group;
     private Toast toast;
 
     @Override
@@ -42,7 +45,7 @@ public class GroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group);
 
         groupId = getIntent().getIntExtra("groupId", 0);
-        Group group = new GroupDatabaseManager(this).getGroup(groupId);
+        group = new GroupDatabaseManager(this).getGroup(groupId);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_group_toolbar);
         setSupportActionBar(toolbar);
@@ -64,7 +67,7 @@ public class GroupActivity extends AppCompatActivity {
         TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
         if (v != null) v.setGravity(Gravity.CENTER);
 
-        showGroupDeletedDialog(group);
+        showGroupDeletedDialog();
         refreshGroupMembers();
     }
 
@@ -79,7 +82,7 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
-    private void showGroupDeletedDialog(Group group) {
+    private void showGroupDeletedDialog() {
         if (group.getDeleted() && !group.getDeletedRead()) {
             // Show group deleted dialog if it wasn't shown before.
             InfoDialogFragment dialog = new InfoDialogFragment();
@@ -96,16 +99,19 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             case android.R.id.home:
-                intent = NavUtils.getParentActivityIntent(this);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                NavUtils.navigateUpTo(this, intent);
+                navigateUp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void navigateUp() {
+        Intent intent = NavUtils.getParentActivityIntent(this);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        NavUtils.navigateUpTo(this, intent);
     }
 
     @Override
@@ -134,6 +140,8 @@ public class GroupActivity extends AppCompatActivity {
         GroupDatabaseManager groupDBM = new GroupDatabaseManager(this);
         for (User u : users) {
             userDBM.storeUser(u);
+            // Update users to make name changes visible.
+            userDBM.updateUser(u);
             if (u.getActive() != null && u.getActive()) {
                 groupDBM.addUserToGroup(groupId, u.getId());
             } else {
@@ -176,6 +184,33 @@ public class GroupActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 break;
+            case GROUP_PARTICIPANT_NOT_FOUND:
+                // Remove local user as group member.
+                new GroupDatabaseManager(this).removeUserFromGroup(groupId,
+                        Util.getInstance(this).getLocalUser().getId());
+                showRemovedFromGroupDialog();
         }
+    }
+
+    private void showRemovedFromGroupDialog() {
+        // Show group deleted dialog if it wasn't shown before.
+        InfoDialogFragment dialog = new InfoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.group_member_removed_dialog_title));
+        args.putString(InfoDialogFragment.DIALOG_TEXT, getString(R.string.group_member_removed_dialog_text));
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "removedFromGroup");
+
+        dialog.onDismiss(new DialogInterface() {
+            @Override
+            public void cancel() {
+                navigateUp();
+            }
+
+            @Override
+            public void dismiss() {
+                navigateUp();
+            }
+        });
     }
 }

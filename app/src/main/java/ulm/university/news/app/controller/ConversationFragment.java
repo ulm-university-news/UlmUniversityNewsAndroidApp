@@ -286,6 +286,7 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<List<Conversation>> loader, List<Conversation> data) {
         // Update list.
+        GroupController.sortConversationsName(data);
         conversations = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

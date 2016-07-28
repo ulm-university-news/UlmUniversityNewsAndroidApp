@@ -442,4 +442,43 @@ public class GroupController {
             }
         }
     }
+
+    /**
+     * Sorts the given ballots alphabetically.
+     *
+     * @param ballots The ballot list.
+     */
+    public static void sortBallotsName(List<Ballot> ballots) {
+        Collections.sort(ballots, new Comparator<Ballot>() {
+            public int compare(Ballot b1, Ballot b2) {
+                return b1.getTitle().compareToIgnoreCase(b2.getTitle());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given conversations alphabetically.
+     *
+     * @param conversations The conversation list.
+     */
+    public static void sortConversationsName(List<Conversation> conversations) {
+        Collections.sort(conversations, new Comparator<Conversation>() {
+            public int compare(Conversation c1, Conversation c2) {
+                return c1.getTitle().compareToIgnoreCase(c2.getTitle());
+            }
+        });
+    }
+
+    /**
+     * Sorts the given options alphabetically.
+     *
+     * @param options The option list.
+     */
+    public static void sortOptionsName(List<Option> options) {
+        Collections.sort(options, new Comparator<Option>() {
+            public int compare(Option o1, Option o2) {
+                return o1.getText().compareToIgnoreCase(o2.getText());
+            }
+        });
+    }
 }

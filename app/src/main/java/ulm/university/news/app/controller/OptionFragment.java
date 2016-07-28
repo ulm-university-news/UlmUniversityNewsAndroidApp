@@ -427,6 +427,7 @@ public class OptionFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<List<Option>> loader, List<Option> data) {
         // Update list.
+        GroupController.sortOptionsName(data);
         options = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

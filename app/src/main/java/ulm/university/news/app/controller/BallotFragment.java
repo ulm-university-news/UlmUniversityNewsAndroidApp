@@ -295,6 +295,7 @@ public class BallotFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<List<Ballot>> loader, List<Ballot> data) {
         // Update list.
+        GroupController.sortBallotsName(data);
         ballots = data;
         listAdapter.setData(data);
         listAdapter.notifyDataSetChanged();

@@ -432,6 +432,9 @@
     <string name="group_member_remove_dialog_title">Remove group member</string>
     <string name="group_member_remove_dialog_text">The selected user will be removed from the group. The user is able
         to join the group again. Do you really want to remove this group member?</string>
+    <string name="group_member_removed_dialog_title">Removed from group</string>
+    <string name="group_member_removed_dialog_text">You have been removed as a group member by the group
+        administrator. However, you may join the group again.</string>
 
     <!-- Conversation ############################################################################################## -->
     <string name="conversation_no_data">There are no conversations yet.</string>
@@ -453,6 +456,7 @@
         new conversation.</string>
     <string name="conversation_edit_info">Change the title field below. Then click the edit button to submit the
         new conversation title.</string>
+    <string name="conversation_invalid_title">The conversation title is invalid.</string>
 
     <!-- ConversationMessage ####################################################################################### -->
     <string name="conversation_message_no_data">There are no messages yet.</string>

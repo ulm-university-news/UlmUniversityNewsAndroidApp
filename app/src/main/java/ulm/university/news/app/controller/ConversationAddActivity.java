@@ -25,6 +25,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.CONVERSATION_INVALID_TITLE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 
 public class ConversationAddActivity extends AppCompatActivity implements DialogListener {
@@ -116,6 +117,8 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
         pgrAdding = (ProgressBar) findViewById(R.id.activity_conversation_add_pgr_adding);
 
         tilTitle.setNameAndHint(getString(R.string.general_title));
+        tilTitle.setPattern(Constants.NAME_PATTERN);
+        tilTitle.setLength(3, 45);
         tilTitle.setLength(1, Constants.ANNOUNCEMENT_TITLE_MAX_LENGTH);
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
@@ -209,6 +212,10 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
+                break;
+            case CONVERSATION_INVALID_TITLE:
+                toast.setText(getString(R.string.conversation_invalid_title));
+                toast.show();
                 break;
         }
     }
