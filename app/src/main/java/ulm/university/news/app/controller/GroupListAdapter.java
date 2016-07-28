@@ -1,6 +1,7 @@
 package ulm.university.news.app.controller;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.List;
 import ulm.university.news.app.R;
 import ulm.university.news.app.data.Group;
 import ulm.university.news.app.data.enums.GroupType;
+import ulm.university.news.app.manager.database.GroupDatabaseManager;
 
 /**
  * TODO
@@ -64,7 +66,7 @@ public class GroupListAdapter extends ArrayAdapter<Group> {
             TextView tvType = (TextView) convertView.findViewById(R.id.group_list_item_tv_type);
             TextView tvTerm = (TextView) convertView.findViewById(R.id.group_list_item_tv_term);
             ImageView ivIcon = (ImageView) convertView.findViewById(R.id.group_list_item_iv_icon);
-            TextView tvNew = (TextView) convertView.findViewById(R.id.group_list_item_tv_new);
+            ImageView ivNew = (ImageView) convertView.findViewById(R.id.group_list_item_iv_new);
 
             String typeName;
             // Set appropriate group name and symbol.
@@ -77,24 +79,19 @@ public class GroupListAdapter extends ArrayAdapter<Group> {
             // Set appropriate group symbol.
             ivIcon.setImageResource(GroupController.getGroupIcon(group, convertView.getContext()));
 
+            if (group.getNewEvents() != null && group.getNewEvents()) {
+                // Reset new events flag in database.
+                new GroupDatabaseManager(getContext()).setGroupNewEvents(group.getId(), false);
+                // Tint new icon grey. Then show the icon.
+                ivNew.setColorFilter(ContextCompat.getColor(convertView.getContext(), R.color.grey));
+                ivNew.setVisibility(View.VISIBLE);
+            } else {
+                ivNew.setVisibility(View.GONE);
+            }
+
             tvName.setText(group.getName());
             tvType.setText(typeName);
             tvTerm.setText(group.getTerm());
-
-            // TODO Show number of unread conversation messages.
-            /*
-            Integer number = group.getNumberOfUnreadMessages();
-            if (number != null && number > 0) {
-                if (number > 99) {
-                    tvNew.setText("" + 99);
-                } else {
-                    tvNew.setText(number.toString());
-                }
-                tvNew.setVisibility(View.VISIBLE);
-            } else {
-                tvNew.setVisibility(View.GONE);
-            }
-            */
         }
         return convertView;
     }

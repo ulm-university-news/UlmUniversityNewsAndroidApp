@@ -286,6 +286,8 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
      */
     private void setGroupDetails() {
         resourceDetails.clear();
+        ResourceDetail id = new ResourceDetail(getString(R.string.group_id), String.valueOf(group.getId()),
+                R.drawable.ic_adjust_black_36dp);
         ResourceDetail name = new ResourceDetail(getString(R.string.group_name), group.getName(),
                 R.drawable.ic_info_black_36dp);
         String typeName;
@@ -298,6 +300,7 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                 R.drawable.ic_details_black_36dp);
         ResourceDetail term = new ResourceDetail(getString(R.string.channel_term), Util.getInstance(getContext())
                 .getTermLong(group.getTerm()), R.drawable.ic_date_range_black_36dp);
+        resourceDetails.add(id);
         resourceDetails.add(name);
         resourceDetails.add(type);
         resourceDetails.add(term);

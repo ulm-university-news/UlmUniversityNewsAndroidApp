@@ -44,6 +44,8 @@ public class Group {
     private Boolean deleted;
     /** Indicates weather the group deletion dialog was read or not. */
     private Boolean deletedRead;
+    /** Indicates weather the group has new events or not. */
+    private Boolean newEvents;
 
     /**
      * Creates an instance of the Group class.
@@ -232,6 +234,14 @@ public class Group {
         this.deletedRead = deletedRead;
     }
 
+    public Boolean getNewEvents() {
+        return newEvents;
+    }
+
+    public void setNewEvents(Boolean newEvents) {
+        this.newEvents = newEvents;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
@@ -249,6 +259,7 @@ public class Group {
                 ", ballots=" + ballots +
                 ", deleted=" + deleted +
                 ", deletedRead=" + deletedRead +
+                ", newEvents=" + newEvents +
                 '}';
     }
 }

@@ -300,7 +300,7 @@
     <string name="conversation_edit_info">Ändern Sie den Titel der Konversation im Feld unten. Bestätigen Sie die Änderung mit einem Klick auf den Bearbeiten-Button.</string>
     <string name="conversation_edited">Konversation erfolgreich geändert.</string>
     <string name="activity_conversation_edit_title">Konversation bearbeiten</string>
-    <string name="push_message_new_conversation">Neue Konversation hinzugefügt.</string>
+    <string name="push_message_conversation_changed">Konversationen aktualisiert.</string>
     <string name="push_message_new_conversation_message">Neue Nachricht veröffentlicht.</string>
     <string name="push_message_new_conversation_messages">Neue Nachrichten veröffentlicht.</string>
     <string name="push_message_conversation">Konversation: %1$s</string>
@@ -378,4 +378,12 @@
     <string name="reminder_interval_invalid">Reminderintervall oder -daten ungültig.</string>
     <string name="reminder_not_found">Dieser Reminder wurde gelöscht.</string>
     <string name="conversation_invalid_title">Der Konversationstitel ist ungültig.</string>
+    <string name="push_message_ballot_changed">Abstimmungen aktualisiert.</string>
+    <string name="push_message_ballot">Abstimmung: %1$s</string>
+    <string name="push_message_group">Gruppe: %1$s</string>
+    <string name="push_message_options_changed">Abstimmungsoptionen aktualisiert.</string>
+    <string name="push_message_group_members_changed">Gruppenmitglieder aktualisiert.</string>
+    <string name="group_id">Id</string>
+    <string name="group_member_removed_dialog_title">Aus der Gruppe entfernt</string>
+    <string name="group_member_removed_dialog_text">Sie wurden vom Gruppenadministrator aus dieser Gruppe entfernt. Sie können der Gruppe jedoch erneut beitreten.</string>
 </resources>

@@ -128,6 +128,7 @@ public class GroupFragment extends Fragment implements LoaderManager.LoaderCallb
                 IntentFilter filter = new IntentFilter();
                 filter.addAction(GroupDatabaseManager.JOIN_GROUP);
                 filter.addAction(GroupDatabaseManager.REMOVE_USER_FROM_GROUP);
+                filter.addAction(GroupDatabaseManager.UPDATE_GROUP);
                 return filter;
             }
         });

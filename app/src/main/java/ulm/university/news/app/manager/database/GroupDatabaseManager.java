@@ -52,6 +52,7 @@ import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_ID_FOREIGN;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_MODIFICATION_DATE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_NEW_EVENTS;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TERM;
 import static ulm.university.news.app.manager.database.DatabaseManager.GROUP_TYPE;
@@ -132,6 +133,7 @@ public class GroupDatabaseManager {
         groupValues.put(GROUP_TERM, group.getTerm());
         groupValues.put(GROUP_DELETED, false);
         groupValues.put(GROUP_DELETED_READ, false);
+        groupValues.put(GROUP_NEW_EVENTS, false);
         groupValues.put(GROUP_CREATION_DATE, group.getCreationDate().getMillis());
         groupValues.put(GROUP_MODIFICATION_DATE, group.getModificationDate().getMillis());
         groupValues.put(GROUP_ADMIN, group.getGroupAdmin());
@@ -171,6 +173,7 @@ public class GroupDatabaseManager {
             group.setTerm((c.getString(c.getColumnIndex(GROUP_TERM))));
             group.setDeleted(c.getInt(c.getColumnIndex(GROUP_DELETED)) == 1);
             group.setDeletedRead(c.getInt(c.getColumnIndex(GROUP_DELETED_READ)) == 1);
+            group.setNewEvents((c.getInt(c.getColumnIndex(GROUP_NEW_EVENTS)) == 1));
             group.setGroupAdmin((c.getInt(c.getColumnIndex(GROUP_ADMIN))));
             group.setCreationDate(new DateTime(c.getLong(c.getColumnIndex(GROUP_CREATION_DATE)), TIME_ZONE));
             group.setModificationDate(new DateTime(c.getLong(c.getColumnIndex(GROUP_MODIFICATION_DATE)), TIME_ZONE));
@@ -205,6 +208,7 @@ public class GroupDatabaseManager {
             group.setTerm((c.getString(c.getColumnIndex(GROUP_TERM))));
             group.setDeleted(c.getInt(c.getColumnIndex(GROUP_DELETED)) == 1);
             group.setDeletedRead(c.getInt(c.getColumnIndex(GROUP_DELETED_READ)) == 1);
+            group.setNewEvents((c.getInt(c.getColumnIndex(GROUP_NEW_EVENTS)) == 1));
             group.setGroupAdmin((c.getInt(c.getColumnIndex(GROUP_ADMIN))));
             group.setCreationDate(new DateTime(c.getLong(c.getColumnIndex(GROUP_CREATION_DATE)), TIME_ZONE));
             group.setModificationDate(new DateTime(c.getLong(c.getColumnIndex(GROUP_MODIFICATION_DATE)), TIME_ZONE));
@@ -404,6 +408,28 @@ public class GroupDatabaseManager {
         // Notify observers that database content has changed.
         Intent databaseChanged = new Intent(UPDATE_GROUP);
         LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+    }
+
+    /**
+     * Marks a group to show a new events symbol or not.
+     *
+     * @param groupId The id of the group which should be marked or unmarked.
+     */
+    public void setGroupNewEvents(int groupId, boolean newEvents) {
+        Log.d(TAG, "Set new events for group with id " + groupId);
+        SQLiteDatabase db = dbm.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(GROUP_NEW_EVENTS, newEvents);
+        String where = GROUP_ID + "=?";
+        String[] args = {String.valueOf(groupId)};
+        db.update(GROUP_TABLE, values, where, args);
+
+        // Notify observers that database content has changed.
+        if (newEvents) {
+            Intent databaseChanged = new Intent(UPDATE_GROUP);
+            LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
+        }
     }
 
     /**

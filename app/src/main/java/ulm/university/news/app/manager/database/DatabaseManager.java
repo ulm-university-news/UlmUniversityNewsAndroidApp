@@ -275,6 +275,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String GROUP_DELETED = "Deleted";
     public static final String GROUP_DELETED_READ = "DeletedRead";
     public static final String GROUP_ADMIN = "GroupAdmin_User_Id";
+    public static final String GROUP_NEW_EVENTS = "NewEvents";
 
     /** SQL statement to create the Group table. */
     private static final String CREATE_TABLE_GROUP = "CREATE TABLE " + GROUP_TABLE + "("
@@ -288,6 +289,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             + GROUP_DELETED + " INTEGER NOT NULL, "
             + GROUP_DELETED_READ + " INTEGER NOT NULL, "
             + GROUP_ADMIN + " INTEGER NOT NULL, "
+            + GROUP_NEW_EVENTS + " INTEGER NOT NULL, "
             + SETTINGS_NOTIFICATION + " INTEGER);";
     // Don't use constraints to allow an easy group storage process with a later user update process.
     // + "FOREIGN KEY(" + GROUP_ADMIN + ") REFERENCES " + USER_TABLE + "(" + USER_ID + "));";
