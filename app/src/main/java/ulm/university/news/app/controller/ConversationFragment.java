@@ -266,6 +266,7 @@ public class ConversationFragment extends Fragment implements LoaderManager.Load
     private void showRemovedFromGroupMessage() {
         toast.setText(R.string.group_member_removed_dialog_text);
         toast.setDuration(Toast.LENGTH_LONG);
+        toast.show();
         removeLocalUserAsGroupMember();
     }
 
