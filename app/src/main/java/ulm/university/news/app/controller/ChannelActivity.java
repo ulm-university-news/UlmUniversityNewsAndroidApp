@@ -12,25 +12,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEventModerators;
+import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
-import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 
 public class ChannelActivity extends AppCompatActivity {
     /** This classes tag for logging. */
     private static final String TAG = "ChannelActivity";
 
+    private Channel channel;
+    private ChannelDatabaseManager channelDBM;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set color theme according to channel and lecture type.
+        channelDBM = new ChannelDatabaseManager(this);
         int channelId = getIntent().getIntExtra("channelId", 0);
-        Channel channel = new ChannelDatabaseManager(this).getChannel(channelId);
+        channel = channelDBM.getChannel(channelId);
         ChannelController.setColorTheme(this, channel);
 
         super.onCreate(savedInstanceState);
@@ -53,6 +54,9 @@ public class ChannelActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         showChannelDeletedDialog(channel);
+
+        // Refresh responsible moderator data.
+        ChannelAPI.getInstance(this).getResponsibleModerators(channel.getId());
     }
 
     private void showChannelDeletedDialog(Channel channel) {
@@ -114,11 +118,6 @@ public class ChannelActivity extends AppCompatActivity {
      */
     public void onEvent(BusEventModerators event) {
         Log.d(TAG, event.toString());
-        List<Moderator> moderators = event.getModerators();
-
-        ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
-        for (Moderator m : moderators) {
-            moderatorDBM.storeModerator(m);
-        }
+        ModeratorController.storeModerators(this, event.getModerators(), channel.getId());
     }
 }

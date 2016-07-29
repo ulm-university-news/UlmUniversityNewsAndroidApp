@@ -403,6 +403,7 @@
 
     <!-- Moderator ################################################################################################# -->
     <string name="moderator_unknown">Unknown</string>
+    <string name="moderators">Moderators</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

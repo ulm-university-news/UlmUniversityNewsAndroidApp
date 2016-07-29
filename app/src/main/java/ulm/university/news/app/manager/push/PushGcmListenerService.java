@@ -26,6 +26,7 @@ import ulm.university.news.app.api.BusEventBallots;
 import ulm.university.news.app.api.BusEventConversationMessages;
 import ulm.university.news.app.api.BusEventConversations;
 import ulm.university.news.app.api.BusEventGroupMembers;
+import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.api.BusEventOptions;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.GroupAPI;
@@ -34,6 +35,7 @@ import ulm.university.news.app.controller.ChannelController;
 import ulm.university.news.app.controller.GroupActivity;
 import ulm.university.news.app.controller.GroupController;
 import ulm.university.news.app.controller.ModeratorChannelActivity;
+import ulm.university.news.app.controller.ModeratorController;
 import ulm.university.news.app.controller.ModeratorMainActivity;
 import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Ballot;
@@ -125,13 +127,10 @@ public class PushGcmListenerService extends GcmListenerService {
                 ChannelAPI.getInstance(getApplicationContext()).getChannel(pushMessage.getId1());
                 break;
             case MODERATOR_ADDED:
-                // Do nothing.
-                break;
             case MODERATOR_CHANGED:
-                // Do nothing.
-                break;
             case MODERATOR_REMOVED:
-                // Do nothing.
+                // Refresh responsible moderator data.
+                ChannelAPI.getInstance(this).getResponsibleModerators(pushMessage.getId1());
                 break;
             case CONVERSATION_CHANGED:
             case CONVERSATION_CLOSED:
@@ -743,5 +742,15 @@ public class PushGcmListenerService extends GcmListenerService {
             sendGroupMemberNotification(pushMessage.getId1());
         }
         groupDBM.setGroupNewEvents(pushMessage.getId1(), true);
+    }
+
+    /**
+     * This method will be called when a list of moderators is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of moderator objects.
+     */
+    public void onEvent(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        ModeratorController.storeModerators(this, event.getModerators(), pushMessage.getId1());
     }
 }

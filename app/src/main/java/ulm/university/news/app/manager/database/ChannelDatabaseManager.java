@@ -17,6 +17,7 @@ import ulm.university.news.app.data.Announcement;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.data.Reminder;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.data.enums.ChannelType;
@@ -62,7 +63,12 @@ import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_T
 import static ulm.university.news.app.manager.database.DatabaseManager.MESSAGE_TEXT;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_CHANNEL_TABLE;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_EMAIL;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_FIRST_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID;
 import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_ID_FOREIGN;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_LAST_NAME;
+import static ulm.university.news.app.manager.database.DatabaseManager.MODERATOR_TABLE;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_ACTIVE;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_AUTHOR;
 import static ulm.university.news.app.manager.database.DatabaseManager.REMINDER_CREATION_DATE;
@@ -99,7 +105,7 @@ public class ChannelDatabaseManager {
 
     public static final String STORE_CHANNEL = "storeChannel";
     public static final String UPDATE_CHANNEL = "updateChannel";
-    public static final String SUBSCRIBE_CHANNEL = "joinGroup";
+    public static final String SUBSCRIBE_CHANNEL = "subscribeChannel";
     public static final String UNSUBSCRIBE_CHANNEL = "unsubscribeChannel";
     public static final String STORE_ANNOUNCEMENT = "storeAnnouncement";
     public static final String STORE_REMINDER = "storeReminder";
@@ -317,6 +323,10 @@ public class ChannelDatabaseManager {
         String whereClause = CHANNEL_ID + "=?";
         String[] whereArgs = new String[]{String.valueOf(channelId)};
         db.delete(CHANNEL_TABLE, whereClause, whereArgs);
+
+        // Notify observers that database content has changed.
+        Intent databaseChanged = new Intent(DELETE_CHANNEL);
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(databaseChanged);
     }
 
     /**
@@ -716,6 +726,43 @@ public class ChannelDatabaseManager {
         }
         Log.d(TAG, "End with " + channels);
         return channels;
+    }
+
+    /**
+     * Gets all active moderators of the specified channel from the database.
+     *
+     * @return A list of moderator objects.
+     */
+    public List<Moderator> getResponsibleModerators(int channelId) {
+        SQLiteDatabase db = dbm.getReadableDatabase();
+        List<Moderator> moderators = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + MODERATOR_TABLE + " AS m INNER JOIN " + MODERATOR_CHANNEL_TABLE
+                + " AS mc ON m." + MODERATOR_ID + "=mc." + MODERATOR_ID_FOREIGN
+                + " WHERE mc." + CHANNEL_ID_FOREIGN + "=? AND mc." + MODERATOR_CHANNEL_ACTIVE + "=?";
+        String[] args = new String[2];
+        args[0] = String.valueOf(channelId);
+        args[1] = String.valueOf(1);
+        Log.d(TAG, selectQuery);
+
+        // Get moderator data from database.
+        Moderator moderator;
+        Cursor cSup = db.rawQuery(selectQuery, args);
+        while (cSup != null && cSup.moveToNext()) {
+            moderator = new Moderator();
+            moderator.setId(cSup.getInt(cSup.getColumnIndex(MODERATOR_ID)));
+            moderator.setFirstName(cSup.getString(cSup.getColumnIndex(MODERATOR_FIRST_NAME)));
+            moderator.setLastName(cSup.getString(cSup.getColumnIndex(MODERATOR_LAST_NAME)));
+            moderator.setEmail(cSup.getString(cSup.getColumnIndex(MODERATOR_EMAIL)));
+            moderator.setActive(cSup.getInt(cSup.getColumnIndex(MODERATOR_CHANNEL_ACTIVE)) == 1);
+
+            // Add moderator to moderator list.
+            moderators.add(moderator);
+        }
+        if (cSup != null) {
+            cSup.close();
+        }
+        Log.d(TAG, "End with " + moderators);
+        return moderators;
     }
 
     /**

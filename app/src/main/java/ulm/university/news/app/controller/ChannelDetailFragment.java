@@ -24,11 +24,13 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEvent;
+import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
 import ulm.university.news.app.data.Event;
 import ulm.university.news.app.data.Lecture;
+import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.data.ResourceDetail;
 import ulm.university.news.app.data.Sports;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
@@ -373,6 +375,19 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
         resourceDetails.add(contacts);
         resourceDetails.add(creationDate);
         resourceDetails.add(modificationDate);
+
+        List<Moderator> moderators = channelDBM.getResponsibleModerators(channelId);
+        String moderatorsAsString = "";
+        for (int i = 0; i < moderators.size(); i++) {
+            Moderator m = moderators.get(i);
+            moderatorsAsString += m.getFirstName() + " " + m.getLastName();
+            if (i < moderators.size() - 1) {
+                moderatorsAsString += ", ";
+            }
+        }
+        ResourceDetail moderatorsRD = new ResourceDetail(getString(R.string.moderators), moderatorsAsString, R.drawable
+                .ic_group_black_36dp);
+        resourceDetails.add(moderatorsRD);
     }
 
     /**
@@ -467,9 +482,6 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             getActivity().finish();
         } else if (ChannelAPI.UNSUBSCRIBE_CHANNEL.equals(action)) {
             channelDBM.unsubscribeChannel(channel.getId());
-            // TODO Delete announcements of channel!
-            // channelDBM.deleteAnnouncements(channel.getId());
-            // Delete unsubscribed channel if it was marked as deleted.
             if (channel.isDeleted()) {
                 ChannelController.deleteChannel(getContext(), channel.getId());
             }
@@ -479,6 +491,19 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             ChannelController.deleteChannel(getContext(), channel.getId());
             getActivity().finish();
         }
+    }
+
+    /**
+     * This method will be called when a list of moderators is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of moderator objects.
+     */
+    public void onEvent(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        ModeratorController.storeModerators(getContext(), event.getModerators(), channel.getId());
+        setChannelDetails();
+        listAdapter.setResourceDetails(resourceDetails);
+        listAdapter.notifyDataSetChanged();
     }
 
     /**
