@@ -10,27 +10,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import java.util.List;
-
 import de.greenrobot.event.EventBus;
 import ulm.university.news.app.R;
 import ulm.university.news.app.api.BusEventModerators;
 import ulm.university.news.app.api.ChannelAPI;
 import ulm.university.news.app.api.ServerError;
 import ulm.university.news.app.data.Channel;
-import ulm.university.news.app.data.Moderator;
 import ulm.university.news.app.manager.database.ChannelDatabaseManager;
-import ulm.university.news.app.manager.database.ModeratorDatabaseManager;
 
 public class ModeratorChannelActivity extends AppCompatActivity {
     /** This classes tag for logging. */
     private static final String TAG = "ModeratorChannelAct";
 
+    private Channel channel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set color theme according to channel and lecture type.
         int channelId = getIntent().getIntExtra("channelId", 0);
-        Channel channel = new ChannelDatabaseManager(this).getChannel(channelId);
+        channel = new ChannelDatabaseManager(this).getChannel(channelId);
         ChannelController.setColorTheme(this, channel);
 
         super.onCreate(savedInstanceState);
@@ -84,45 +82,6 @@ public class ModeratorChannelActivity extends AppCompatActivity {
     }
 
     /**
-     * This method will be called when a list of moderators is posted to the EventBus.
-     *
-     * @param event The bus event containing a list of moderator objects.
-     */
-    public void onEventMainThread(BusEventModerators event) {
-        Log.d(TAG, event.toString());
-        List<Moderator> moderators = event.getModerators();
-        processModeratorData(moderators);
-    }
-
-    /**
-     * Saves new moderators and updates existing ones.
-     *
-     * @param moderators The moderator list to process.
-     */
-    private void processModeratorData(List<Moderator> moderators) {
-        ModeratorDatabaseManager moderatorDBM = new ModeratorDatabaseManager(this);
-
-        List<Moderator> moderatorsDB = moderatorDBM.getModerators();
-        // Store or update channels in the database and update local channel list.
-        Integer moderatorDBId = null;
-        for (Moderator moderator : moderators) {
-            // Store new moderators and update existing ones.
-            for (int i = 0; i < moderatorsDB.size(); i++) {
-                if (moderatorsDB.get(i).getId() == moderator.getId()) {
-                    moderatorDBId = i;
-                    break;
-                }
-            }
-            if (moderatorDBId == null) {
-                moderatorDBM.storeModerator(moderator);
-            } else {
-                moderatorDBM.updateModerator(moderator);
-                moderatorDBId = null;
-            }
-        }
-    }
-
-    /**
      * This method will be called when a server error is posted to the EventBus.
      *
      * @param serverError The error which occurred on the server.
@@ -139,5 +98,15 @@ public class ModeratorChannelActivity extends AppCompatActivity {
      */
     public void handleServerError(ServerError serverError) {
         Log.d(TAG, serverError.toString());
+    }
+
+    /**
+     * This method will be called when a list of moderators is posted to the EventBus.
+     *
+     * @param event The bus event containing a list of moderator objects.
+     */
+    public void onEvent(BusEventModerators event) {
+        Log.d(TAG, event.toString());
+        ModeratorController.storeModerators(this, event.getModerators(), channel.getId());
     }
 }

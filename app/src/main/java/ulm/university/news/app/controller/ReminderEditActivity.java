@@ -36,6 +36,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.MODERATOR_FORBIDDEN;
 import static ulm.university.news.app.util.Constants.REMINDER_NOT_FOUND;
 
 public class ReminderEditActivity extends AppCompatActivity implements DatePickerListener, TimePickerListener,
@@ -402,6 +403,14 @@ public class ReminderEditActivity extends AppCompatActivity implements DatePicke
                 toast.show();
                 channelDBM.deleteReminder(reminder.getId());
                 navigateUp();
+            case MODERATOR_FORBIDDEN:
+                toast.setText(getString(R.string.moderator_forbidden));
+                toast.show();
+                // Close activity and go to the main moderator screen.
+                Intent intent = new Intent(this, ModeratorMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
         }
     }
 

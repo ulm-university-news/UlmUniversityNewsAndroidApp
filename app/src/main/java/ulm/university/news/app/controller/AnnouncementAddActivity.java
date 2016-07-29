@@ -29,6 +29,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.MODERATOR_FORBIDDEN;
 
 public class AnnouncementAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
@@ -222,8 +223,17 @@ public class AnnouncementAddActivity extends AppCompatActivity implements Dialog
         btnCreate.setVisibility(View.VISIBLE);
         switch (serverError.getErrorCode()) {
             case CONNECTION_FAILURE:
-                tvError.setText(R.string.general_error_connection_failed);
+                tvError.setText(getString(R.string.general_error_connection_failed));
+                tvError.setVisibility(View.VISIBLE);
                 break;
+            case MODERATOR_FORBIDDEN:
+                toast.setText(getString(R.string.moderator_forbidden));
+                toast.show();
+                // Close activity and go to the main moderator screen.
+                Intent intent = new Intent(this, ModeratorMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
         }
     }
 

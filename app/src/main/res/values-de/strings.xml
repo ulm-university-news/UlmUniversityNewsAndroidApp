@@ -395,4 +395,5 @@
         Remindernachrichten mehr gesendet. Möchten Sie den Reminder wirklich daktivieren?</string>
     <string name="reminder_deactivated">Der Reminder ist deaktiviert.</string>
     <string name="moderators">Moderatoren</string>
+    <string name="moderator_forbidden">Ihnen wurden die Moderatorenrechte für diesen Kanal entzogen. Bitte aktualisieren Sie Ihre Kanalliste.</string>
 </resources>

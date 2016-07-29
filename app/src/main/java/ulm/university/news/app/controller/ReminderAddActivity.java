@@ -36,6 +36,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.MODERATOR_FORBIDDEN;
 import static ulm.university.news.app.util.Constants.REMINDER_INVALID_DATES;
 import static ulm.university.news.app.util.Constants.REMINDER_INVALID_INTERVAL;
 import static ulm.university.news.app.util.Constants.TIME_ZONE;
@@ -351,6 +352,14 @@ public class ReminderAddActivity extends AppCompatActivity implements DatePicker
                 tvError.setText(R.string.reminder_interval_invalid);
                 tvError.setVisibility(View.VISIBLE);
                 break;
+            case MODERATOR_FORBIDDEN:
+                toast.setText(getString(R.string.moderator_forbidden));
+                toast.show();
+                // Close activity and go to the main moderator screen.
+                Intent intent = new Intent(this, ModeratorMainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
         }
     }
 

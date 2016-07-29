@@ -404,6 +404,8 @@
     <!-- Moderator ################################################################################################# -->
     <string name="moderator_unknown">Unknown</string>
     <string name="moderators">Moderators</string>
+    <string name="moderator_forbidden">You have no longer the rights to manage this channel. Please refresh
+        your channel list.</string>
 
     <!-- AnnouncementFragment ###################################################################################### -->
     <string name="fragment_announcement_list_empty">There are no announcements yet.</string>

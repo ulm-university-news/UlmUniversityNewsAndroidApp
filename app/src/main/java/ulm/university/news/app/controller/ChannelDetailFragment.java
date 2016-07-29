@@ -382,7 +382,7 @@ public class ChannelDetailFragment extends Fragment implements DialogListener {
             Moderator m = moderators.get(i);
             moderatorsAsString += m.getFirstName() + " " + m.getLastName();
             if (i < moderators.size() - 1) {
-                moderatorsAsString += ", ";
+                moderatorsAsString += "\n";
             }
         }
         ResourceDetail moderatorsRD = new ResourceDetail(getString(R.string.moderators), moderatorsAsString, R.drawable
