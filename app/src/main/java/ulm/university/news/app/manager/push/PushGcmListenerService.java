@@ -178,6 +178,9 @@ public class PushGcmListenerService extends GcmListenerService {
             case BALLOT_OPTION_VOTE_ALL:
                 // Do nothing. Load new votes when user enters ballot screen.
                 break;
+            case GROUP_CHANGED:
+                GroupAPI.getInstance(this).getGroup(pushMessage.getId1());
+                break;
         }
     }
 
@@ -752,5 +755,15 @@ public class PushGcmListenerService extends GcmListenerService {
     public void onEvent(BusEventModerators event) {
         Log.d(TAG, event.toString());
         ModeratorController.storeModerators(this, event.getModerators(), pushMessage.getId1());
+    }
+
+    /**
+     * This method will be called when a group is posted to the EventBus.
+     *
+     * @param group The group object sent to the EventBus.
+     */
+    public void onEvent(Group group) {
+        Log.d(TAG, group.toString());
+        new GroupDatabaseManager(this).updateGroup(group);
     }
 }

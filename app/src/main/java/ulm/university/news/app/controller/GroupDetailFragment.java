@@ -37,6 +37,7 @@ import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
+import static ulm.university.news.app.util.Constants.GROUP_ADMIN_NOT_ALLOWED_TO_EXIT;
 import static ulm.university.news.app.util.Constants.GROUP_INCORRECT_PASSWORD;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
 import static ulm.university.news.app.util.Constants.PASSWORD_GROUP_PATTERN;
@@ -529,6 +530,16 @@ public class GroupDetailFragment extends Fragment implements DialogListener {
                 String text = getString(R.string.group_password_invalid);
                 toast.setText(text);
                 toast.show();
+                break;
+            case GROUP_ADMIN_NOT_ALLOWED_TO_EXIT:
+                InfoDialogFragment dialog = new InfoDialogFragment();
+                Bundle args = new Bundle();
+                args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string
+                        .group_leave_admin_dialog_title));
+                args.putString(InfoDialogFragment.DIALOG_TEXT, getString(R.string
+                        .group_leave_admin_dialog_text));
+                dialog.setArguments(args);
+                dialog.show(getFragmentManager(), InfoDialogFragment.DIALOG_LEAVE_GROUP_ADMIN);
                 break;
         }
     }

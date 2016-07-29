@@ -29,9 +29,9 @@ import ulm.university.news.app.manager.database.GroupDatabaseManager;
 import ulm.university.news.app.util.TextInputLabels;
 import ulm.university.news.app.util.Util;
 
-import static ulm.university.news.app.util.Constants.ACCOUNT_NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.DESCRIPTION_MAX_LENGTH;
+import static ulm.university.news.app.util.Constants.NAME_PATTERN;
 import static ulm.university.news.app.util.Constants.PASSWORD_GROUP_PATTERN;
 
 public class GroupAddActivity extends AppCompatActivity implements DialogListener {
@@ -137,8 +137,8 @@ public class GroupAddActivity extends AppCompatActivity implements DialogListene
         btnCreate = (Button) findViewById(R.id.activity_group_add_btn_create);
 
         tilName.setNameAndHint(getString(R.string.group_name));
-        tilName.setLength(3, 35);
-        tilName.setPattern(ACCOUNT_NAME_PATTERN);
+        tilName.setLength(3, 45);
+        tilName.setPattern(NAME_PATTERN);
 
         tilDescription.setNameAndHint(getString(R.string.general_description));
         tilDescription.setLength(0, DESCRIPTION_MAX_LENGTH);
