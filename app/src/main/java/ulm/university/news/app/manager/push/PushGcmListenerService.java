@@ -291,23 +291,24 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param event The bus event containing a list of ballot objects.
      */
     public void onEventMainThread(BusEventBallots event) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, event.toString());
         List<Ballot> ballots = event.getBallots();
-        boolean newBallots = GroupController.storeBallots(getApplicationContext(), ballots, pushMessage.getId1());
-        if (newBallots) {
-            NotificationSettings notificationSettings = settingsDBM.getGroupNotificationSettings(pushMessage.getId1());
-            if (notificationSettings == NotificationSettings.GENERAL) {
-                notificationSettings = settingsDBM.getSettings().getNotificationSettings();
-            }
-            if (notificationSettings.equals(NotificationSettings.ALL)) {
-                sendBallotNotification(pushMessage.getId1());
-            } else if (notificationSettings.equals(NotificationSettings.PRIORITY)) {
-                if (pushMessage.getPushType().equals(PushType.BALLOT_NEW)) {
-                    sendBallotNotification(pushMessage.getId1());
-                }
-            }
-            new GroupDatabaseManager(getApplicationContext()).setGroupNewEvents(pushMessage.getId1(), true);
+        GroupController.storeBallots(getApplicationContext(), ballots, pushMessage.getId1());
+
+        NotificationSettings notificationSettings = settingsDBM.getGroupNotificationSettings(pushMessage.getId1());
+        if (notificationSettings == NotificationSettings.GENERAL) {
+            notificationSettings = settingsDBM.getSettings().getNotificationSettings();
         }
+        if (notificationSettings.equals(NotificationSettings.ALL)) {
+            sendBallotNotification(pushMessage.getId1());
+        } else if (notificationSettings.equals(NotificationSettings.PRIORITY)) {
+            if (pushMessage.getPushType().equals(PushType.BALLOT_NEW)) {
+                sendBallotNotification(pushMessage.getId1());
+            }
+        }
+        new GroupDatabaseManager(getApplicationContext()).setGroupNewEvents(pushMessage.getId1(), true);
     }
 
     /**
@@ -603,6 +604,8 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param event The bus event containing a list of ballot options objects.
      */
     public void onEventMainThread(BusEventOptions event) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, event.toString());
         List<Option> options = event.getOptions();
 
@@ -721,6 +724,8 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param event The bus event containing a list of user objects.
      */
     public void onEvent(BusEventGroupMembers event) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, event.toString());
         List<User> users = event.getUsers();
 
@@ -753,6 +758,8 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param event The bus event containing a list of moderator objects.
      */
     public void onEvent(BusEventModerators event) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, event.toString());
         ModeratorController.storeModerators(this, event.getModerators(), pushMessage.getId1());
     }
@@ -763,6 +770,8 @@ public class PushGcmListenerService extends GcmListenerService {
      * @param group The group object sent to the EventBus.
      */
     public void onEvent(Group group) {
+        // Unregister this instance. For new push messages the new instance will be registered in onCreate().
+        EventBus.getDefault().unregister(this);
         Log.d(TAG, group.toString());
         new GroupDatabaseManager(this).updateGroup(group);
     }

@@ -185,11 +185,16 @@ public class GroupActivity extends AppCompatActivity {
                 finish();
                 break;
             case GROUP_PARTICIPANT_NOT_FOUND:
-                // Remove local user as group member.
-                new GroupDatabaseManager(this).removeUserFromGroup(groupId,
-                        Util.getInstance(this).getLocalUser().getId());
-                showRemovedFromGroupDialog();
+                // showRemovedFromGroupDialog();
+                showRemovedFromGroupMessage();
+                break;
         }
+    }
+
+    private void showRemovedFromGroupMessage() {
+        toast.setText(R.string.group_member_removed_dialog_text);
+        toast.setDuration(Toast.LENGTH_LONG);
+        removeLocalUserAsGroupMember();
     }
 
     private void showRemovedFromGroupDialog() {
@@ -204,13 +209,24 @@ public class GroupActivity extends AppCompatActivity {
         dialog.onDismiss(new DialogInterface() {
             @Override
             public void cancel() {
-                navigateUp();
+                removeLocalUserAsGroupMember();
             }
 
             @Override
             public void dismiss() {
-                navigateUp();
+                removeLocalUserAsGroupMember();
             }
         });
+    }
+
+    private void removeLocalUserAsGroupMember() {
+        // Remove local user as group member.
+        new GroupDatabaseManager(this).removeUserFromGroup(groupId,
+                Util.getInstance(this).getLocalUser().getId());
+        // Close activity and go to the main screen to show deleted dialog on restart activity.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

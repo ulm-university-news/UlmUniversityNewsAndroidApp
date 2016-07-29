@@ -1,5 +1,6 @@
 package ulm.university.news.app.controller;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -27,6 +28,7 @@ import ulm.university.news.app.util.Util;
 import static ulm.university.news.app.util.Constants.CONNECTION_FAILURE;
 import static ulm.university.news.app.util.Constants.CONVERSATION_INVALID_TITLE;
 import static ulm.university.news.app.util.Constants.GROUP_NOT_FOUND;
+import static ulm.university.news.app.util.Constants.GROUP_PARTICIPANT_NOT_FOUND;
 
 public class ConversationAddActivity extends AppCompatActivity implements DialogListener {
     /** This classes tag for logging. */
@@ -217,7 +219,50 @@ public class ConversationAddActivity extends AppCompatActivity implements Dialog
                 toast.setText(getString(R.string.conversation_invalid_title));
                 toast.show();
                 break;
+            case GROUP_PARTICIPANT_NOT_FOUND:
+                // showRemovedFromGroupDialog();
+                showRemovedFromGroupMessage();
+                break;
         }
+    }
+
+    private void showRemovedFromGroupMessage() {
+        toast.setText(R.string.group_member_removed_dialog_text);
+        toast.setDuration(Toast.LENGTH_LONG);
+        removeLocalUserAsGroupMember();
+    }
+
+    private void showRemovedFromGroupDialog() {
+        // Show group deleted dialog if it wasn't shown before.
+        InfoDialogFragment dialog = new InfoDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(InfoDialogFragment.DIALOG_TITLE, getString(R.string.group_member_removed_dialog_title));
+        args.putString(InfoDialogFragment.DIALOG_TEXT, getString(R.string.group_member_removed_dialog_text));
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "removedFromGroup");
+
+        dialog.onDismiss(new DialogInterface() {
+            @Override
+            public void cancel() {
+                removeLocalUserAsGroupMember();
+            }
+
+            @Override
+            public void dismiss() {
+                removeLocalUserAsGroupMember();
+            }
+        });
+    }
+
+    private void removeLocalUserAsGroupMember(){
+        // Remove local user as group member.
+        new GroupDatabaseManager(this).removeUserFromGroup(groupId,
+                Util.getInstance(this).getLocalUser().getId());
+        // Close activity and go to the main screen to show deleted dialog on restart activity.
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override
